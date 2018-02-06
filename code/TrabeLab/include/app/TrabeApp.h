@@ -2,6 +2,10 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "window/MainWindow.h"
+
+////////////////////////////////////////////////////////////////////////////////
+
 class TrabeApp
 {
 public:
@@ -17,15 +21,10 @@ public:
 		HRESULT hRes = m_module.Init(NULL, hInstance);
 		m_module.AddMessageLoop(&m_theLoop);
 		//----------------------------------------------------------------------
-		/*
-		CMainFrame wndMain;
-
-		if(wndMain.CreateEx() == NULL)
-		{
+		if( m_wndMain.Create(NULL, CWindow::rcDefault, _T("Trabecula Lab")) == NULL ) {
 			ATLTRACE(_T("Main window creation failed!\n"));
 			return 0;
 		}
-		*/
 		//----------------------------------------------------------------------
 		return hRes;
 	}
@@ -37,7 +36,7 @@ public:
 	int Run(int nCmdShow = SW_SHOWDEFAULT)
 	{
 		//----------------------------------------------------------------------
-		//wndMain.ShowWindow(nCmdShow);
+		m_wndMain.ShowWindow(nCmdShow);
 		//----------------------------------------------------------------------
 		int nRet = m_theLoop.Run();
 		m_module.RemoveMessageLoop();
@@ -48,6 +47,7 @@ private:
 	CAppModule    m_module;
 	CMessageLoop  m_theLoop;
 //------------------------------------------------------------------------------
+	MainWindow  m_wndMain;
 //------------------------------------------------------------------------------
 };
 

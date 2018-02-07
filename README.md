@@ -3,6 +3,10 @@ Bone Trabecula
 
 # 骨小梁分析程序
 
+## 操作系统
+
+编译，运行都需要在64位windows操作系统上进行，建议是windows 10 x64或windows server 2016。
+
 ## 编译工具
 
 1. 安装Visual Studio 2017 Community，带有ATL和MFC。
@@ -28,3 +32,5 @@ cd trabe_build
 <cmake目录>\cmake <源代码目录>\Trabecula -G "Visual Studio 15 Win64"
 MSBuild ALL_BUILD.vcxproj /t:build /p:Configuration=Release
 ```
+
+## 打包

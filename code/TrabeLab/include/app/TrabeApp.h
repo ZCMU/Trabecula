@@ -5,6 +5,8 @@
 #include <atldlgs.h>
 #include <atlctrls.h>
 
+#include <atlscrl.h>
+
 #include "window/MainWindow.h"
 
 ////////////////////////////////////////////////////////////////////////////////

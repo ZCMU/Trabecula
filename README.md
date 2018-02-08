@@ -34,3 +34,13 @@ MSBuild ALL_BUILD.vcxproj /t:build /p:Configuration=Release
 ```
 
 ## 打包
+
+这里只针对Release版本打包。执行如下命令：
+
+```
+<cmake目录>\cpack -D CPACK_GENERATOR="ZIP"
+```
+
+将生成Zip文件。
+
+将此Zip文件复制到目标机器上，解压后即可运行。

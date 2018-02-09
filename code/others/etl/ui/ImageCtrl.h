@@ -2,6 +2,15 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
+#define ICN_PIXEL  (0x100)
+
+struct NMIMAGEPIXEL
+{
+	NMHDR    nmh;
+	int      x, y;
+	COLORREF rgb;
+};
+
 class ImageCtrl : public ATL::CWindowImpl<ImageCtrl, ATL::CWindow, ATL::CControlWinTraits>,
 				public CScrollImpl<ImageCtrl>
 {
@@ -32,6 +41,7 @@ public:
 	BEGIN_MSG_MAP(ImageCtrl)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
 		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
+		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
 		CHAIN_MSG_MAP(CScrollImpl<ImageCtrl>)
 	END_MSG_MAP()
 
@@ -55,6 +65,26 @@ public:
 		}
 		return 0;
 	}
+	LRESULT OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	{
+		UINT uFlags = (UINT)wParam;
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+		POINT pt;
+		GetScrollOffset(pt);
+		if( m_image.IsNull() )
+			return 0;
+		NMIMAGEPIXEL nm;
+		nm.nmh.code = ICN_PIXEL;
+		nm.nmh.idFrom = GetDlgCtrlID();
+		nm.nmh.hwndFrom = m_hWnd;
+		nm.x = x + pt.x;
+		nm.y = y + pt.y;
+		nm.rgb = m_image.GetPixel(nm.x, nm.y);
+		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
+		return 0;
+	}
+
 //------------------------------------------------------------------------------
 // Overrideables
 	void DoPaint(CDCHandle dc)

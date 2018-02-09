@@ -2,7 +2,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "ImageCtrl.h"
+#include <ui\ImageCtrl.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -12,10 +12,11 @@ public:
 	DECLARE_WND_CLASS(_T("Trabe Window Class"))
 
 	//--------------------------------------------------------------------------
-	enum { IDC_BTN_LOAD = 10, IDC_PIC };
+	enum { IDC_BTN_LOAD = 10, IDC_TEXT_PIXEL, IDC_PIC };
 
 	CButton    m_btnLoad;
 	ImageCtrl  m_imageCtrl;
+	CStatic    m_txtPixel;
 	//--------------------------------------------------------------------------
 
 public:
@@ -28,6 +29,7 @@ public:
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
 //------------------------------------------------------------------------------
 		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)
+		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
 //------------------------------------------------------------------------------
 	END_MSG_MAP()
 
@@ -37,6 +39,9 @@ public:
 		m_btnLoad.Create(m_hWnd, rcDefault, _T("Load"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_LOAD);
+		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_TEXT_PIXEL);
 		m_imageCtrl.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_PIC);
@@ -73,8 +78,9 @@ public:
 			int x = 10;
 			int y = 10;
 			m_btnLoad.SetWindowPos(NULL, x, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			x += (60 + 10);
 			y += (40 + 10);
+			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
+			x += (60 + 10);
 			m_imageCtrl.SetWindowPos(NULL, x, y, w - x - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_imageCtrl.UpdateScroll();
 		}
@@ -96,6 +102,22 @@ public:
 				return 0;
 			}
 			m_imageCtrl.UpdateScroll();
+		}
+		return 0;
+	}
+	LRESULT OnImageCtrlPixel(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
+	{
+		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
+		if( pnm->rgb == CLR_INVALID ) {
+			m_txtPixel.SetWindowText(_T(""));
+		}
+		else {
+			CString str;
+			str.Format(_T("X: %d\r\nY: %d\r\nR: %u\r\nG: %u\r\nB: %u"),
+				pnm->x, pnm->y,
+				(UINT)(GetRValue(pnm->rgb)), (UINT)(GetGValue(pnm->rgb)), (UINT)(GetBValue(pnm->rgb))
+				);
+			m_txtPixel.SetWindowText(str);
 		}
 		return 0;
 	}

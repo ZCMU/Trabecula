@@ -38,6 +38,7 @@ MSBuild ALL_BUILD.vcxproj /t:build /p:Configuration=Release
 这里只针对Release版本打包。执行如下命令：
 
 ```
+cd trabe_build
 <cmake目录>\cpack -D CPACK_GENERATOR="ZIP"
 ```
 

@@ -4,6 +4,7 @@
 
 #include <atldlgs.h>
 #include <atlctrls.h>
+#include <atlctrlx.h>
 
 #include <atlscrl.h>
 

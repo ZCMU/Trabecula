@@ -31,6 +31,7 @@ public:
 //message handler
 	BEGIN_MSG_MAP(ImageCtrl)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
+		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
 		CHAIN_MSG_MAP(CScrollImpl<ImageCtrl>)
 	END_MSG_MAP()
 
@@ -43,6 +44,16 @@ public:
 		bsh.CreateSolidBrush(RGB(64, 64, 64));
 		dc.FillRect(&rcClient, bsh);
 		return 1;
+	}
+	LRESULT OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	{
+		int iCode = LOWORD(lParam);
+		if( iCode == HTCLIENT && !m_image.IsNull() ) {
+			::SetCursor(::LoadCursor(NULL, IDC_CROSS));
+			bHandled = TRUE;
+			return 1;
+		}
+		return 0;
 	}
 //------------------------------------------------------------------------------
 // Overrideables

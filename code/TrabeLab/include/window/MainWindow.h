@@ -87,6 +87,7 @@ public:
 	{
 		CFileDialog dlg(TRUE);
 		if( dlg.DoModal() == IDOK ) {//弹出对话框
+			CWaitCursor wac;
 			CImage& image = m_imageCtrl.GetImage();
 			image.Destroy();
 			m_imageCtrl.UpdateScroll();

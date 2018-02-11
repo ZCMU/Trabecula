@@ -2,7 +2,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <ui\ImageCtrl.h>
+#include <view\TrabeImageCtrl.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -14,9 +14,9 @@ public:
 	//--------------------------------------------------------------------------
 	enum { IDC_BTN_LOAD = 10, IDC_TEXT_PIXEL, IDC_PIC };
 
-	CButton    m_btnLoad;
-	ImageCtrl  m_imageCtrl;
-	CStatic    m_txtPixel;
+	CButton         m_btnLoad;
+	TrabeImageCtrl  m_imageCtrl;
+	CStatic         m_txtPixel;
 	//--------------------------------------------------------------------------
 
 public:

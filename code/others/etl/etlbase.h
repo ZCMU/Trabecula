@@ -66,6 +66,7 @@ protected:
 
 class IPropertyNotification
 {
+public:
 	virtual void OnPropertyChanged(const std::string& str) = 0;
 	//virtual void OnPropertyChanged(unsigned int uPropertyID) = 0;
 };
@@ -89,7 +90,7 @@ public:
 	{
 		auto iter(m_array.begin());
 		for( ; iter != m_array.end(); ++ iter ) {
-			iter->OnPropertyChanged(str);
+			(*iter)->OnPropertyChanged(str);
 		}
 	}
 };
@@ -105,7 +106,7 @@ public:
 	{
 		auto iter(m_array.begin());
 		for( ; iter != m_array.end(); ++ iter ) {
-			iter->OnCommandComplete(str, bOK);
+			(*iter)->OnCommandComplete(str, bOK);
 		}
 	}
 };

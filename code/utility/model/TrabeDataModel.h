@@ -26,7 +26,8 @@ public:
 	bool Load(const std::string& strFile)
 	{
 		ATL::CImage image;
-		if( FAILED(image.Load(A2T(strFile._str())) )
+		USES_CONVERSION;
+		if( FAILED(image.Load(A2T(strFile.c_str()))) )
 			return false;
 		int iBPP = image.GetBPP();
 		if( iBPP != 8 && iBPP != 24 )

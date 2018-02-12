@@ -17,9 +17,11 @@ extern CAppModule _Module;
 #include <atlwin.h>
 
 //------------------------------------------------------------------------------
+#include <etlbase.h>
+
 #include <atlimage.h>
 
-#include <etlbase.h>
+#include <assert.h>
 //------------------------------------------------------------------------------
 
 #ifdef _EMBEDDED_MANIFEST

@@ -21,8 +21,8 @@ public:
 	virtual void Exec()
 	{
 		std::string& str = *(std::any_cast<std::string>(&m_param));
-		bool bRet = m_pVN->LoadFile(str);
-		m_pVM->Fire_OnCommandNotification(std::string("load"), bRet);
+		bool bRet = m_pVM->LoadFile(str);
+		m_pVM->Fire_OnCommandComplete(std::string("load"), bRet);
 	}
 
 private:

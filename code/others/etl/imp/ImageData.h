@@ -24,7 +24,11 @@ public:
 		return m_buffer.empty();
 	}
 
-	BYTE* GetAddress() const throw()
+	BYTE* GetAddress() throw()
+	{
+		return m_buffer.data();
+	}
+	const BYTE* GetAddress() const throw()
 	{
 		return m_buffer.data();
 	}
@@ -85,15 +89,27 @@ public:
 		return m_spR.empty() || m_spG.empty() || m_spB.empty();
 	}
 
-	BYTE* GetAddressR() const throw()
+	BYTE* GetAddressR() throw()
 	{
 		return m_spR.data();
 	}
-	BYTE* GetAddressG() const throw()
+	const BYTE* GetAddressR() const throw()
+	{
+		return m_spR.data();
+	}
+	BYTE* GetAddressG() throw()
 	{
 		return m_spG.data();
 	}
-	BYTE* GetAddressB() const throw()
+	const BYTE* GetAddressG() const throw()
+	{
+		return m_spG.data();
+	}
+	BYTE* GetAddressB() throw()
+	{
+		return m_spB.data();
+	}
+	const BYTE* GetAddressB() const throw()
 	{
 		return m_spB.data();
 	}
@@ -181,9 +197,9 @@ public:
 		if( !image.Create(iW, iH, 24) )
 			return ;
 
-		BYTE* psR = data.GetAddressR();
-		BYTE* psG = data.GetAddressG();
-		BYTE* psB = data.GetAddressB();
+		const BYTE* psR = data.GetAddressR();
+		const BYTE* psG = data.GetAddressG();
+		const BYTE* psB = data.GetAddressB();
 		BYTE* pd = (BYTE*)image.GetBits();
 		for( int i = 0; i < iH; i ++ ) {
 			BYTE* pdr = pd;
@@ -215,7 +231,7 @@ public:
 		}
 		image.SetColorTable(0, 256, table);
 
-		BYTE* ps = data.GetAddress();
+		const BYTE* ps = data.GetAddress();
 		BYTE* pd = (BYTE*)image.GetBits();
 		for( int i = 0; i < iH; i ++ ) {
 			BYTE* pdr = pd;
@@ -236,9 +252,9 @@ public:
 		int width = cData.GetWidth();
 		gData.Allocate(width, height);
 
-		BYTE* psR = cData.GetAddressR();
-		BYTE* psG = cData.GetAddressG();
-		BYTE* psB = cData.GetAddressB();
+		const BYTE* psR = cData.GetAddressR();
+		const BYTE* psG = cData.GetAddressG();
+		const BYTE* psB = cData.GetAddressB();
 		BYTE* pd  = gData.GetAddress();
 
 		for( int i = 0; i < height; i ++ ) {

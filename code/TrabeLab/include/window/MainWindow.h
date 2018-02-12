@@ -21,7 +21,7 @@ public:
 	TrabeImageCtrl  m_imageCtrl;
 	CStatic         m_txtPixel;
 
-	//binding
+	//for binding
 	std::shared_ptr<ICommandBase>  m_cmdLoad;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
@@ -42,7 +42,7 @@ public:
 	void Initialize()
 	{
 		m_sinkProperty = std::make_shared<MainWindowPropertySink<MainWindow>>(this);
-		m_sinkCommand  = std::make_shared<MainCommandPropertySink<MainWindow>>(this);
+		m_sinkCommand  = std::make_shared<MainWindowCommandSink<MainWindow>>(this);
 	}
 	//--------------------------------------------------------------------------
 
@@ -121,7 +121,8 @@ public:
 		CFileDialog dlg(TRUE);
 		if( dlg.DoModal() == IDOK ) {//弹出对话框
 			CWaitCursor wac;
-			m_cmdLoad->SetParameter(std::any<std::string>(T2A(dlg.m_szFileName)));
+			USES_CONVERSION;
+			m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
 			m_cmdLoad->Exec();
 		}
 		return 0;

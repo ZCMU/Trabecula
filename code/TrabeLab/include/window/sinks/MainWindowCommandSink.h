@@ -16,8 +16,10 @@ public:
 // ICommandNotification
 	virtual void OnCommandComplete(const std::string& str, bool bOK)
 	{
-		if( !bOK ) {
-			AtlMessageBox(NULL, _T("error load image"), _T("error"), MB_OK);
+		if( str == "load" ) {
+			if( !bOK ) {
+				AtlMessageBox(NULL, _T("error load image"), _T("error"), MB_OK);
+			}
 		}
 	}
 

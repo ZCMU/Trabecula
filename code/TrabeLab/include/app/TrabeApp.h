@@ -9,6 +9,7 @@
 #include <atlscrl.h>
 
 #include "window/MainWindow.h"
+#include "viewmodel/TrabeViewModel.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,7 +32,25 @@ public:
 			ATLTRACE(_T("Main window creation failed!\n"));
 			return 0;
 		}
+
 		//----------------------------------------------------------------------
+		//objects
+		m_wndMain.Initialize();
+		std::shared_ptr<TrabeDataModel> spModel(std::make_shared<TrabeDataModel>());
+		m_spViewModel = std::make_shared<TrabeViewModel>();
+		m_spViewModel->SetDataModel(spModel);
+		//binding
+		// notifications
+		spModel->AddPropertyNotification(m_spViewModel->get_Sink());
+		// properties
+		m_wndMain.m_imageCtrl.set_Image(m_spViewModel->get_Image());
+		// commands
+		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());
+		// notifications
+		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
+		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());
+		//----------------------------------------------------------------------
+
 		return hRes;
 	}
 	void Term() throw()
@@ -50,10 +69,11 @@ public:
 	}
 
 private:
-	CAppModule    m_module;
+	CAppModule&   m_module;
 	CMessageLoop  m_theLoop;
 //------------------------------------------------------------------------------
 	MainWindow  m_wndMain;
+	std::shared_ptr<TrabeViewModel>  m_spViewModel;
 //------------------------------------------------------------------------------
 };
 

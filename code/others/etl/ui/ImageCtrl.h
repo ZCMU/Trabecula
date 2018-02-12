@@ -66,7 +66,7 @@ public:
 	LRESULT OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
 		int iCode = LOWORD(lParam);
-		if( iCode == HTCLIENT && !m_image.IsNull() ) {
+		if( iCode == HTCLIENT && !is_image_null() ) {
 			::SetCursor(::LoadCursor(NULL, IDC_CROSS));
 			bHandled = TRUE;
 			return 1;

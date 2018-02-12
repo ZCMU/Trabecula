@@ -18,20 +18,28 @@ public:
 	DECLARE_WND_CLASS(NULL)
 
 //------------------------------------------------------------------------------
-	CImage m_image;
+	std::shared_ptr<CImage> m_spImage;
 
-	CImage& GetImage() throw()
+	std::shared_ptr<CImage> GetImage() throw()
 	{
-		return m_image;
+		return m_spImage;
+	}
+	void set_Image(const std::shared_ptr<CImage>& sp) throw()
+	{
+		m_spImage = sp;
+	}
+	bool is_image_null() const throw()
+	{
+		return m_spImage.get() == NULL || m_spImage->IsNull();
 	}
 
 	void UpdateScroll() throw()
 	{
 		int cx = 1;
 		int cy = 1;
-		if( !m_image.IsNull() ) {
-			cx = m_image.GetWidth();
-			cy = m_image.GetHeight();
+		if( !is_image_null() ) {
+			cx = m_spImage->GetWidth();
+			cy = m_spImage->GetHeight();
 		}
 		SetScrollSize(cx, cy, TRUE, false);//设置滚动视图的大小
 	}
@@ -72,7 +80,7 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
-		if( m_image.IsNull() )
+		if( is_image_null() )
 			return 0;
 		NMIMAGEPIXEL nm;
 		nm.nmh.code = ICN_PIXEL;
@@ -80,7 +88,7 @@ public:
 		nm.nmh.hwndFrom = m_hWnd;
 		nm.x = x + pt.x;
 		nm.y = y + pt.y;
-		nm.rgb = m_image.GetPixel(nm.x, nm.y);
+		nm.rgb = m_spImage->GetPixel(nm.x, nm.y);
 		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
 		return 0;
 	}
@@ -89,9 +97,9 @@ public:
 // Overrideables
 	void DoPaint(CDCHandle dc)
 	{
-		if( !m_image.IsNull() ) {
+		if( !is_image_null() ) {
 			int nOldMode = dc.SetStretchBltMode(COLORONCOLOR);
-			m_image.Draw(dc, _WTYPES_NS::CRect(0, 0, m_image.GetWidth(), m_image.GetHeight()));
+			m_spImage->Draw(dc, _WTYPES_NS::CRect(0, 0, m_spImage->GetWidth(), m_spImage->GetHeight()));
 			dc.SetStretchBltMode(nOldMode);
 		}
 	}

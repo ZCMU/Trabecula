@@ -4,6 +4,9 @@
 
 #include <view\TrabeImageCtrl.h>
 
+#include "sinks\MainWindowPropertySink.h"
+#include "sinks\MainWindowCommandSink.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 class MainWindow : public CWindowImpl<MainWindow, CWindow, CFrameWinTraits>
@@ -17,6 +20,30 @@ public:
 	CButton         m_btnLoad;
 	TrabeImageCtrl  m_imageCtrl;
 	CStatic         m_txtPixel;
+
+	//binding
+	std::shared_ptr<ICommandBase>  m_cmdLoad;
+	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
+	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
+
+	void set_LoadCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdLoad = sp;
+	}
+	std::shared_ptr<IPropertyNotification> get_sinkProperty() throw()
+	{
+		return std::static_pointer_cast<IPropertyNotification>(m_sinkProperty);
+	}
+	std::shared_ptr<ICommandNotification> get_sinkCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandNotification>(m_sinkCommand);
+	}
+
+	void Initialize()
+	{
+		m_sinkProperty = std::make_shared<MainWindowPropertySink<MainWindow>>(this);
+		m_sinkCommand  = std::make_shared<MainCommandPropertySink<MainWindow>>(this);
+	}
 	//--------------------------------------------------------------------------
 
 public:
@@ -94,14 +121,8 @@ public:
 		CFileDialog dlg(TRUE);
 		if( dlg.DoModal() == IDOK ) {//弹出对话框
 			CWaitCursor wac;
-			CImage& image = m_imageCtrl.GetImage();
-			image.Destroy();
-			m_imageCtrl.UpdateScroll();
-			if( FAILED(image.Load(dlg.m_szFileName)) ) {
-				AtlMessageBox(NULL, _T("error load image"), _T("error"), MB_OK);
-				return 0;
-			}
-			m_imageCtrl.UpdateScroll();
+			m_cmdLoad->SetParameter(std::any<std::string>(T2A(dlg.m_szFileName)));
+			m_cmdLoad->Exec();
 		}
 		return 0;
 	}

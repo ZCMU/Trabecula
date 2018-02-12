@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES(
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 	"${PROJECT_SOURCE_DIR}/code/TrabeLab/include"
+	"${PROJECT_SOURCE_DIR}/code/utility"
 	"${PROJECT_SOURCE_DIR}/code/others/wtl/include"
 	"${PROJECT_SOURCE_DIR}/code/others/etl"
 	)

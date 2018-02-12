@@ -81,6 +81,10 @@ template <class T>
 class Proxy_PropertyNotification : public NotificationImpl<IPropertyNotification>
 {
 public:
+	void AddPropertyNotification(const std::shared_ptr<IPropertyNotification>& p)
+	{
+		AddNotification(p);
+	}
 	void Fire_OnPropertyChanged(const std::string& str)
 	{
 		auto iter(m_array.begin());
@@ -93,6 +97,10 @@ template <class T>
 class Proxy_CommandNotification : public NotificationImpl<ICommandNotification>
 {
 public:
+	void AddCommandNotification(const std::shared_ptr<ICommandNotification>& p)
+	{
+		AddNotification(p);
+	}
 	void Fire_OnCommandComplete(const std::string& str, bool bOK)
 	{
 		auto iter(m_array.begin());

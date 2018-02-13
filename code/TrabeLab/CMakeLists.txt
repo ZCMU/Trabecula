@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(
 	"${PROJECT_SOURCE_DIR}/code/TrabeLab/include"
 	"${PROJECT_SOURCE_DIR}/code/utility"
 	"${PROJECT_SOURCE_DIR}/code/others/wtl/include"
-	"${PROJECT_SOURCE_DIR}/code/others/etl"
+	"${PROJECT_SOURCE_DIR}/code/others/etl/include"
 	)
 SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 SET(SRC_LIST "src/main.cpp")

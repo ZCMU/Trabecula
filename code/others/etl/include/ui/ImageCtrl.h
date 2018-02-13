@@ -11,14 +11,20 @@ struct NMIMAGEPIXEL
 	COLORREF rgb;
 };
 
-class ImageCtrl : public ATL::CWindowImpl<ImageCtrl, ATL::CWindow, ATL::CControlWinTraits>,
+class ImageCtrl : public ATL::CWindowImpl<ImageCtrl, CWindowEx, ATL::CControlWinTraits>,
 				public CScrollImpl<ImageCtrl>
 {
 public:
 	DECLARE_WND_CLASS(NULL)
 
 //------------------------------------------------------------------------------
+	bool m_bEnter;  //mouse enter
+
 	std::shared_ptr<CImage> m_spImage;
+
+	ImageCtrl() throw() : m_bEnter(false)
+	{
+	}
 
 	std::shared_ptr<CImage> GetImage() throw()
 	{
@@ -50,6 +56,7 @@ public:
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
 		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
+		MESSAGE_HANDLER(WM_MOUSELEAVE, OnMouseLeave)
 		CHAIN_MSG_MAP(CScrollImpl<ImageCtrl>)
 	END_MSG_MAP()
 
@@ -80,6 +87,9 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
+		if( !m_bEnter ) {
+			m_bEnter = StartTrackMouseLeave() ? true : false;
+		}
 		if( is_image_null() )
 			return 0;
 		NMIMAGEPIXEL nm;
@@ -90,6 +100,21 @@ public:
 		nm.y = y + pt.y;
 		nm.rgb = m_spImage->GetPixel(nm.x, nm.y);
 		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
+		return 0;
+	}
+	LRESULT OnMouseLeave(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	{
+		NMIMAGEPIXEL nm;
+		nm.nmh.code = ICN_PIXEL;
+		nm.nmh.idFrom = GetDlgCtrlID();
+		nm.nmh.hwndFrom = m_hWnd;
+		nm.x = 0;
+		nm.y = 0;
+		nm.rgb = CLR_INVALID;
+		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
+		//cancel
+		if( CancelTrackMouse(TME_LEAVE) )
+			m_bEnter = false;
 		return 0;
 	}
 

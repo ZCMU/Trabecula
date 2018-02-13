@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-INCLUDE("msvc.cmk")
+INCLUDE("code/others/etl/include/msvc.cmk")
 
 PROJECT(Trabecula)
 ADD_SUBDIRECTORY(code code)

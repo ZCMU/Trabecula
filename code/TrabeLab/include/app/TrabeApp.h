@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -46,6 +46,8 @@ public:
 		m_wndMain.m_imageCtrl.set_Image(m_spViewModel->get_Image());
 		// commands
 		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());
+        m_wndMain.set_CalcCommand(m_spViewModel->get_CalcCommand());
+        m_wndMain.set_ClearCommand(m_spViewModel->get_ClearCommand());
 		// notifications
 		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
 		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());

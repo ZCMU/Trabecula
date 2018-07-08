@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -22,6 +22,11 @@ extern CAppModule _Module;
 #include <atlimage.h>
 
 #include <assert.h>
+
+#include <fcntl.h > // for _O_TEXT _open_osfhandle
+#include <iostream>
+#include <io.h> // for _open_osfhandle
+using namespace std;
 //------------------------------------------------------------------------------
 
 #ifdef _EMBEDDED_MANIFEST
@@ -35,5 +40,21 @@ extern CAppModule _Module;
   #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif // _EMBEDDED_MANIFEST
+
+void OutputDebugPrintf(const TCHAR *fmt, ...)
+{
+    TCHAR s[4096];
+    va_list args;
+    ZeroMemory(s, 4096 * sizeof(s[0]));
+    va_start(args, fmt);
+    wvsprintf(s, fmt, args);
+    va_end(args);
+    s[4095] = 0;
+    OutputDebugString(s);
+}
+
+
+// OutputDebugPrintf("DEBUG_INFO | %d %s",600019,"tangxg");
+// 然后在 DbgView 设置一个过滤：DEBUG_INFO，只抓自己的输出，用起来方便多了
 
 ////////////////////////////////////////////////////////////////////////////////

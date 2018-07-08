@@ -1,12 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
+struct RGBPIXEL
+{
+    UINT r;
+    UINT g;
+    UINT b;
+};
+struct HSVPIXEL
+{
+    float h;
+    float s;
+    float v;
+};
+
 //灰度数组
 
 class GrayData
 {
 public:
-	GrayData() throw() : m_iW(0), m_iH(0)
+	GrayData() throw() : m_iW(0), m_iH(0)  // 初始化为 0，0
 	{
 	}
 	~GrayData() throw()
@@ -241,6 +254,80 @@ public:
 			pd += image.GetPitch();
 		} //end for
 	}
+    //ColorData->ColorData
+	static void ColorDataToColorData(const ColorData& cDataSrc, ColorData& cDataDst)
+	{
+		cDataDst.Clear();
+		if( cDataSrc.IsNull() )
+			return ;
+
+		int height = cDataSrc.GetHeight();
+		int width = cDataSrc.GetWidth();
+		cDataDst.Allocate(width, height);
+
+		const uchar* psR = cDataSrc.GetAddressR();
+		const uchar* psG = cDataSrc.GetAddressG();
+		const uchar* psB = cDataSrc.GetAddressB();
+        uchar* pdR = cDataDst.GetAddressR();
+        uchar* pdG = cDataDst.GetAddressG();
+        uchar* pdB = cDataDst.GetAddressB();
+
+		for( int i = 0; i < height; i ++ ) {
+			for( int j = 0; j < width; j ++ ) {
+				uchar dR = (*psR ++);
+				uchar dG = (*psG ++);
+				uchar dB = (*psB ++);
+                (*pdR ++) = dR;
+                (*pdG ++) = dG;
+                (*pdB ++) = dB;
+			}
+		}
+	}
+    //ColorData->ColorData
+	static void ColorDataAddGrayData(const ColorData& cData1,
+                                     const GrayData& cData2,
+                                     RGBPIXEL rgb,
+                                     ColorData& cDataDst)
+	{
+		cDataDst.Clear();
+		if( cData1.IsNull() )
+			return ;
+		if( cData2.IsNull() )
+			return ;
+
+		int height = cData1.GetHeight();
+		int width = cData1.GetWidth();
+		cDataDst.Allocate(width, height);
+
+		const uchar* psR = cData1.GetAddressR();
+		const uchar* psG = cData1.GetAddressG();
+		const uchar* psB = cData1.GetAddressB();
+        const uchar* ps  = cData2.GetAddress();
+        uchar* pdR = cDataDst.GetAddressR();
+        uchar* pdG = cDataDst.GetAddressG();
+        uchar* pdB = cDataDst.GetAddressB();
+
+		for( int i = 0; i < height; i ++ ) {
+			for( int j = 0; j < width; j ++ ) {
+				float dR = (*psR ++);
+				float dG = (*psG ++);
+				float dB = (*psB ++);
+                if (*ps ++ == 255) {
+                    // (*pdR ++) = (uchar)(dR*(float)0.7+(float)rgb.r*(float)0.3);
+                    // (*pdG ++) = (uchar)(dG*(float)0.7+(float)rgb.g*(float)0.3);
+                    // (*pdB ++) = (uchar)(dB*(float)0.7+(float)rgb.b*(float)0.3);
+                    (*pdR ++) = 0;
+                    (*pdG ++) = 150;
+                    (*pdB ++) = 0;
+                } else {
+                    (*pdR ++) = (uchar)dR;
+                    (*pdG ++) = (uchar)dG;
+                    (*pdB ++) = (uchar)dB;
+                }
+            }
+        }
+    }
+
 	//ColorData->GrayData
 	static void ColorDataToGrayData(const ColorData& cData, GrayData& gData)
 	{
@@ -267,7 +354,26 @@ public:
 			}
 		}
 	}
+    //GrayData->GrayData
+	static void GrayDataToGrayData(const GrayData& gDataSrc, GrayData& gDataDst)
+	{
+		gDataDst.Clear();
+		if( gDataSrc.IsNull() )
+			return ;
 
+		int height = gDataSrc.GetHeight();
+		int width = gDataSrc.GetWidth();
+		gDataDst.Allocate(width, height);
+
+		const uchar* ps = gDataSrc.GetAddress();
+		uchar* pd  = gDataDst.GetAddress();
+
+		for( int i = 0; i < height; i ++ ) {
+			for( int j = 0; j < width; j ++ ) {
+                *pd ++ = *ps ++;
+			}
+		}
+    }
 	static void Invert(GrayData& gData) throw()
 	{
 		uchar* pd = gData.GetAddress();
@@ -314,6 +420,149 @@ public:
 			}
 		}
 	}
+    // RGB2HSV
+    // H：色相，S：饱和度，V：明度
+    static void Rgb2Hsv(float R, float G, float B, float& H, float& S, float&V)
+    {  
+        // r,g,b values are from 0 to 1
+        // h = [0,360], s = [0,1], v = [0,1]
+        // if s == 0, then h = -1 (undefined)
+        float min, max, delta, tmp;
+        tmp = R>G?G:R;
+        min = tmp>B?B:tmp;
+        tmp = R>G?R:G;
+        max = tmp>B?tmp:B;
+        V = max; // v
+        delta = max - min;
+
+        if( max != 0 ) {
+            S = delta / max; // s
+        } else {
+            // r = g = b = 0 // s = 0, v is undefined
+            S = 0;
+            H = 0;
+            return;
+        }
+
+        if (delta == 0) {
+            H = 0;
+            return;
+        } else if(R == max) {
+            if (G >= B) {
+                H = (G - B) / delta;     // between yellow & magenta
+            } else {
+                H = (G - B) / delta + 6;
+            }
+        } else if( G == max ) {
+            H = 2 + ( B - R ) / delta; // between cyan & yellow
+        } else if (B == max)  {
+            H = 4 + ( R - G ) / delta; // between magenta & cyan
+        }
+        
+        H *= 60; // degrees
+    }
+    // Hsv2Rgb
+    static void Hsv2Rgb(float H, float S, float V, float& R, float& G, float&B)
+    {
+        int i;
+        float f, p, q, t;
+
+        if( S == 0 ) 
+        {
+            // achromatic (grey)
+            R = G = B = V;
+            return;
+        }
+
+        H /= 60; // sector 0 to 5
+        i = (int)floor( H );
+        f = H - i; // factorial part of h
+        p = V * ( 1 - S );
+        q = V * ( 1 - S * f );
+        t = V * ( 1 - S * ( 1 - f ) );
+
+        switch( i ) 
+        {
+        case 0: 
+            R = V;
+            G = t;
+            B = p;
+            break;
+        case 1:
+            R = q;
+            G = V;
+            B = p;
+            break;
+        case 2:
+            R = p;
+            G = V;
+            B = t;
+            break;
+        case 3:
+            R = p;
+            G = q;
+            B = V;
+            break;
+        case 4:
+            R = t;
+            G = p;
+            B = V;
+            break;
+        default: // case 5:
+            R = V;
+            G = p;
+            B = q;
+            break;
+        }
+    }
+    //根据HSV做阈值分割
+    static void SegmentByHSV(HSVPIXEL min, HSVPIXEL max, ColorData& cData, GrayData& gData) throw()
+    {
+        gData.Clear();
+		if( cData.IsNull() )
+			return ;
+
+		int iH = cData.GetHeight();
+		int iW = cData.GetWidth();
+		gData.Allocate(iW, iH);
+
+		uchar* psR = cData.GetAddressR();
+		uchar* psG = cData.GetAddressG();
+		uchar* psB = cData.GetAddressB();
+        uchar* pd  = gData.GetAddress();
+
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				double dR = (double)(*psR);
+				double dG = (double)(*psG);
+				double dB = (double)(*psB);
+                float h,s,v;
+                Rgb2Hsv((float)dR/255, (float)dG/255, (float)dB/255, h, s, v);
+                if (max.h >= min.h) {
+                    if (h >= min.h && h <= max.h &&
+                        s >= min.s && s <= max.s &&
+                        v >= min.v && v <= max.v)
+                    {
+                        *pd ++ = (uchar)255;
+                    } else {
+                        *pd ++ = (uchar)0;
+                    }
+                } else {
+                    if ((h >= max.h || h <= min.h) &&
+                        s >= min.s && s <= max.s &&
+                        v >= min.v && v <= max.v)
+                    {
+                        *pd ++ = (uchar)255;
+                    } else {
+                        *pd ++ = (uchar)0;
+                    }
+                }
+                psR++;
+                psG++;
+                psB++;
+            }
+        }
+    }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

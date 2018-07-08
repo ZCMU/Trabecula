@@ -77,7 +77,6 @@ public:
 
 		return threshold;
 	}
-    // 腐蚀
     static void Erode(GrayData& gDataSrc, GrayData& gDataDst) throw()
     {
         gDataDst.Clear();
@@ -87,16 +86,12 @@ public:
 		int iH = gDataSrc.GetHeight();
 		int iW = gDataSrc.GetWidth();
 		gDataDst.Allocate(iW, iH);
-        // CString str;
-        // str.Format(_T("iH: %d iW: %d\r\n"), iH, iW);
-        // OutputDebugPrintf(str);
 
         uchar* ps  = gDataSrc.GetAddress();
         uchar* pd  = gDataDst.GetAddress();
 
 		for( int i = 0; i < iH; i ++ ) {  // 
 			for( int j = 0; j < iW; j ++ ) {  // 
-                // 自身及4邻域中若有一个为 0，则将该点设为 0
                 if (i > 0 && j > 0) {
                     // 左边
                     if (*(ps+i*iW+j-1) == 0) {
@@ -123,7 +118,6 @@ public:
             }
         }
     }
-    // 膨胀
     static void Dilate(GrayData& gDataSrc, GrayData& gDataDst) throw()
     {
         gDataDst.Clear();
@@ -139,7 +133,6 @@ public:
 
 		for( int i = 0; i < iH; i ++ ) {
 			for( int j = 0; j < iW; j ++ ) {
-                // 自身及4邻域中若有一个为 1，则将该点设为 1
                 if (i > 0 && j > 0) {
                     // 左边
                     if (*(ps+i*iW+j-1) == 255) {
@@ -263,7 +256,7 @@ public:
 		return label;
 	}
 
-	//extract border（提取边框）
+	//extract border
 	static void ExtractBorder(GrayData& gData) throw()
 	{
 		const int c_coord_x[] = { -1,  0,  1, -1, 1, -1, 0, 1 };

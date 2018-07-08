@@ -5,7 +5,6 @@
 #define ICN_PIXEL  (0x100)
 #define ICN_CLICK  (0x101)
 
-// 像素信息结构体
 struct NMIMAGEPIXEL
 {
 	NMHDR    nmh;  // Contains information about a notification message.
@@ -22,7 +21,7 @@ public:
 //------------------------------------------------------------------------------
 	bool m_bEnter;  //mouse enter
 
-	std::shared_ptr<CImage> m_spImage;  // 图片句柄
+	std::shared_ptr<CImage> m_spImage;
 
 	ImageCtrl() throw() : m_bEnter(false)
 	{
@@ -49,17 +48,17 @@ public:
 			cx = m_spImage->GetWidth();
 			cy = m_spImage->GetHeight();
 		}
-		SetScrollSize(cx, cy, TRUE, false); // 设置滚动视图
+		SetScrollSize(cx, cy, TRUE, false);//设置滚动视图的大小
 	}
 
 //------------------------------------------------------------------------------
 //message handler
 	BEGIN_MSG_MAP(ImageCtrl)
-		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)   // 控件区域背景
-		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)     // 设置鼠标光标
-		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)     // 处理鼠标移动
-		MESSAGE_HANDLER(WM_MOUSELEAVE, OnMouseLeave)   // 处理鼠标离开
-        MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)     // 左键抬起
+		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
+		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
+		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
+		MESSAGE_HANDLER(WM_MOUSELEAVE, OnMouseLeave)
+        MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)
 		CHAIN_MSG_MAP(CScrollImpl<ImageCtrl>)
 	END_MSG_MAP()
 
@@ -101,12 +100,11 @@ public:
 		nm.nmh.hwndFrom = m_hWnd;
 		nm.x = x + pt.x;
 		nm.y = y + pt.y;
-        // OutputDebugPrintf(_T("pixel %d %d\n"), nm.x, nm.y);   // 鼠标落到图像之外会报错
         if ((nm.x < m_spImage->GetWidth()) &&
             (nm.y < m_spImage->GetHeight()))
         {
             nm.rgb = m_spImage->GetPixel(nm.x, nm.y);
-            SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);  // 发送消息
+            SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
         }
 		return 0;
 	}
@@ -119,7 +117,7 @@ public:
 		nm.x = 0;
 		nm.y = 0;
 		nm.rgb = CLR_INVALID;
-		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);  // 发送消息
+		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
 		//cancel
 		if( CancelTrackMouse(TME_LEAVE) )
 			m_bEnter = false;
@@ -143,13 +141,11 @@ public:
 		nm.nmh.hwndFrom = m_hWnd;
 		nm.x = x + pt.x;
 		nm.y = y + pt.y;
-        // OutputDebugPrintf(_T("pixel %d %d\n"), nm.x, nm.y);
         if ((nm.x < m_spImage->GetWidth()) &&
             (nm.y < m_spImage->GetHeight()))
         {
             nm.rgb = m_spImage->GetPixel(nm.x, nm.y);  // COLORREF
-            // 计算选取点九宫格均值
-            SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);  // 发送消息
+            SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
         }
         return 0;
     }
@@ -158,9 +154,9 @@ public:
 	void DoPaint(CDCHandle dc)
 	{
 		if( !is_image_null() ) {
-			int nOldMode = dc.SetStretchBltMode(COLORONCOLOR);  // 设置在指定设备内容中的伸展模式
+			int nOldMode = dc.SetStretchBltMode(COLORONCOLOR);
 			m_spImage->Draw(dc, _WTYPES_NS::CRect(0, 0, m_spImage->GetWidth(), m_spImage->GetHeight()));
-			dc.SetStretchBltMode(nOldMode);  // 设置在指定设备内容中的伸展模式
+			dc.SetStretchBltMode(nOldMode);
 		}
 	}
 };

@@ -23,24 +23,23 @@ public:
            IDC_NOW_COLOR,
            IDC_PIC };
 
-	CButton         m_btnLoad;    // 载入按钮（CButton）
-    CButton         m_btnCalc;    // 选取按钮（CButton）
-    CButton         m_btnClear;   // 计算按钮（CButton）
-	TrabeImageCtrl  m_imageCtrl;  // 图像控制（CWindowImpl）
-	CStatic         m_nowPixel;   // 当前像素（CStatic）
-    CStatic         m_nowColor;   // 当前颜色（CStatic）
+	CButton         m_btnLoad;
+    CButton         m_btnCalc;
+    CButton         m_btnClear;
+	TrabeImageCtrl  m_imageCtrl;
+	CStatic         m_nowPixel;
+    CStatic         m_nowColor;
     CBrush          m_nowBkgnd;
-    CStatic         m_pickPixel;  // 选取像素
-    CStatic         m_pickColor;  // 选取颜色
+    CStatic         m_pickPixel;
+    CStatic         m_pickColor;
     NMIMAGEPIXEL    m_pickPNM;
 
 	//for binding
-    // command对象 个封装的是viewmodel的方法。或者方法集合。由viewmodel类暴露出来，供view层对象绑定
 	std::shared_ptr<ICommandBase>  m_cmdLoad;
     std::shared_ptr<ICommandBase>  m_cmdCalc;
     std::shared_ptr<ICommandBase>  m_cmdClear;
-	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;  // 属性
-	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;    // 命令
+	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
+	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
 
 	void set_LoadCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
@@ -57,12 +56,12 @@ public:
 	std::shared_ptr<IPropertyNotification> get_sinkProperty() throw()
 	{
         // IPropertyNotification -> OnPropertyChanged
-		return std::static_pointer_cast<IPropertyNotification>(m_sinkProperty);  //  获取 m_sinkProperty
+		return std::static_pointer_cast<IPropertyNotification>(m_sinkProperty);
 	}
 	std::shared_ptr<ICommandNotification> get_sinkCommand() throw()
 	{
         // ICommandNotification -> OnCommandComplete
-		return std::static_pointer_cast<ICommandNotification>(m_sinkCommand);  //  获取 m_sinkCommand
+		return std::static_pointer_cast<ICommandNotification>(m_sinkCommand);
 	}
 
 	void Initialize()
@@ -82,11 +81,11 @@ public:
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
         MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnCtlColorStatic)
 //------------------------------------------------------------------------------
-		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)    // 按钮消息映射，BN_CLICKED
-        COMMAND_HANDLER(IDC_BTN_CALC, BN_CLICKED, OnBtnCalcClicked)    // 按钮消息映射，BN_CLICKED
-        COMMAND_HANDLER(IDC_BTN_CLEAR, BN_CLICKED, OnBtnClearClicked)  // 按钮消息映射，BN_CLICKED
-		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)           // 处理 OnMouseMove 消息 ICN_PIXEL
-        NOTIFY_HANDLER(IDC_PIC, ICN_CLICK, OnImageBtnClicked)          // 处理 OnLButtonUp 消息 ICN_CLICK
+		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)
+        COMMAND_HANDLER(IDC_BTN_CALC, BN_CLICKED, OnBtnCalcClicked)
+        COMMAND_HANDLER(IDC_BTN_CLEAR, BN_CLICKED, OnBtnClearClicked)
+		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
+        NOTIFY_HANDLER(IDC_PIC, ICN_CLICK, OnImageBtnClicked)
 //------------------------------------------------------------------------------
 	END_MSG_MAP()
 
@@ -186,34 +185,33 @@ public:
         }
         return 0;
     }
-	//-------------------------------------------------------------------------- Load点击
+	//-------------------------------------------------------------------------- Load
 	LRESULT OnBtnLoadClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CFileDialog dlg(TRUE);
 		if( dlg.DoModal() == IDOK ) {//弹出对话框
-			CWaitCursor wac; // 显示圆圈光标
-			USES_CONVERSION; // 用于编码转换(用的比较多的是CString向LPCWSTR转换)
-			m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));  // 实现载入文件
+			CWaitCursor wac;
+			USES_CONVERSION;
+			m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
 			m_cmdLoad->Exec();
 		}
 		return 0;
 	}
-	//-------------------------------------------------------------------------- Calc点击
+	//-------------------------------------------------------------------------- Calc
 	LRESULT OnBtnCalcClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-        // 判断像素有效，根据选取像素分割图像
         UINT r,g,b;
         r = (UINT)(GetRValue(m_pickPNM.rgb));
         g = (UINT)(GetGValue(m_pickPNM.rgb));
         b = (UINT)(GetBValue(m_pickPNM.rgb));
         if (r !=0 || g != 0 || b != 0) {
-            CWaitCursor wac; // 显示圆圈光标
+            CWaitCursor wac;
             m_cmdCalc->SetParameter(std::any(m_pickPNM));
             m_cmdCalc->Exec();
         }
 		return 0;
 	}
-	//-------------------------------------------------------------------------- Clear点击
+	//-------------------------------------------------------------------------- Clear
 	LRESULT OnBtnClearClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
         UINT r,g,b;
@@ -221,15 +219,15 @@ public:
         g = (UINT)(GetGValue(m_pickPNM.rgb));
         b = (UINT)(GetBValue(m_pickPNM.rgb));
         if (r !=0 || g != 0 || b != 0) {
-            CWaitCursor wac; // 显示圆圈光标
+            CWaitCursor wac;
             m_cmdClear->SetParameter(std::any(m_pickPNM));
             m_cmdClear->Exec();
         }
 		return 0;
 	}
-    //-------------------------------------------------------------------------- 鼠标移动
+    //-------------------------------------------------------------------------- Move
 	LRESULT OnImageCtrlPixel(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
-	{   /* 显示像素值 */
+	{
 		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
 		if( pnm->rgb == CLR_INVALID ) {
 			m_nowPixel.SetWindowText(_T(""));
@@ -245,7 +243,7 @@ public:
             r = (UINT)(GetRValue(pnm->rgb));
             g = (UINT)(GetGValue(pnm->rgb));
             b = (UINT)(GetBValue(pnm->rgb));
-            /* 计算 HSV */
+            /* HSV */
             ImageDataHelper::Rgb2Hsv((float)r/255, (float)g/255, (float)b/255, h, s, v);
 			str.Format(_T("X: %d\r\nY: %d\r\nR: %u\r\nG: %u\r\nB: %u\r\nH: %4.1f\r\nS: %4.2f\r\nV: %4.2f"),
 				pnm->x, pnm->y, r, g, b, h, s, v
@@ -277,14 +275,11 @@ public:
             r = (UINT)(GetRValue(pnm->rgb));
             g = (UINT)(GetGValue(pnm->rgb));
             b = (UINT)(GetBValue(pnm->rgb));
-            /* 计算 HSV */
+            /* HSV */
             ImageDataHelper::Rgb2Hsv((float)r/255, (float)g/255, (float)b/255, h, s, v);
 			str.Format(_T("X: %d Y: %d R: %u G: %u B: %u H: %4.1f S: %4.2f V: %4.2f\r\n"),
 				pnm->x, pnm->y, r, g, b, h, s, v
 				);
-            OutputDebugPrintf(str);
-            
-            // 显示样点
             CString str2;
 			str2.Format(_T("R: %u G: %u B: %u\r\nH: %4.1f S: %4.2f V: %4.2f\r\n"),
 				r, g, b, h, s, v

@@ -2,7 +2,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
-template <class TWindow>  // TWindow 为 MainWindow
+template <class TWindow>
 class MainWindowCommandSink : public ICommandNotification
 {
 public:
@@ -13,7 +13,7 @@ public:
 	{
 	}
 
-// ICommandNotification 载入图片出错
+// ICommandNotification
 	virtual void OnCommandComplete(const std::string& str, bool bOK)
 	{
 		if( str == "load" ) {

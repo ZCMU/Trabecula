@@ -2,7 +2,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
-template <class TWindow>  // TWindow 为 MainWindow
+template <class TWindow>
 class MainWindowPropertySink : public IPropertyNotification
 {
 public:

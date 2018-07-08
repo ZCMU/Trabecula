@@ -19,7 +19,7 @@ struct HSVPIXEL
 class GrayData
 {
 public:
-	GrayData() throw() : m_iW(0), m_iH(0)  // 初始化为 0，0
+	GrayData() throw() : m_iW(0), m_iH(0)
 	{
 	}
 	~GrayData() throw()
@@ -421,7 +421,6 @@ public:
 		}
 	}
     // RGB2HSV
-    // H：色相，S：饱和度，V：明度
     static void Rgb2Hsv(float R, float G, float B, float& H, float& S, float&V)
     {  
         // r,g,b values are from 0 to 1
@@ -515,7 +514,6 @@ public:
             break;
         }
     }
-    //根据HSV做阈值分割
     static void SegmentByHSV(HSVPIXEL min, HSVPIXEL max, ColorData& cData, GrayData& gData) throw()
     {
         gData.Clear();

@@ -40,13 +40,13 @@ public:
 		int iBPP = image.GetBPP();
 		if( iBPP != 8 && iBPP != 24 )
 			return false;
-		ImageDataHelper::ImageToColorData(image, m_cData);  // 图像到彩色像素，只是引用 m_cData，在函数内部分配空间
-        ImageDataHelper::ImageToColorData(image, m_cDataS);  // 备份
+		ImageDataHelper::ImageToColorData(image, m_cData);
+        ImageDataHelper::ImageToColorData(image, m_cDataS);
         // ImageDataHelper::ColorDataToGrayData(m_cData, m_gData);
 
 		//notify
-		Fire_OnPropertyChanged(std::string("color_data"));  // 属性改变，通知显示（get_ColorData数据） -> ViewModel
-        // Fire_OnPropertyChanged(std::string("gray_data"));  // 属性改变，通知显示（get_GrayData数据） -> ViewModel
+		Fire_OnPropertyChanged(std::string("color_data"));
+        // Fire_OnPropertyChanged(std::string("gray_data"));
 		return true;
 	}
     
@@ -64,7 +64,6 @@ public:
         ImageDataHelper::Rgb2Hsv((float)r/255, (float)g/255, (float)b/255, h, s, v);
         str.Format(_T("X: %d Y: %d R: %u G: %u B: %u H: %4.1f S: %4.2f V: %4.2f\r\n"),
             pnm->x, pnm->y, r, g, b, h, s, v);
-        OutputDebugPrintf(str);
 
         // HSV阈值算法 H(355,12) V(0.85,1)
         HSVPIXEL min,max;
@@ -104,10 +103,6 @@ public:
             max.h = v+Threshold_V;
         }
         
-        CString str2;
-        str2.Format(_T("min.h: %4.1f max.h: %4.1f min.s: %4.2f max.s: %4.2f min.v: %4.2f max.v: %4.2f\r\n"),
-            min.h, max.h, min.s, max.s, min.v, max.v);
-        OutputDebugPrintf(str2);
         ImageDataHelper::SegmentByHSV(min, max, m_cData, m_gData);
         ImageDataHelper::SegmentByHSV(min, max, m_cData, m_gDataS);
         // 腐蚀

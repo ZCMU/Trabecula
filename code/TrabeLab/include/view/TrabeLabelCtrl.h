@@ -2,18 +2,18 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <ui/ImageCtrl.h>
+#include <ui/LabelCtrl.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class TrabeImageCtrl : public ImageCtrl
+class TrabeLabelCtrl : public LabelCtrl
 {
 public:
 
 //------------------------------------------------------------------------------
 //message handler
-	BEGIN_MSG_MAP(TrabeImageCtrl)
-		CHAIN_MSG_MAP(ImageCtrl)
+	BEGIN_MSG_MAP(TrabeLabelCtrl)
+		CHAIN_MSG_MAP(LabelCtrl)
 	END_MSG_MAP()
 };
 

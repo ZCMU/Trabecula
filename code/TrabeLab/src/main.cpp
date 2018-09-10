@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 
 #include "precomp.h"
 
@@ -25,6 +25,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	HRESULT hRes = app.Init(hInstance);
 	hRes;
 	ATLASSERT(SUCCEEDED(hRes));
+	#if DEBUG_INFO
+	OutputDebugPrintf(_T("Hello WTL\n"));
+	#endif
 
 	int nRet = app.Run(nCmdShow);
 

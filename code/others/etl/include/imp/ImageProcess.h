@@ -77,6 +77,88 @@ public:
 
 		return threshold;
 	}
+	static void Erode(GrayData& gDataSrc, GrayData& gDataDst) throw()
+	{
+		gDataDst.Clear();
+		if( gDataSrc.IsNull() )
+			return ;
+
+		int iH = gDataSrc.GetHeight();
+		int iW = gDataSrc.GetWidth();
+		gDataDst.Allocate(iW, iH);
+
+		uchar* ps  = gDataSrc.GetAddress();
+		uchar* pd  = gDataDst.GetAddress();
+
+		for( int i = 0; i < iH; i ++ ) {  // 
+			for( int j = 0; j < iW; j ++ ) {  // 
+				if (i > 0 && j > 0) {
+					// 左边
+					if (*(ps+i*iW+j-1) == 0) {
+						*(pd+i*iW+j) = 0;
+						continue;
+					}
+					// 右边
+					if (*(ps+i*iW+j+1) == 0) {
+						*(pd+i*iW+j) = 0;
+						continue;
+					}
+					// 上边
+					if (*(ps+(i-1)*iW+j) == 0) {
+						*(pd+i*iW+j) = 0;
+						continue;
+					}
+					// 下边
+					if (*(ps+(i+1)*iW+j) == 0) {
+						*(pd+i*iW+j) = 0;
+						continue;
+					}
+					*(pd+i*iW+j) = 255;
+				}
+			}
+		}
+	}
+	static void Dilate(GrayData& gDataSrc, GrayData& gDataDst) throw()
+	{
+		gDataDst.Clear();
+		if( gDataSrc.IsNull() )
+			return ;
+
+		int iH = gDataSrc.GetHeight();
+		int iW = gDataSrc.GetWidth();
+		gDataDst.Allocate(iW, iH);
+
+		uchar* ps  = gDataSrc.GetAddress();
+		uchar* pd  = gDataDst.GetAddress();
+
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				if (i > 0 && j > 0) {
+					// 左边
+					if (*(ps+i*iW+j-1) == 255) {
+						*(pd+i*iW+j) = 255;
+						continue;
+					}
+					// 右边
+					if (*(ps+i*iW+j+1) == 255) {
+						*(pd+i*iW+j) = 255;
+						continue;
+					}
+					// 上边
+					if (*(ps+(i-1)*iW+j) == 255) {
+						*(pd+i*iW+j) = 255;
+						continue;
+					}
+					// 下边
+					if (*(ps+(i+1)*iW+j) == 255) {
+						*(pd+i*iW+j) = 255;
+						continue;
+					}
+					*(pd+i*iW+j) = 0;
+				}
+			}
+		}
+	}
 
 private:
 	//连通域标记算法,标记出连通域
@@ -126,7 +208,7 @@ private:
 			if( n_y >= 0 ) {
 				t_ps = (int)(*(ps + n_y * width + n_x));
 				if( t_ps != 0 && matrix[n_y * width + n_x] == 0 ) {
-					matrix[n_y * widdth + n_x] = iLabel;
+					matrix[n_y * width + n_x] = iLabel;
 					coordinate_stack.push(std::make_pair(n_y, n_x));
 				}
 			}

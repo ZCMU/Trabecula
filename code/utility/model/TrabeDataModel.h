@@ -84,13 +84,6 @@ public:
 		rgb.r = pkPixel[0];
 		rgb.g = pkPixel[1];
 		rgb.b = pkPixel[2];
-		#if DEBUG_INFO
-		CString str;
-		str.Format(_T("StartSegment R: %u G: %u B: %u"),
-		    rgb.r, rgb.g, rgb.b
-		);
-		OutputDebugPrintf(str);
-		#endif
 		/* 计算 HSV */
 		ImageDataHelper::Rgb2Hsv((float)rgb.r/255, (float)rgb.g/255, (float)rgb.b/255,
 			hsv.h, hsv.s, hsv.v);

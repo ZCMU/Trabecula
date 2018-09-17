@@ -177,13 +177,6 @@ public:
 			if (bsh.m_hBrush != NULL)
 			    bsh.DeleteObject();
 			bsh.CreateSolidBrush(RGB(r, g, b));
-			#if DEBUG_INFO
-			CString str;
-			str.Format(_T("OnCtlColorStatic R: %u G: %u B: %u"),
-			    r, g, b
-			);
-			OutputDebugPrintf(str);
-			#endif
 			return (LRESULT)bsh.m_hBrush;
 		}
 		return 0;

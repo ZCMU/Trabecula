@@ -77,7 +77,7 @@ public:
 
 		return threshold;
 	}
-	static void Erode(GrayData& gDataSrc, GrayData& gDataDst) throw()
+	static void Erode(GrayData& gDataSrc, GrayData& gDataDst)
 	{
 		gDataDst.Clear();
 		if( gDataSrc.IsNull() )
@@ -118,7 +118,7 @@ public:
 			}
 		}
 	}
-	static void Dilate(GrayData& gDataSrc, GrayData& gDataDst) throw()
+	static void Dilate(GrayData& gDataSrc, GrayData& gDataDst)
 	{
 		gDataDst.Clear();
 		if( gDataSrc.IsNull() )

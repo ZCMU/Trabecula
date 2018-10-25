@@ -131,9 +131,6 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
-		if( !m_bEnter ) {
-			m_bEnter = StartTrackMouseLeave() ? true : false;
-		}
 		if( is_image_null() )
 			return 0;
 		NMIMAGEPIXEL nm;

@@ -1,9 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../model/TrabeDataModel.h"
 #include "commands/LoadCommand.h"
+#include "commands/ShowPixelCommand.h"
+#include "commands/StartSegmentCommand.h"
+#include "commands/ClearSegmentCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +16,11 @@ class TrabeViewModel : public Proxy_PropertyNotification<TrabeViewModel>,
 {
 public:
 	TrabeViewModel() : m_spImage(std::make_shared<ATL::CImage>()),
+						m_spLabel(std::make_shared<ATL::CString>()),
 						m_cmdLoad(std::make_shared<LoadCommand<TrabeViewModel>>(this)),
+						m_cmdShowPixel(std::make_shared<ShowPixelCommand<TrabeViewModel>>(this)),
+						m_cmdStartSegment(std::make_shared<StartSegmentCommand<TrabeViewModel>>(this)),
+						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
 	}
@@ -32,11 +39,27 @@ public:
 	{
 		return m_spImage;
 	}
+	std::shared_ptr<ATL::CString> get_Label() throw()
+	{
+		return m_spLabel;
+	}
 
 	//commands
 	std::shared_ptr<ICommandBase> get_LoadCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdLoad);
+	}
+	std::shared_ptr<ICommandBase> get_ShowPixelCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdShowPixel);
+	}
+	std::shared_ptr<ICommandBase> get_StartSegmentCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdStartSegment);
+	}
+	std::shared_ptr<ICommandBase> get_ClearSegmentCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdClearSegment);
 	}
 
 	//sinks
@@ -54,6 +77,30 @@ public:
 	{
 		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorData(), *m_spImage);
 	}
+	void ColorDataSegToImage()
+	{
+		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorDataSeg(), *m_spImage);
+	}
+	void GrayDataToImage()
+	{
+		ImageDataHelper::GrayDataToImage(m_spModel->get_GrayData(), *m_spImage);
+	}
+	bool ShowPickPixel(const std::array<UINT, 3>& pkPixel)
+	{
+		return m_spModel->ShowPixel(pkPixel);
+	}
+	void PixelDataToString()
+	{
+		ImageDataHelper::PixelDataToString(m_spModel->get_PixelData(), *m_spLabel);
+	}
+	bool StartImageSegment(const std::array<UINT, 3>& pkPixel)
+	{
+		return m_spModel->StartSegment(pkPixel);
+	}
+	bool ClearImageSegment()
+	{
+		return m_spModel->ClearSegment();
+	}
 
 private:
 	//models
@@ -61,10 +108,13 @@ private:
 
 	//properties
 	std::shared_ptr<ATL::CImage> m_spImage;
+	std::shared_ptr<ATL::CString> m_spLabel;
 
 	//commands
 	std::shared_ptr<LoadCommand<TrabeViewModel>> m_cmdLoad;
-
+	std::shared_ptr<ShowPixelCommand<TrabeViewModel>> m_cmdShowPixel;
+	std::shared_ptr<StartSegmentCommand<TrabeViewModel>> m_cmdStartSegment;
+	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;
 };

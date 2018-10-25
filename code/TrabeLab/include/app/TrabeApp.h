@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -44,8 +44,12 @@ public:
 		spModel->AddPropertyNotification(m_spViewModel->get_Sink());
 		// properties
 		m_wndMain.m_imageCtrl.set_Image(m_spViewModel->get_Image());
+		m_wndMain.m_labelCtrl.set_Label(m_spViewModel->get_Label());
 		// commands
 		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());
+		m_wndMain.set_ShowPixelCommand(m_spViewModel->get_ShowPixelCommand());
+		m_wndMain.set_StartSegmentCommand(m_spViewModel->get_StartSegmentCommand());
+		m_wndMain.set_ClearSegmentCommand(m_spViewModel->get_ClearSegmentCommand());
 		// notifications
 		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
 		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());

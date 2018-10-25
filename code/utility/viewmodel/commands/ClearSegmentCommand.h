@@ -3,13 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <class TViewModel>
-class LoadCommand : public ICommandBase
+class ClearSegmentCommand : public ICommandBase
 {
 public:
-	LoadCommand(TViewModel* pVM) throw() : m_pVM(pVM)
+	ClearSegmentCommand(TViewModel* pVM) throw() : m_pVM(pVM)
 	{
 	}
-	~LoadCommand() throw()
+	~ClearSegmentCommand() throw()
 	{
 	}
 
@@ -20,9 +20,7 @@ public:
 	}
 	virtual void Exec()
 	{
-		std::string& str = *(std::any_cast<std::string>(&m_param));
-		bool bRet = m_pVM->LoadFile(str);
-		m_pVM->Fire_OnCommandComplete(std::string("load"), bRet);
+		bool bRet = m_pVM->ClearImageSegment();
 	}
 
 private:

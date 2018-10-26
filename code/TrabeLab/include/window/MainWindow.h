@@ -79,13 +79,14 @@ public:
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)  // Sent when the window background must be erased (for example, when a window is resized).
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
-		MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnCtlColorStatic)
 //------------------------------------------------------------------------------
 		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
 		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC, ICN_LBTNUP, OnImageLButtonUp)
+//------------------------------------------------------------------------------
+		REFLECT_NOTIFICATIONS()
 //------------------------------------------------------------------------------
 	END_MSG_MAP()
 
@@ -156,30 +157,6 @@ public:
 		//----------------------------------------------------------------------
 		bHandled = FALSE;
 		return 1;
-	}
-	LRESULT OnCtlColorStatic(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-	{
-		HDC hDC = (HDC)wParam;
-		HWND hWnd = (HWND)lParam;
-		
-		if (hWnd == m_labelCtrl.m_hWnd) {
-			UINT r,g,b;
-			r = (UINT)(GetRValue(m_imageCtrl.m_pkPixel));
-			g = (UINT)(GetGValue(m_imageCtrl.m_pkPixel));
-			b = (UINT)(GetBValue(m_imageCtrl.m_pkPixel));
-			if (r > 150 && g > 150 && b > 150) {
-			    SetTextColor(hDC, RGB(0, 0, 0));  // text Color
-			} else {
-			    SetTextColor(hDC, RGB(255, 255, 255));  // text Color
-			}
-			SetBkColor(hDC, RGB(r, g, b));  // text BkColor
-			static CBrush bsh;  // label BkColor
-			if (bsh.m_hBrush != NULL)
-			    bsh.DeleteObject();
-			bsh.CreateSolidBrush(RGB(r, g, b));
-			return (LRESULT)bsh.m_hBrush;
-		}
-		return 0;
 	}
 	//-------------------------------------------------------------------------- Load
 	LRESULT OnBtnLoadClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

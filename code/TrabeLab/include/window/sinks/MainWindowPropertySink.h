@@ -20,6 +20,7 @@ public:
 			m_pWindow->m_imageCtrl.UpdateScroll();
 		}
 		if( str == "label" ) {
+			m_pWindow->m_labelCtrl.SetColor(m_pWindow->m_imageCtrl.m_pkPixel);
 			m_pWindow->m_labelCtrl.UpdateText();
 		}
 	}

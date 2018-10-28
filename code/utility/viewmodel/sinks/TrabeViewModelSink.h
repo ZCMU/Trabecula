@@ -21,7 +21,7 @@ public:
 			m_pVM->Fire_OnPropertyChanged(std::string("image"));
 		}
 		if( str == "color_data_seg" ) {
-			m_pVM->ColorDataSegToImage();
+			m_pVM->ColorDataAndMaskToImage();
 			m_pVM->Fire_OnPropertyChanged(std::string("image"));
 		}
 		if( str == "gray_data" ) {

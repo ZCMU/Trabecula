@@ -262,6 +262,7 @@ public:
 		const int c_coord_x[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
 		const int c_coord_y[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
 		const int c_num = 8;
+		uchar* p0 = gData.GetAddress();
 		uchar* pd = gData.GetAddress();
 		int iW = gData.GetWidth();
 		int iH = gData.GetHeight();
@@ -272,8 +273,8 @@ public:
 						int x = j + c_coord_x[m];
 						int y = i + c_coord_y[m];
 						if( x < 0 || x >= iW || y < 0 || y >= iH
-							|| pd[y * iW + x] == 0 ) {
-							*pd = 128;
+							|| p0[y * iW + x] == 0 ) {
+							*pd = 255; // Border Mask
 							break;
 						}
 					}

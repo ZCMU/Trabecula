@@ -243,6 +243,43 @@ public:
 			pd += image.GetPitch();
 		} //end for
 	}
+	//ColorDataAndMask->CImage
+	static void ColorDataAndMaskToImage(const ColorData& cData, const GrayData& gData, CImage& image)
+	{
+		image.Destroy();
+		if( cData.IsNull() )
+			return ;
+		if( gData.IsNull() )
+			return ;
+		int iW = cData.GetWidth();
+		int iH = cData.GetHeight();
+		if( !image.Create(iW, iH, 24) )
+			return ;
+
+		const uchar* psR = cData.GetAddressR();
+		const uchar* psG = cData.GetAddressG();
+		const uchar* psB = cData.GetAddressB();
+		const uchar* ps = gData.GetAddress();
+		BYTE* pd = (BYTE*)image.GetBits();
+		for( int i = 0; i < iH; i ++ ) {
+			BYTE* pdr = pd;
+			for( int j = 0; j < iW; j ++ ) {
+				if (*ps ++ == (uchar)255) {
+					*pdr ++ = (uchar)0;
+					*pdr ++ = (uchar)150;
+					*pdr ++ = (uchar)0;
+				} else {
+					*pdr ++ = *psB;
+					*pdr ++ = *psG;
+					*pdr ++ = *psR;
+				}
+				psR ++;
+				psG ++;
+				psB ++;
+			}
+			pd += image.GetPitch();
+		} //end for
+	}
 	//GrayData->CImage
 	static void GrayDataToImage(const GrayData& data, CImage& image)
 	{
@@ -452,22 +489,20 @@ public:
 		}
 	}
 	// SegmentByHSV
-	static void SegmentByHSV(HsvPixel min, HsvPixel max, ColorData& dataIn, ColorData& dataOut) throw()
+	static void SegmentByHSV(HsvPixel min, HsvPixel max, ColorData& cData, GrayData& gData) throw()
 	{
-		dataOut.Clear();
-		if( dataIn.IsNull() )
+		gData.Clear();
+		if( cData.IsNull() )
 			return ;
 
-		int iH = dataIn.GetHeight();
-		int iW = dataIn.GetWidth();
-		dataIn.CopyTo(dataOut);
+		int iH = cData.GetHeight();
+		int iW = cData.GetWidth();
+		gData.Allocate(iW, iH);
 
-		const uchar* psR = dataIn.GetAddressR();
-		const uchar* psG = dataIn.GetAddressG();
-		const uchar* psB = dataIn.GetAddressB();
-		uchar* pdR = dataOut.GetAddressR();
-		uchar* pdG = dataOut.GetAddressG();
-		uchar* pdB = dataOut.GetAddressB();
+		const uchar* psR = cData.GetAddressR();
+		const uchar* psG = cData.GetAddressG();
+		const uchar* psB = cData.GetAddressB();
+		uchar* pd = gData.GetAddress();
 
 		for( int i = 0; i < iH; i ++ ) {
 			for( int j = 0; j < iW; j ++ ) {
@@ -481,22 +516,18 @@ public:
 						s >= min.s && s <= max.s &&
 						v >= min.v && v <= max.v)
 					{
-						*pdR ++ = (uchar)0;
-						*pdG ++ = (uchar)150;
-						*pdB ++ = (uchar)0;
+						*pd ++ = (uchar)128;  // Content Mask
 					} else {
-						pdR ++; pdG ++; pdB ++; 
+						pd++;
 					}
 				} else {
 					if ((h >= max.h || h <= min.h) &&
 						s >= min.s && s <= max.s &&
 						v >= min.v && v <= max.v)
 					{
-						*pdR ++ = (uchar)0;
-						*pdG ++ = (uchar)150;
-						*pdB ++ = (uchar)0;
+						*pd ++ = (uchar)128;  // Content Mask
 					} else {
-						pdR ++; pdG ++; pdB ++; 
+						pd++;
 					}
 				}
 				psR ++; psG ++; psB ++;

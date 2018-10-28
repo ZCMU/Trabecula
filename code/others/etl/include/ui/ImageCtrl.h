@@ -11,8 +11,9 @@ struct NMIMAGEPIXEL
 	COLORREF rgb;  // The COLORREF value is used to specify an RGB color.
 };
 
-class ImageCtrl : public ATL::CWindowImpl<ImageCtrl, CWindowEx, ATL::CControlWinTraits>,
-				public CScrollImpl<ImageCtrl>
+template <class T>
+class ATL_NO_VTABLE ImageCtrlImpl : public ATL::CWindowImpl<T, CWindowEx, ATL::CControlWinTraits>,
+									public CScrollImpl<T>
 {
 public:
 	DECLARE_WND_CLASS(NULL)
@@ -23,7 +24,7 @@ public:
 
 	std::shared_ptr<CImage> m_spImage;
 
-	ImageCtrl() throw() : m_bEnter(false)
+	ImageCtrlImpl() throw() : m_bEnter(false)
 	{
 	}
 
@@ -53,12 +54,12 @@ public:
 
 //------------------------------------------------------------------------------
 //message handler
-	BEGIN_MSG_MAP(ImageCtrl)
+	BEGIN_MSG_MAP(ImageCtrlImpl)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
 		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
 		MESSAGE_HANDLER(WM_MOUSELEAVE, OnMouseLeave)
-		CHAIN_MSG_MAP(CScrollImpl<ImageCtrl>)
+		CHAIN_MSG_MAP(CScrollImpl<T>)
 	END_MSG_MAP()
 
 	LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

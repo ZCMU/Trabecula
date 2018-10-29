@@ -77,9 +77,9 @@ public:
 	{
 		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorData(), *m_spImage);
 	}
-	void ColorDataSegToImage()
+	void ColorDataAndMaskToImage()
 	{
-		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorDataSeg(), *m_spImage);
+		ImageDataHelper::ColorDataAndMaskToImage(m_spModel->get_ColorData(), m_spModel->get_MaskData(), *m_spImage);
 	}
 	void GrayDataToImage()
 	{

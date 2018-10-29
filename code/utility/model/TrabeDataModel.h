@@ -25,9 +25,9 @@ public:
 	{
 		return m_cData;
 	}
-	const ColorData& get_ColorDataSeg() const throw()
+	const GrayData& get_MaskData() const throw()
 	{
-		return m_cDataSeg;
+		return m_gMask;
 	}
 	const GrayData& get_GrayData() const throw()
 	{
@@ -125,7 +125,8 @@ public:
 			hsvMax.h = hsv.v+Threshold_V;
 		}
 		
-		ImageDataHelper::SegmentByHSV(hsvMin, hsvMax, m_cData, m_cDataSeg);
+		ImageDataHelper::SegmentByHSV(hsvMin, hsvMax, m_cData, m_gMask);
+		ImageProcessHelper::ExtractBorder(m_gMask);
 		// 腐蚀
 		// ImageProcessHelper::Erode(m_gData, m_gDataErode);
 		// 膨胀
@@ -170,7 +171,7 @@ public:
 
 private:
 	ColorData m_cData;
-	ColorData m_cDataSeg;  // 分割后的图像数据
+	GrayData m_gMask;  // HSV 分割后的 Mask Data
 	// ColorData m_cDataAdd;
 	GrayData m_gData;
 	// GrayData m_gDataErode;

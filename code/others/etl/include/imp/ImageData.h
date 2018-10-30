@@ -489,7 +489,7 @@ public:
 		}
 	}
 	// SegmentByHSV
-	static void SegmentByHSV(HsvPixel min, HsvPixel max, ColorData& cData, GrayData& gData) throw()
+	static void SegmentByHSV(HsvPixel min, HsvPixel max, ColorData& cData, GrayData& gData)
 	{
 		gData.Clear();
 		if( cData.IsNull() )

@@ -174,9 +174,9 @@ public:
 	LRESULT OnBtnStartSegmentClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		UINT r,g,b;
-		r = (UINT)(GetRValue(m_imageCtrl.m_pkPixel));
-		g = (UINT)(GetGValue(m_imageCtrl.m_pkPixel));
-		b = (UINT)(GetBValue(m_imageCtrl.m_pkPixel));
+		r = (UINT)(GetRValue(m_imageCtrl.GetSelectColor()));
+		g = (UINT)(GetGValue(m_imageCtrl.GetSelectColor()));
+		b = (UINT)(GetBValue(m_imageCtrl.GetSelectColor()));
 		if (r !=0 || g != 0 || b != 0) {
 			CWaitCursor wac;
 			std::array<UINT, 3> rgb = {r, g, b};
@@ -219,9 +219,9 @@ public:
 		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
 		if( pnm->rgb != CLR_INVALID ) {
 			std::array<UINT, 3> rgb;
-			rgb[0] = (UINT)(GetRValue(m_imageCtrl.m_pkPixel));
-			rgb[1] = (UINT)(GetGValue(m_imageCtrl.m_pkPixel));
-			rgb[2] = (UINT)(GetBValue(m_imageCtrl.m_pkPixel));
+			rgb[0] = (UINT)(GetRValue(m_imageCtrl.GetSelectColor()));
+			rgb[1] = (UINT)(GetGValue(m_imageCtrl.GetSelectColor()));
+			rgb[2] = (UINT)(GetBValue(m_imageCtrl.GetSelectColor()));
 			m_cmdShowPixel->SetParameter(std::any(rgb));
 			m_cmdShowPixel->Exec();
 		}

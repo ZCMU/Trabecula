@@ -1,20 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
 class ImageProcessHelper
 {
 public:
-	//ÓÉ»Ò¶ÈÍ¼µÃµ½Ö±·½Í¼
+	//ç”±ç°åº¦å›¾å¾—åˆ°ç›´æ–¹å›¾
 	static void CalcHistogram(const GrayData& gData, std::vector<double>& histogram)
 	{
 		histogram.resize(256);
 
 		int height = gData.GetHeight();
 		int width = gData.GetWidth();
-		int num = height*width;//×ÜÏñËØÊı
+		int num = height*width;//æ€»åƒç´ æ•°
 
-		//Ö±·½Í¼´óĞ¡£¬Ó¦Îª256
+		//ç›´æ–¹å›¾å¤§å°ï¼Œåº”ä¸º256
 		int bins = (int)histogram.size();
 		for( int i = 0; i < bins; i++ ) {
 			histogram[i] = 0.0;
@@ -25,37 +25,37 @@ public:
 		for( int i = 0; i < height; i++ ) {
 			for( int j = 0; j < width; j++ ) {
 				int v = (int)(*ps++);
-				histogram[v] ++; //½¨Á¢Ö±·½Í¼
+				histogram[v] ++; //å»ºç«‹ç›´æ–¹å›¾
 			}
 		}
 
 		for( int i = 0; i < bins; i++ ) {
-			histogram[i] /= num;//ÆµÊı»¯ÎªÆµÂÊ
+			histogram[i] /= num;//é¢‘æ•°åŒ–ä¸ºé¢‘ç‡
 		}
 	}
-	//ÓÉÖ±·½Í¼µÃµ½ãĞÖµ,ostu
+	//ç”±ç›´æ–¹å›¾å¾—åˆ°é˜ˆå€¼,ostu
 	static int CalcThresholdByOstu(const std::vector<double>& histogram) throw()
 	{
 		assert( histogram.size() == 256 );
 
-		//Ö±·½Í¼´óĞ¡£¬Ó¦Îª256
+		//ç›´æ–¹å›¾å¤§å°ï¼Œåº”ä¸º256
 		int iBins = (int)histogram.size();
 
-		double variance[256];//Àà¼ä·½²î
-		double pa = 0.0;//±³¾°³öÏÖ¸ÅÂÊ
-		double pb = 0.0;//Ä¿±ê³öÏÖ¸ÅÂÊ
-		double wa = 0.0;//±³¾°Æ½¾ù»Ò¶ÈÖµ
-		double wb = 0.0;//Ä¿±êÆ½¾ù»Ò¶ÈÖµ
-		double w0 = 0.0;//È«¾ÖÆ½¾ù»Ò¶ÈÖµ
+		double variance[256];//ç±»é—´æ–¹å·®
+		double pa = 0.0;//èƒŒæ™¯å‡ºç°æ¦‚ç‡
+		double pb = 0.0;//ç›®æ ‡å‡ºç°æ¦‚ç‡
+		double wa = 0.0;//èƒŒæ™¯å¹³å‡ç°åº¦å€¼
+		double wb = 0.0;//ç›®æ ‡å¹³å‡ç°åº¦å€¼
+		double w0 = 0.0;//å…¨å±€å¹³å‡ç°åº¦å€¼
 		double dData1 = 0.0, dData2 = 0.0;
 
 		::memset(variance, 0, sizeof(variance));
 
-		//¼ÆËãÈ«¾ÖÆ½¾ù»Ò¶ÈÖµ
+		//è®¡ç®—å…¨å±€å¹³å‡ç°åº¦å€¼
 		for( int i = 0; i < iBins; i ++ ) {
 			w0 += (i * histogram[i]);
 		}
-		//¶ÔÃ¿¸ö»Ò¶ÈÖµ¼ÆËãÀà¼ä·½²î
+		//å¯¹æ¯ä¸ªç°åº¦å€¼è®¡ç®—ç±»é—´æ–¹å·®
 		for( int i = 0; i < iBins; i ++ ) {
 			pa += histogram[i];
 			pb = 1.0 - pa;
@@ -65,7 +65,7 @@ public:
 			wb = dData2 / pb;
 			variance[i] = pa * (wa - w0) * (wa - w0) + pb * (wb - w0) * (wb - w0);
 		}
-		//±éÀú£¬µÃµ½Àà¼ä×î´ó·½²î¶ÔÓ¦µÄ»Ò¶ÈÖµ
+		//éå†ï¼Œå¾—åˆ°ç±»é—´æœ€å¤§æ–¹å·®å¯¹åº”çš„ç°åº¦å€¼
 		double temp = 0.0;
 		int threshold = 0;
 		for( int i = 0; i < iBins; i ++ ) {
@@ -77,6 +77,7 @@ public:
 
 		return threshold;
 	}
+
 	static void Erode(GrayData& gDataSrc, GrayData& gDataDst)
 	{
 		gDataDst.Clear();
@@ -93,22 +94,22 @@ public:
 		for( int i = 0; i < iH; i ++ ) {  // 
 			for( int j = 0; j < iW; j ++ ) {  // 
 				if (i > 0 && j > 0) {
-					// ×ó±ß
+					// å·¦
 					if (*(ps+i*iW+j-1) == 0) {
 						*(pd+i*iW+j) = 0;
 						continue;
 					}
-					// ÓÒ±ß
+					// å³
 					if (*(ps+i*iW+j+1) == 0) {
 						*(pd+i*iW+j) = 0;
 						continue;
 					}
-					// ÉÏ±ß
+					// ä¸Š
 					if (*(ps+(i-1)*iW+j) == 0) {
 						*(pd+i*iW+j) = 0;
 						continue;
 					}
-					// ÏÂ±ß
+					// ä¸‹
 					if (*(ps+(i+1)*iW+j) == 0) {
 						*(pd+i*iW+j) = 0;
 						continue;
@@ -134,22 +135,22 @@ public:
 		for( int i = 0; i < iH; i ++ ) {
 			for( int j = 0; j < iW; j ++ ) {
 				if (i > 0 && j > 0) {
-					// ×ó±ß
+					// å·¦
 					if (*(ps+i*iW+j-1) == 255) {
 						*(pd+i*iW+j) = 255;
 						continue;
 					}
-					// ÓÒ±ß
+					// å³
 					if (*(ps+i*iW+j+1) == 255) {
 						*(pd+i*iW+j) = 255;
 						continue;
 					}
-					// ÉÏ±ß
+					// ä¸Š
 					if (*(ps+(i-1)*iW+j) == 255) {
 						*(pd+i*iW+j) = 255;
 						continue;
 					}
-					// ÏÂ±ß
+					// ä¸‹
 					if (*(ps+(i+1)*iW+j) == 255) {
 						*(pd+i*iW+j) = 255;
 						continue;
@@ -161,8 +162,8 @@ public:
 	}
 
 private:
-	//Á¬Í¨Óò±ê¼ÇËã·¨,±ê¼Ç³öÁ¬Í¨Óò
-	//¸ø³öÖÖ×ÓµãµÄ±ê¼Ç
+	//è¿é€šåŸŸæ ‡è®°ç®—æ³•,æ ‡è®°å‡ºè¿é€šåŸŸ
+	//ç»™å‡ºç§å­ç‚¹çš„æ ‡è®°
 	static void label_one_growing(int iLabel, int x, int y, const GrayData& gData, std::vector<int>& matrix)
 	{
 		const uchar* ps = gData.GetAddress();
@@ -174,7 +175,7 @@ private:
 		matrix[y * width + x] = iLabel;
 
 		int t_ps;
-		//ÇøÓòÔö³¤,°×É«£¬Ã»ÓĞ±ê¼Ç¹ı
+		//åŒºåŸŸå¢é•¿,ç™½è‰²ï¼Œæ²¡æœ‰æ ‡è®°è¿‡
 		while( !coordinate_stack.empty() ) {
 			std::pair<int, int> t_coordinate = coordinate_stack.top();
 			coordinate_stack.pop();
@@ -184,7 +185,7 @@ private:
 			int n_x;
 
 			n_y = t_y;
-			//×ó±ß
+			//å·¦è¾¹
 			n_x = t_x - 1;
 			if( n_x >= 0 ) {
 				t_ps = (int)(*(ps + n_y * width + n_x));
@@ -193,7 +194,7 @@ private:
 					coordinate_stack.push(std::make_pair(n_y, n_x));
 				}
 			}
-			//ÓÒ±ß
+			//å³è¾¹
 			n_x = t_x + 1;
 			if( n_x < width ) {
 				t_ps = (int)(*(ps + n_y * width + n_x));
@@ -203,7 +204,7 @@ private:
 				}
 			}
 			n_x = t_x;
-			//ÉÏ±ß
+			//ä¸Šè¾¹
 			n_y = t_y - 1;
 			if( n_y >= 0 ) {
 				t_ps = (int)(*(ps + n_y * width + n_x));
@@ -212,7 +213,7 @@ private:
 					coordinate_stack.push(std::make_pair(n_y, n_x));
 				}
 			}
-			//ÏÂ±ß
+			//ä¸‹è¾¹
 			n_y = t_y + 1;
 			if( n_y < height ) {
 				t_ps = (int)(*(ps + n_y * width + n_x));
@@ -225,7 +226,7 @@ private:
 	}
 
 public:
-	//ËùÓĞ¶¼±ê¼Ç
+	//æ‰€æœ‰éƒ½æ ‡è®°
 	static int Label(const GrayData& gData, std::vector<int>& matrix)
 	{
 		const uchar* ps = gData.GetAddress();
@@ -242,13 +243,13 @@ public:
 
 		int t_ps;
 		int label = 0;
-		//Ö´ĞĞÍê³Éºó£¬Èômatrix[i * width + j]µÄÖµÎª0£¬Ôò±íÃ÷Õâ¿éÇøÓòÊÇºÚÉ«£¬·ñÔòÏàÍ¬±êºÅµÄÎªÍ¬Ò»ÇøÓò
+		//æ‰§è¡Œå®Œæˆåï¼Œè‹¥matrix[i * width + j]çš„å€¼ä¸º0ï¼Œåˆ™è¡¨æ˜è¿™å—åŒºåŸŸæ˜¯é»‘è‰²ï¼Œå¦åˆ™ç›¸åŒæ ‡å·çš„ä¸ºåŒä¸€åŒºåŸŸ
 		for( int i = 0; i < height; i ++ ) {
 			for( int j = 0; j < width; j ++ ) {
 				t_ps = (int)(*(ps + i * width + j));
 				if( t_ps != 0 && matrix[i * width + j] == 0 ) {
 					label ++;
-					//»ñµÃÒ»¸öÖÖ×Óµã
+					//è·å¾—ä¸€ä¸ªç§å­ç‚¹
 					label_one_growing(label, j, i, gData, matrix);
 				}
 			}
@@ -262,8 +263,8 @@ public:
 		const int c_coord_x[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
 		const int c_coord_y[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
 		const int c_num = 8;
-		uchar* p0 = gData.GetAddress();
 		uchar* pd = gData.GetAddress();
+		uchar* p0 = pd;
 		int iW = gData.GetWidth();
 		int iH = gData.GetHeight();
 		for( int i = 0; i < iH; i ++ ) {

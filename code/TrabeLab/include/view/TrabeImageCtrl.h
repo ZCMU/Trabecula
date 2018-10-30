@@ -23,11 +23,18 @@ public:
 		m_bSelectMode = bSelect;
 	}
 
+	COLORREF GetSelectColor() const throw()
+	{
+		return m_clrSelected;
+	}
+
 private:
 	bool  m_bSelectMode;
 	bool  m_bDown;
 	POINT m_pt1;
 	POINT m_pt2;
+
+	COLORREF m_clrSelected;
 
 private:
 	void generate_rect(LPRECT lpRect) throw()
@@ -125,7 +132,7 @@ public:
 			(nm.y < m_spImage->GetHeight()))
 		{
 			nm.rgb = m_spImage->GetPixel(nm.x, nm.y);  // COLORREF
-			memcpy(&m_pkPixel, &nm.rgb, sizeof(COLORREF));
+			m_clrSelected = nm.rgb;
 			SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
 		}
 		return 0;

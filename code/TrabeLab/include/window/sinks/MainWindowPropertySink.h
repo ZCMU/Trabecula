@@ -20,8 +20,19 @@ public:
 			m_pWindow->m_imageCtrl.UpdateScroll();
 		}
 		if( str == "label" ) {
-			m_pWindow->m_labelCtrl.SetColor(m_pWindow->m_imageCtrl.m_pkPixel);
-			m_pWindow->m_labelCtrl.UpdateText();
+			COLORREF clr = m_pWindow->m_imageCtrl.GetSelectColor();
+			UINT r,g,b;
+			r = (UINT)(GetRValue(clr));
+			g = (UINT)(GetGValue(clr));
+			b = (UINT)(GetBValue(clr));
+			COLORREF clrText;
+			if (r > 150 && g > 150 && b > 150) {
+				clrText = RGB(0, 0, 0);  // text Color
+			} else {
+				clrText = RGB(255, 255, 255);  // text Color
+			}
+			m_pWindow->m_labelCtrl.SetColor(clrText, clr);
+			m_pWindow->m_labelCtrl.Update();
 		}
 	}
 

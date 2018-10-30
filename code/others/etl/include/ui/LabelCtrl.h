@@ -24,19 +24,19 @@ public:
 		m_spLabel = sp;
 	}
 
-	void UpdateText() throw()
+	void Update() throw()
 	{
 		SetWindowText(*m_spLabel);
 	}
 
-	void SetColor(COLORREF clr) throw()
+	void SetColor(COLORREF clrText, COLORREF clrBack) throw()
 	{
-		m_clrText = clr;
-		if( m_clrBack != clr ) {
+		m_clrText = clrText;
+		if( m_clrBack != clrBack ) {
 			if( !m_bshBack.IsNull() )
 				m_bshBack.DeleteObject();
-			m_bshBack.CreateSolidBrush(clr);
-			m_clrBack = clr;
+			m_bshBack.CreateSolidBrush(clrBack);
+			m_clrBack = clrBack;
 		}
 	}
 
@@ -52,17 +52,9 @@ public:
 	{
 		HDC hDC = (HDC)wParam;
 		HWND hWnd = (HWND)lParam;
-		
-		UINT r,g,b;
-		r = (UINT)(GetRValue(m_clrText));
-		g = (UINT)(GetGValue(m_clrText));
-		b = (UINT)(GetBValue(m_clrText));
-		if (r > 150 && g > 150 && b > 150) {
-		    SetTextColor(hDC, RGB(0, 0, 0));  // text Color
-		} else {
-		    SetTextColor(hDC, RGB(255, 255, 255));  // text Color
-		}
-		SetBkColor(hDC, m_clrText);  // text BkColor
+
+	    SetTextColor(hDC, m_clrText);  // text Color
+		SetBkColor(hDC, m_clrBack);  // text BkColor
 
 		bHandled = TRUE;
 

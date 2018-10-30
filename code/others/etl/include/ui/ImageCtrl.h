@@ -20,7 +20,6 @@ public:
 
 //------------------------------------------------------------------------------
 	bool m_bEnter;  //mouse enter
-	COLORREF m_pkPixel;
 
 	std::shared_ptr<CImage> m_spImage;
 
@@ -100,12 +99,10 @@ public:
 		nm.nmh.hwndFrom = m_hWnd;
 		nm.x = x + pt.x;
 		nm.y = y + pt.y;
-		if ((nm.x < m_spImage->GetWidth()) &&
-			(nm.y < m_spImage->GetHeight()))
-		{
+		nm.rgb = CLR_INVALID;
+		if( (nm.x < m_spImage->GetWidth()) && (nm.y < m_spImage->GetHeight()) )
 			nm.rgb = m_spImage->GetPixel(nm.x, nm.y);
-			SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
-	}
+		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
 		return 0;
 	}
 	LRESULT OnMouseLeave(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -123,6 +120,7 @@ public:
 			m_bEnter = false;
 		return 0;
 	}
+
 //------------------------------------------------------------------------------
 // Overrideables
 	void DoPaint(CDCHandle dc)

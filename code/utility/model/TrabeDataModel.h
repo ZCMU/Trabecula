@@ -2,6 +2,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <imp\ImageColor.h>
 #include <imp\ImageData.h>
 #include <imp\ImageProcess.h>
 
@@ -9,6 +10,24 @@
 #define Threshold_H  (float)10  // +-10
 #define Threshold_S  (float)0.2 // +-0.2
 #define Threshold_V  (float)0.1 // +-0.1
+
+struct RgbPixel
+{
+	UINT r;
+	UINT g;
+	UINT b;
+};
+struct HsvPixel
+{
+	float h;
+	float s;
+	float v;
+};
+struct PixelData
+{
+	RgbPixel rgb;
+	HsvPixel hsv;
+};
 
 class TrabeDataModel : public Proxy_PropertyNotification<TrabeDataModel>
 {
@@ -63,7 +82,7 @@ public:
 		r = (UINT)pkPixel[0];
 		g = (UINT)pkPixel[1];
 		b = (UINT)pkPixel[2];
-		ImageDataHelper::Rgb2Hsv((float)r/255, (float)g/255, (float)b/255, h, s, v);
+		ImageColorHelper::Rgb2Hsv((float)r/255, (float)g/255, (float)b/255, h, s, v);
 		m_pData.rgb.r = r;
 		m_pData.rgb.g = g;
 		m_pData.rgb.b = b;
@@ -85,7 +104,7 @@ public:
 		rgb.g = pkPixel[1];
 		rgb.b = pkPixel[2];
 		/* 计算 HSV */
-		ImageDataHelper::Rgb2Hsv((float)rgb.r/255, (float)rgb.g/255, (float)rgb.b/255,
+		ImageColorHelper::Rgb2Hsv((float)rgb.r/255, (float)rgb.g/255, (float)rgb.b/255,
 			hsv.h, hsv.s, hsv.v);
 		// HSV阈值算法
 		HsvPixel hsvMin, hsvMax;
@@ -125,7 +144,9 @@ public:
 			hsvMax.h = hsv.v+Threshold_V;
 		}
 		
-		ImageDataHelper::SegmentByHSV(hsvMin, hsvMax, m_cData, m_gMask);
+		ImageProcessHelper::SegmentByHSV(hsvMin.h, hsvMin.s, hsvMin.v,
+										hsvMax.h, hsvMax.s, hsvMax.v,
+										m_cData, m_gMask);
 		ImageProcessHelper::ExtractBorder(m_gMask);
 		// 腐蚀
 		// ImageProcessHelper::Erode(m_gData, m_gDataErode);

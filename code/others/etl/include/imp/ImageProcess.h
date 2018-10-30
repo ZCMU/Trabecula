@@ -284,6 +284,55 @@ public:
 			}
 		}
 	}
+
+	// SegmentByHSV
+	static void SegmentByHSV(float h_min, float s_min, float v_min,
+							float h_max, float s_max, float v_max,
+							ColorData& cData, GrayData& gData)
+	{
+		gData.Clear();
+		if( cData.IsNull() )
+			return ;
+
+		int iH = cData.GetHeight();
+		int iW = cData.GetWidth();
+		gData.Allocate(iW, iH);
+
+		const uchar* psR = cData.GetAddressR();
+		const uchar* psG = cData.GetAddressG();
+		const uchar* psB = cData.GetAddressB();
+		uchar* pd = gData.GetAddress();
+
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				double sR = (double)(*psR);
+				double sG = (double)(*psG);
+				double sB = (double)(*psB);
+				float h,s,v;
+				ImageColorHelper::Rgb2Hsv((float)sR/255, (float)sG/255, (float)sB/255, h, s, v);
+				if (h_max >= h_min) {
+					if (h >= h_min && h <= h_max &&
+						s >= s_min && s <= s_max &&
+						v >= v_min && v <= v_max)
+					{
+						*pd ++ = (uchar)128;  // Content Mask
+					} else {
+						pd++;
+					}
+				} else {
+					if ((h >= h_max || h <= h_min) &&
+						s >= s_min && s <= s_max &&
+						v >= v_min && v <= v_max)
+					{
+						*pd ++ = (uchar)128;  // Content Mask
+					} else {
+						pd++;
+					}
+				}
+				psR ++; psG ++; psB ++;
+			}
+		}
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////

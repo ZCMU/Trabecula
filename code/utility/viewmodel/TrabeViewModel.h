@@ -89,9 +89,15 @@ public:
 	{
 		return m_spModel->ShowPixel(pkPixel);
 	}
+	// PixelDataToString
 	void PixelDataToString()
 	{
-		ImageDataHelper::PixelDataToString(m_spModel->get_PixelData(), *m_spLabel);
+		const PixelData& data = m_spModel->get_PixelData();
+		CString& str = *m_spLabel;
+		str.Format(_T("R: %u G: %u B: %u\r\nH: %4.1f S: %4.2f V: %4.2f\r\n"),
+			data.rgb.r, data.rgb.g, data.rgb.b,
+			data.hsv.h, data.hsv.s, data.hsv.v
+			);
 	}
 	bool StartImageSegment(const std::array<UINT, 3>& pkPixel)
 	{

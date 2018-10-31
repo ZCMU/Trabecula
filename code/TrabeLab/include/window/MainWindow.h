@@ -4,8 +4,13 @@
 
 #include <view\TrabeImageCtrl.h>
 #include <view\TrabeLabelCtrl.h>
+
 #include "sinks\MainWindowPropertySink.h"
 #include "sinks\MainWindowCommandSink.h"
+
+#include "states\StateDef.h"
+#include "states\StartState.h"
+#include "states\EraseState.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -68,7 +73,15 @@ public:
 	{
 		m_sinkProperty = std::make_shared<MainWindowPropertySink<MainWindow>>(this);
 		m_sinkCommand  = std::make_shared<MainWindowCommandSink<MainWindow>>(this);
+
+		//states
+		m_stateMgr.Add(STATE_START, std::static_pointer_cast<IStateBase>(std::make_shared<StartState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
+		m_stateMgr.SetStartState(STATE_START);
 	}
+
+private:
+	StateManager m_stateMgr;
 	//--------------------------------------------------------------------------
 
 public:
@@ -217,14 +230,7 @@ public:
 	LRESULT OnImageLButtonUp(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
 	{
 		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
-		if( pnm->rgb != CLR_INVALID ) {
-			std::array<UINT, 3> rgb;
-			rgb[0] = (UINT)(GetRValue(m_imageCtrl.GetSelectColor()));
-			rgb[1] = (UINT)(GetGValue(m_imageCtrl.GetSelectColor()));
-			rgb[2] = (UINT)(GetBValue(m_imageCtrl.GetSelectColor()));
-			m_cmdShowPixel->SetParameter(std::any(rgb));
-			m_cmdShowPixel->Exec();
-		}
+		m_stateMgr.Process(EVT_LEFT_MOUSE_UP, std::any(pnm->rgb));
 		return 0;
 	}
 };

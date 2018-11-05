@@ -118,8 +118,8 @@ public:
 			m_pt2.x = x + pt.x;
 			m_pt2.y = y + pt.y;
 
-			if (abs(m_pt2.x - m_pt1.x) > abs(m_ptOld.x - m_pt1.x) &&
-				abs(m_pt2.y - m_pt1.y) > abs(m_ptOld.y - m_pt1.y))
+			if (abs(m_pt2.x - m_pt1.x) >= abs(m_ptOld.x - m_pt1.x) &&
+				abs(m_pt2.y - m_pt1.y) >= abs(m_ptOld.y - m_pt1.y))
 			{
 				CRect rect;
 				generate_rect(&rect);

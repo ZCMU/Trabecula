@@ -20,8 +20,7 @@ public:
 	}
 	virtual void Exec()
 	{
-		std::array<UINT, 3>& rgb = *(std::any_cast<std::array<UINT, 3>>(&m_param));
-		bool bRet = m_pVM->StartImageSegment(rgb);
+		bool bRet = m_pVM->StartImageSegment();
 	}
 
 private:

@@ -105,9 +105,9 @@ public:
 			data.hsv.h, data.hsv.s, data.hsv.v
 			);
 	}
-	bool StartImageSegment(const std::array<UINT, 3>& pkPixel)
+	bool StartImageSegment()
 	{
-		return m_spModel->StartSegment(pkPixel);
+		return m_spModel->StartSegment();
 	}
 	bool ClearImageSegment()
 	{

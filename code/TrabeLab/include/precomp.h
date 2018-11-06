@@ -24,18 +24,6 @@ extern CAppModule _Module;
 #include <assert.h>
 //------------------------------------------------------------------------------
 
-void OutputDebugPrintf(const TCHAR *fmt, ...)
-{
-	TCHAR s[4096];
-	va_list args;
-	ZeroMemory(s, 4096 * sizeof(s[0]));
-	 va_start(args, fmt);
-	wvsprintf(s, fmt, args);
-	va_end(args);
-	s[4095] = 0;
-	OutputDebugString(s);
-}
-
 #ifdef _EMBEDDED_MANIFEST
 #if defined _M_IX86
   #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

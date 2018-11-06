@@ -20,12 +20,6 @@ public:
 			rect[2] = m_pWindow->m_imageCtrl.GetSelectRect().right;   // x2
 			rect[3] = m_pWindow->m_imageCtrl.GetSelectRect().bottom;  // y2
 
-			CString str;
-			str.Format(_T("rect %d %d, %d %d"),
-			    rect[0], rect[1], rect[2], rect[3]
-			);
-			OutputDebugPrintf(str);
-
 			if (abs(rect[0]-rect[2]) > 3 && abs(rect[1]-rect[3]) > 3) {
 				m_pWindow->m_cmdErase->SetParameter(std::any(rect));
 				m_pWindow->m_cmdErase->Exec();

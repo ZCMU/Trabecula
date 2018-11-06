@@ -7,6 +7,7 @@
 #include "commands/ShowPixelCommand.h"
 #include "commands/StartSegmentCommand.h"
 #include "commands/ClearSegmentCommand.h"
+#include "commands/EraseCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ public:
 						m_cmdShowPixel(std::make_shared<ShowPixelCommand<TrabeViewModel>>(this)),
 						m_cmdStartSegment(std::make_shared<StartSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
+						m_cmdErase(std::make_shared<EraseCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
 	}
@@ -60,6 +62,10 @@ public:
 	std::shared_ptr<ICommandBase> get_ClearSegmentCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdClearSegment);
+	}
+	std::shared_ptr<ICommandBase> get_EraseCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdErase);
 	}
 
 	//sinks
@@ -107,6 +113,10 @@ public:
 	{
 		return m_spModel->ClearSegment();
 	}
+	bool EraseMask(const std::array<INT, 4>& rect)
+	{
+		return m_spModel->Erase(rect);
+	}
 
 private:
 	//models
@@ -121,6 +131,7 @@ private:
 	std::shared_ptr<ShowPixelCommand<TrabeViewModel>> m_cmdShowPixel;
 	std::shared_ptr<StartSegmentCommand<TrabeViewModel>> m_cmdStartSegment;
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
+	std::shared_ptr<EraseCommand<TrabeViewModel>> m_cmdErase;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;
 };

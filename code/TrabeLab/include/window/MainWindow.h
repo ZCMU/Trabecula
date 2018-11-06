@@ -23,6 +23,7 @@ public:
 	enum { IDC_BTN_LOAD = 10, 
 			IDC_BTN_STARTSEGMENT,
 			IDC_BTN_CLEARSEGMENT,
+			IDC_BTN_ERASE,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
 			IDC_PIC };
@@ -30,6 +31,7 @@ public:
 	CButton		 m_btnLoad;
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
+	CButton		 m_btnErase;
 	TrabeImageCtrl  m_imageCtrl;
 	CStatic		 m_txtPixel;
 	TrabeLabelCtrl  m_labelCtrl;
@@ -39,6 +41,7 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdShowPixel;
 	std::shared_ptr<ICommandBase>  m_cmdStartSegment;
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
+	std::shared_ptr<ICommandBase>  m_cmdErase;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
 
@@ -57,6 +60,10 @@ public:
 	void set_ClearSegmentCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
 		m_cmdClearSegment = sp;
+	}
+	void set_EraseCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdErase = sp;
 	}
 	std::shared_ptr<IPropertyNotification> get_sinkProperty() throw()
 	{
@@ -96,6 +103,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
+		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
 		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC, ICN_LBTNUP, OnImageLButtonUp)
 //------------------------------------------------------------------------------
@@ -115,6 +123,9 @@ public:
 		m_btnClearSegment.Create(m_hWnd, rcDefault, _T("Clear Segment"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_CLEARSEGMENT);
+		m_btnErase.Create(m_hWnd, rcDefault, _T("Erase"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_ERASE);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PIXEL);
@@ -125,6 +136,7 @@ public:
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_PIC);
 		m_imageCtrl.UpdateScroll();
+		m_imageCtrl.SetSelectMode(false);
 		//----------------------------------------------------------------------
 		return 0;
 	}
@@ -163,6 +175,7 @@ public:
 			m_labelCtrl.SetWindowPos(NULL, x + 310, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnErase.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			m_imageCtrl.SetWindowPos(NULL, x, y, w - x - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_imageCtrl.UpdateScroll();
@@ -196,6 +209,8 @@ public:
 			m_cmdStartSegment->SetParameter(std::any(rgb));
 			m_cmdStartSegment->Exec();
 		}
+		m_stateMgr.SetStartState(STATE_START);
+		m_imageCtrl.SetSelectMode(false);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Clear
@@ -204,6 +219,12 @@ public:
 		CWaitCursor wac;
 		m_cmdClearSegment->SetParameter(NULL);
 		m_cmdClearSegment->Exec();
+		return 0;
+	}
+	LRESULT OnBtnEraseClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		m_stateMgr.SetStartState(STATE_ERASE);
+		m_imageCtrl.SetSelectMode(true);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

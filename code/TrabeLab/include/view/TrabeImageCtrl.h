@@ -28,6 +28,13 @@ public:
 		return m_clrSelected;
 	}
 
+	CRect GetSelectRect() throw()
+	{
+		CRect rect;
+		generate_rect_old(&rect);
+		return rect;
+	}
+
 private:
 	bool  m_bSelectMode;
 	bool  m_bDown;
@@ -147,8 +154,12 @@ public:
 		GetScrollOffset(pt);
 
 		if( m_bDown ) {
-			m_pt2.x = x + pt.x;
-			m_pt2.y = y + pt.y;
+			m_pt2.x = m_pt1.x;
+			m_pt2.y = m_pt1.y;
+			CRect rect;
+			generate_rect_old(&rect);
+			rect.OffsetRect(-pt.x, -pt.y);
+			InvalidateRect(&rect);
 
 			::ReleaseCapture();
 			m_bDown = false;

@@ -1,15 +1,19 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
+#define Threshold_H  (float)10  // +-10
+#define Threshold_S  (float)0.2 // +-0.2
+#define Threshold_V  (float)0.1 // +-0.1
+
+#define MASK_TRABE   1
+#define MASK_BORDER  2
 
 #include <imp\ImageColor.h>
 #include <imp\ImageData.h>
 #include <imp\ImageProcess.h>
+#include <alg\TrabeAlg.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-#define Threshold_H  (float)10  // +-10
-#define Threshold_S  (float)0.2 // +-0.2
-#define Threshold_V  (float)0.1 // +-0.1
 
 struct RgbPixel
 {
@@ -147,7 +151,7 @@ public:
 		ImageProcessHelper::SegmentByHSV(hsvMin.h, hsvMin.s, hsvMin.v,
 										hsvMax.h, hsvMax.s, hsvMax.v,
 										m_cData, m_gMask);
-		ImageProcessHelper::ExtractBorder(m_gMask);
+		// ImageProcessHelper::ExtractBorder(m_gMask);
 		// 腐蚀
 		// ImageProcessHelper::Erode(m_gData, m_gDataErode);
 		// 膨胀
@@ -187,6 +191,14 @@ public:
 	bool ClearSegment()
 	{
 		Fire_OnPropertyChanged(std::string("color_data"));  // -> ViewModel
+		return true;
+	}
+
+	//erase
+	bool Erase(const std::array<INT, 4>& rect)
+	{
+		TrabeImageProcessHelper::GrayDataErase(m_gMask, rect);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
 		return true;
 	}
 

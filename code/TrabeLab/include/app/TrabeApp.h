@@ -50,6 +50,7 @@ public:
 		m_wndMain.set_ShowPixelCommand(m_spViewModel->get_ShowPixelCommand());
 		m_wndMain.set_StartSegmentCommand(m_spViewModel->get_StartSegmentCommand());
 		m_wndMain.set_ClearSegmentCommand(m_spViewModel->get_ClearSegmentCommand());
+		m_wndMain.set_EraseCommand(m_spViewModel->get_EraseCommand());
 		// notifications
 		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
 		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());

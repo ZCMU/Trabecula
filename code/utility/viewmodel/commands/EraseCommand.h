@@ -3,13 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <class TViewModel>
-class StartSegmentCommand : public ICommandBase
+class EraseCommand : public ICommandBase
 {
 public:
-	StartSegmentCommand(TViewModel* pVM) throw() : m_pVM(pVM)
+	EraseCommand(TViewModel* pVM) throw() : m_pVM(pVM)
 	{
 	}
-	~StartSegmentCommand() throw()
+	~EraseCommand() throw()
 	{
 	}
 
@@ -20,7 +20,8 @@ public:
 	}
 	virtual void Exec()
 	{
-		bool bRet = m_pVM->StartImageSegment();
+		std::array<INT, 4>& rect = *(std::any_cast<std::array<INT, 4>>(&m_param));
+		bool bRet = m_pVM->EraseMask(rect);
 	}
 
 private:

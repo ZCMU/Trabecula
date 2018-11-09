@@ -28,11 +28,19 @@ public:
 		return m_clrSelected;
 	}
 
+	CRect GetSelectRect() throw()
+	{
+		CRect rect;
+		generate_rect_old(&rect);
+		return rect;
+	}
+
 private:
 	bool  m_bSelectMode;
 	bool  m_bDown;
 	POINT m_pt1;
 	POINT m_pt2;
+	POINT m_ptOld;
 
 	COLORREF m_clrSelected;
 
@@ -53,6 +61,26 @@ private:
 		}
 		else {
 			lpRect->top    = m_pt2.y;
+			lpRect->bottom = m_pt1.y;
+		}
+	}
+
+	void generate_rect_old(LPRECT lpRect) throw()
+	{
+		if( m_pt1.x < m_ptOld.x ) {
+			lpRect->left  = m_pt1.x;
+			lpRect->right = m_ptOld.x;
+		}
+		else {
+			lpRect->left  = m_ptOld.x;
+			lpRect->right = m_pt1.x;
+		}
+		if( m_pt1.y < m_ptOld.y ) {
+			lpRect->top    = m_pt1.y;
+			lpRect->bottom = m_ptOld.y;
+		}
+		else {
+			lpRect->top    = m_ptOld.y;
 			lpRect->bottom = m_pt1.y;
 		}
 	}
@@ -81,6 +109,7 @@ public:
 		m_pt1.x = x + pt.x;
 		m_pt1.y = y + pt.y;
 		m_pt2 = m_pt1;
+		m_ptOld = m_pt1;
 
 		return 0;
 	}
@@ -95,10 +124,22 @@ public:
 		if( m_bDown ) {
 			m_pt2.x = x + pt.x;
 			m_pt2.y = y + pt.y;
-			CRect rect;
-			generate_rect(&rect);
-			rect.OffsetRect(-pt.x, -pt.y);
-			InvalidateRect(&rect);
+
+			if (abs(m_pt2.x - m_pt1.x) >= abs(m_ptOld.x - m_pt1.x) &&
+				abs(m_pt2.y - m_pt1.y) >= abs(m_ptOld.y - m_pt1.y))
+			{
+				CRect rect;
+				generate_rect(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				InvalidateRect(&rect);
+			} else {
+				CRect rect;
+				generate_rect_old(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				InvalidateRect(&rect);
+			}
+
+			m_ptOld = m_pt2;
 		}
 
 		bHandled = FALSE;
@@ -113,8 +154,12 @@ public:
 		GetScrollOffset(pt);
 
 		if( m_bDown ) {
-			m_pt2.x = x + pt.x;
-			m_pt2.y = y + pt.y;
+			m_pt2.x = m_pt1.x;
+			m_pt2.y = m_pt1.y;
+			CRect rect;
+			generate_rect_old(&rect);
+			rect.OffsetRect(-pt.x, -pt.y);
+			InvalidateRect(&rect);
 
 			::ReleaseCapture();
 			m_bDown = false;

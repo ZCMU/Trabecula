@@ -202,9 +202,9 @@ public:
 	//ColorData->CImage
 	static void ColorDataToImage(const ColorData& data, CImage& image)
 	{
-		image.Destroy();
 		if( data.IsNull() )
 			return ;
+		image.Destroy();
 		int iW = data.GetWidth();
 		int iH = data.GetHeight();
 		if( !image.Create(iW, iH, 24) )
@@ -227,11 +227,11 @@ public:
 	//ColorDataAndMask->CImage
 	static void ColorDataAndMaskToImage(const ColorData& cData, const GrayData& gData, CImage& image)
 	{
-		image.Destroy();
 		if( cData.IsNull() )
 			return ;
 		if( gData.IsNull() )
 			return ;
+		image.Destroy();
 		int iW = cData.GetWidth();
 		int iH = cData.GetHeight();
 		if( !image.Create(iW, iH, 24) )
@@ -245,7 +245,7 @@ public:
 		for( int i = 0; i < iH; i ++ ) {
 			BYTE* pdr = pd;
 			for( int j = 0; j < iW; j ++ ) {
-				if (*ps ++ == (uchar)255) {
+				if (*ps ++ == (uchar)MASK_TRABE) {
 					*pdr ++ = (uchar)0;
 					*pdr ++ = (uchar)150;
 					*pdr ++ = (uchar)0;

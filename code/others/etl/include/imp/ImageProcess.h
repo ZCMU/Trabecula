@@ -275,7 +275,7 @@ public:
 						int y = i + c_coord_y[m];
 						if( x < 0 || x >= iW || y < 0 || y >= iH
 							|| p0[y * iW + x] == 0 ) {
-							*pd = 255; // Border Mask
+							*pd = MASK_BORDER; // Border Mask
 							break;
 						}
 					}
@@ -288,7 +288,7 @@ public:
 	// SegmentByHSV
 	static void SegmentByHSV(float h_min, float s_min, float v_min,
 							float h_max, float s_max, float v_max,
-							ColorData& cData, GrayData& gData)
+							const ColorData& cData, GrayData& gData)
 	{
 		gData.Clear();
 		if( cData.IsNull() )
@@ -315,7 +315,7 @@ public:
 						s >= s_min && s <= s_max &&
 						v >= v_min && v <= v_max)
 					{
-						*pd ++ = (uchar)128;  // Content Mask
+						*pd ++ = (uchar)MASK_TRABE;
 					} else {
 						pd++;
 					}
@@ -324,7 +324,7 @@ public:
 						s >= s_min && s <= s_max &&
 						v >= v_min && v <= v_max)
 					{
-						*pd ++ = (uchar)128;  // Content Mask
+						*pd ++ = (uchar)MASK_TRABE;
 					} else {
 						pd++;
 					}

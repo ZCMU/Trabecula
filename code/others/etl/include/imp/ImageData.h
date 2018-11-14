@@ -245,7 +245,7 @@ public:
 		for( int i = 0; i < iH; i ++ ) {
 			BYTE* pdr = pd;
 			for( int j = 0; j < iW; j ++ ) {
-				if (*ps ++ == (uchar)MASK_TRABE) {
+				if (*ps ++ == (uchar)MASK_TARGET) {
 					*pdr ++ = (uchar)0;
 					*pdr ++ = (uchar)150;
 					*pdr ++ = (uchar)0;

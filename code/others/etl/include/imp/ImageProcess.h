@@ -315,7 +315,7 @@ public:
 						s >= s_min && s <= s_max &&
 						v >= v_min && v <= v_max)
 					{
-						*pd ++ = (uchar)MASK_TRABE;
+						*pd ++ = (uchar)MASK_TARGET;
 					} else {
 						pd++;
 					}
@@ -324,7 +324,7 @@ public:
 						s >= s_min && s <= s_max &&
 						v >= v_min && v <= v_max)
 					{
-						*pd ++ = (uchar)MASK_TRABE;
+						*pd ++ = (uchar)MASK_TARGET;
 					} else {
 						pd++;
 					}

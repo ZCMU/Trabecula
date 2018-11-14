@@ -28,6 +28,10 @@ public:
 		else if( uEvent == EVT_ERASE ) {
 			//
 		}
+		else if( uEvent == EVT_START ) {
+			m_pWindow->m_imageCtrl.SetSelectMode(false);
+			return STATE_START;
+		}
 		return STATE_ERASE;
 	}
 

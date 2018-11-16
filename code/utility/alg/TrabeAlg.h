@@ -19,7 +19,7 @@ public:
 				if (j >= rect[0] && j <= rect[2] &&
 					i >= rect[1] && i <= rect[3])
 				{
-					if (pd[i*iW + j] == (uchar)MASK_TRABE) {
+					if (pd[i*iW + j] == (uchar)MASK_TARGET) {
 						pd[i*iW + j] = 0;
 					}
 				}

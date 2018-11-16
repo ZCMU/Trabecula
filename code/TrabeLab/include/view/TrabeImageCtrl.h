@@ -14,7 +14,7 @@ private:
 	typedef ImageCtrlImpl<TrabeImageCtrl>  baseClass;
 
 public:
-	TrabeImageCtrl() : m_bSelectMode(true)
+	TrabeImageCtrl() : m_bSelectMode(false), m_clrSelected(CLR_INVALID)
 	{
 	}
 
@@ -97,6 +97,9 @@ public:
 
 	LRESULT OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
+		if( is_image_null() )
+			return 0;
+
 		UINT uFlags = (UINT)wParam;
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
@@ -147,6 +150,9 @@ public:
 	}
 	LRESULT OnLButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
+		if( is_image_null() )
+			return 0;
+		
 		UINT uFlags = (UINT)wParam;
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
@@ -165,8 +171,6 @@ public:
 			m_bDown = false;
 		}
 
-		if( is_image_null() )
-			return 0;
 		NMIMAGEPIXEL nm;
 		nm.nmh.code = ICN_LBTNUP;
 		nm.nmh.idFrom = GetDlgCtrlID();

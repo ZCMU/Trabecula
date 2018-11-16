@@ -6,6 +6,9 @@
 
 #define EVT_LEFT_MOUSE_UP   (101)
 #define EVT_ERASE           (102)
+#define EVT_LOAD            (103)
+#define EVT_START           (104)
+#define EVT_CLEAR           (105)
 
 //states
 

@@ -187,44 +187,24 @@ public:
 	//-------------------------------------------------------------------------- Load
 	LRESULT OnBtnLoadClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		CFileDialog dlg(TRUE);
-		if( dlg.DoModal() == IDOK ) {//弹出对话框
-			CWaitCursor wac;
-			USES_CONVERSION;
-			m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
-			m_cmdLoad->Exec();
-		}
+		m_stateMgr.Process(EVT_LOAD, NULL);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Calc
 	LRESULT OnBtnStartSegmentClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		UINT r,g,b;
-		r = (UINT)(GetRValue(m_imageCtrl.GetSelectColor()));
-		g = (UINT)(GetGValue(m_imageCtrl.GetSelectColor()));
-		b = (UINT)(GetBValue(m_imageCtrl.GetSelectColor()));
-		if (r !=0 || g != 0 || b != 0) {
-			CWaitCursor wac;
-			std::array<UINT, 3> rgb = {r, g, b};
-			m_cmdStartSegment->SetParameter(std::any(rgb));
-			m_cmdStartSegment->Exec();
-		}
-		m_stateMgr.SetStartState(STATE_START);
-		m_imageCtrl.SetSelectMode(false);
+		m_stateMgr.Process(EVT_START, NULL);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Clear
 	LRESULT OnBtnClearSegmentClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		CWaitCursor wac;
-		m_cmdClearSegment->SetParameter(NULL);
-		m_cmdClearSegment->Exec();
+		m_stateMgr.Process(EVT_CLEAR, NULL);
 		return 0;
 	}
 	LRESULT OnBtnEraseClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		m_stateMgr.SetStartState(STATE_ERASE);
-		m_imageCtrl.SetSelectMode(true);
+		m_stateMgr.Process(EVT_ERASE, NULL);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

@@ -64,11 +64,6 @@ public:
 	LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
 		CDCHandle dc((HDC)wParam);
-		RECT rcClient;
-		GetClientRect(&rcClient);
-		CBrush bsh;
-		bsh.CreateSolidBrush(RGB(64, 64, 64));
-		dc.FillRect(&rcClient, bsh);
 		return 1;
 	}
 	LRESULT OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -125,10 +120,28 @@ public:
 // Overrideables
 	void DoPaint(CDCHandle dc)
 	{
+		POINT pt;
+		GetScrollOffset(pt);
+		_WTYPES_NS::CRect rcClient;
+		GetClientRect(&rcClient);
+		rcClient.OffsetRect(pt);
+		_WTYPES_NS::CRect rect(0, 0, 1, 1);
 		if( !is_image_null() ) {
-			int nOldMode = dc.SetStretchBltMode(COLORONCOLOR);
-			m_spImage->Draw(dc, _WTYPES_NS::CRect(0, 0, m_spImage->GetWidth(), m_spImage->GetHeight()));
-			dc.SetStretchBltMode(nOldMode);
+			rect.right = m_spImage->GetWidth();
+			rect.bottom = m_spImage->GetHeight();
+		}
+		_WTYPES_NS::CRect rectDraw;
+		rectDraw.UnionRect(&rcClient, &rect);
+		CMemoryDC mdc(dc, rectDraw);
+		//background
+		CBrush bsh;
+		bsh.CreateSolidBrush(RGB(64, 64, 64));
+		mdc.FillRect(&rcClient, bsh);
+		//image
+		if( !is_image_null() ) {
+			int nOldMode = mdc.SetStretchBltMode(COLORONCOLOR);
+			m_spImage->Draw(mdc, rect);
+			mdc.SetStretchBltMode(nOldMode);
 		}
 	}
 };

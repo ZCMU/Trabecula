@@ -32,7 +32,8 @@ public:
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
 	CButton		 m_btnErase;
-	TrabeImageCtrl  m_imageCtrl;
+	TrabeImageCtrl  m_imageCtrlOriginal;
+	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
 	TrabeLabelCtrl  m_labelCtrl;
 
@@ -132,11 +133,16 @@ public:
 		m_labelCtrl.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PICKPIXEL);
-		m_imageCtrl.Create(m_hWnd, rcDefault, NULL,
+		m_imageCtrlOriginal.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_PIC);
-		m_imageCtrl.UpdateScroll();
-		m_imageCtrl.SetSelectMode(false);
+		m_imageCtrlOriginal.UpdateScroll();
+		m_imageCtrlOriginal.SetSelectMode(false);
+		m_imageCtrlProcess.Create(m_hWnd, rcDefault, NULL,
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_PIC);
+		m_imageCtrlProcess.UpdateScroll();
+		m_imageCtrlProcess.SetSelectMode(false);
 		//----------------------------------------------------------------------
 		return 0;
 	}
@@ -177,8 +183,10 @@ public:
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnErase.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
-			m_imageCtrl.SetWindowPos(NULL, x, y, w - x - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_imageCtrl.UpdateScroll();
+			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_imageCtrlOriginal.UpdateScroll();
+			m_imageCtrlProcess.SetWindowPos(NULL, x + (w - x)/2, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_imageCtrlProcess.UpdateScroll();
 		}
 		//----------------------------------------------------------------------
 		bHandled = FALSE;

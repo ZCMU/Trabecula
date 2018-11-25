@@ -17,9 +17,9 @@ public:
 			COLORREF clr = std::any_cast<COLORREF>(param);
 			if( clr != CLR_INVALID ) {
 				std::array<UINT, 3> rgb;
-				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrl.GetSelectColor()));
-				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrl.GetSelectColor()));
-				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrl.GetSelectColor()));
+				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
+				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
+				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
 				m_pWindow->m_cmdShowPixel->SetParameter(std::any(rgb));
 				m_pWindow->m_cmdShowPixel->Exec();
 			}
@@ -34,11 +34,11 @@ public:
 			}
 		}
 		else if( uEvent == EVT_START ) {
-			if( m_pWindow->m_imageCtrl.GetSelectColor() != CLR_INVALID ) {
+			if( m_pWindow->m_imageCtrlProcess.GetSelectColor() != CLR_INVALID ) {
 				std::array<UINT, 3> rgb;
-				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrl.GetSelectColor()));
-				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrl.GetSelectColor()));
-				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrl.GetSelectColor()));
+				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
+				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
+				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
 				CWaitCursor wac;
 				m_pWindow->m_cmdStartSegment->SetParameter(std::any(rgb));
 				m_pWindow->m_cmdStartSegment->Exec();
@@ -50,8 +50,8 @@ public:
 			m_pWindow->m_cmdClearSegment->Exec();
 		}
 		else if( uEvent == EVT_ERASE ) {
-			if( m_pWindow->m_imageCtrl.is_image_null() == false) {
-				m_pWindow->m_imageCtrl.SetSelectMode(true);
+			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
+				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 				return STATE_ERASE;
 			}
 		}

@@ -17,10 +17,11 @@ public:
 	virtual void OnPropertyChanged(const std::string& str)
 	{
 		if( str == "image" ) {
-			m_pWindow->m_imageCtrl.UpdateScroll();
+			m_pWindow->m_imageCtrlOriginal.UpdateScroll();
+			m_pWindow->m_imageCtrlProcess.UpdateScroll();
 		}
 		if( str == "label" ) {
-			COLORREF clr = m_pWindow->m_imageCtrl.GetSelectColor();
+			COLORREF clr = m_pWindow->m_imageCtrlProcess.GetSelectColor();
 			UINT r,g,b;
 			r = (UINT)(GetRValue(clr));
 			g = (UINT)(GetGValue(clr));

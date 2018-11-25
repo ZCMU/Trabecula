@@ -143,6 +143,15 @@ public:
 			m_spImage->Draw(mdc, rect);
 			mdc.SetStretchBltMode(nOldMode);
 		}
+		//custom
+		T* pT = static_cast<T*>(this);
+		pT->DoImageCtrlPaint(mdc);
+	}
+
+//------------------------------------------------------------------------------
+//overriders
+	void DoImageCtrlPaint(CMemoryDC& mdc)
+	{
 	}
 };
 

@@ -26,7 +26,8 @@ public:
 			IDC_BTN_ERASE,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
-			IDC_PIC };
+			IDC_PIC_ORIGINAL,
+			IDC_PIC_PROCESS };
 
 	CButton		 m_btnLoad;
 	CButton		 m_btnStartSegment;
@@ -105,8 +106,10 @@ public:
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
-		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
-		NOTIFY_HANDLER(IDC_PIC, ICN_LBTNUP, OnImageLButtonUp)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
+		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_SCROLL, OnImageProcessScroll)
 //------------------------------------------------------------------------------
 		REFLECT_NOTIFICATIONS()
 //------------------------------------------------------------------------------
@@ -135,12 +138,12 @@ public:
 						IDC_TEXT_PICKPIXEL);
 		m_imageCtrlOriginal.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
-						IDC_PIC);
+						IDC_PIC_ORIGINAL);
 		m_imageCtrlOriginal.UpdateScroll();
 		m_imageCtrlOriginal.SetSelectMode(false);
 		m_imageCtrlProcess.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
-						IDC_PIC);
+						IDC_PIC_PROCESS);
 		m_imageCtrlProcess.UpdateScroll();
 		m_imageCtrlProcess.SetSelectMode(false);
 		//----------------------------------------------------------------------
@@ -240,6 +243,20 @@ public:
 	{
 		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
 		m_stateMgr.Process(EVT_LEFT_MOUSE_UP, std::any(pnm->rgb));
+		return 0;
+	}
+	//--------------------------------------------------------------------------
+	LRESULT OnImageOriginalScroll(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
+	{
+		NMIMAGESCROLL* pnm = (NMIMAGESCROLL*)pNMHDR;
+		m_imageCtrlProcess.SetScrollOffset(pnm->pt);
+		return 0;
+	}
+	//--------------------------------------------------------------------------
+	LRESULT OnImageProcessScroll(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
+	{
+		NMIMAGESCROLL* pnm = (NMIMAGESCROLL*)pNMHDR;
+		m_imageCtrlOriginal.SetScrollOffset(pnm->pt);
 		return 0;
 	}
 };

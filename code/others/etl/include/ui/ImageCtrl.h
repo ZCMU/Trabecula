@@ -130,9 +130,7 @@ public:
 			rect.right = m_spImage->GetWidth();
 			rect.bottom = m_spImage->GetHeight();
 		}
-		_WTYPES_NS::CRect rectDraw;
-		rectDraw.UnionRect(&rcClient, &rect);
-		CMemoryDC mdc(dc, rectDraw);
+		CMemoryDC mdc(dc, rcClient);
 		//background
 		CBrush bsh;
 		bsh.CreateSolidBrush(RGB(64, 64, 64));
@@ -145,12 +143,12 @@ public:
 		}
 		//custom
 		T* pT = static_cast<T*>(this);
-		pT->DoImageCtrlPaint(mdc);
+		pT->DoImageCtrlPaint(mdc, rcClient);
 	}
 
 //------------------------------------------------------------------------------
 //overriders
-	void DoImageCtrlPaint(CMemoryDC& mdc)
+	void DoImageCtrlPaint(CMemoryDC& mdc, const _WTYPES_NS::CRect& rcClient)
 	{
 	}
 };

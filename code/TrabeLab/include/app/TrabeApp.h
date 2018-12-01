@@ -43,7 +43,8 @@ public:
 		// notifications
 		spModel->AddPropertyNotification(m_spViewModel->get_Sink());
 		// properties
-		m_wndMain.m_imageCtrl.set_Image(m_spViewModel->get_Image());
+		m_wndMain.m_imageCtrlOriginal.set_Image(m_spViewModel->get_ImageOriginal());
+		m_wndMain.m_imageCtrlProcess.set_Image(m_spViewModel->get_ImageProcess());
 		m_wndMain.m_labelCtrl.set_Label(m_spViewModel->get_Label());
 		// commands
 		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());

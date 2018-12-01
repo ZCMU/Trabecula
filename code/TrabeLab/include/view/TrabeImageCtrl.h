@@ -209,29 +209,28 @@ public:
 		GetScrollOffset(nm.pt);
 		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
 	}
-
-	void DoImageCtrlPaint(CMemoryDC& mdc)
+	void DoPaint(CDCHandle dc)
 	{
-		POINT pt;
-		GetScrollOffset(pt);
-		_WTYPES_NS::CRect rect;
-		generate_rect(&rect);
-		rect.OffsetRect(pt);
+		baseClass::DoPaint(dc);
+
 		if( m_bSelectMode ) {
 			//rectangle
 			CPen pen;
 			pen.CreatePen(PS_SOLID, 1, RGB(255, 255, 0));
-			HPEN hOldPen = mdc.SelectPen(pen);
-			mdc.MoveTo(rect.left, rect.top);
-			mdc.LineTo(rect.right, rect.top);
-			mdc.MoveTo(rect.right - 1, rect.top);
-			mdc.LineTo(rect.right - 1, rect.bottom);
-			mdc.MoveTo(rect.right - 1, rect.bottom - 1);
-			mdc.LineTo(rect.left, rect.bottom - 1);
-			mdc.LineTo(rect.left, rect.top);
-			mdc.SelectPen(hOldPen);
+			HPEN hOldPen = dc.SelectPen(pen);
+			RECT rect;
+			generate_rect(&rect);
+			dc.MoveTo(rect.left, rect.top);
+			dc.LineTo(rect.right, rect.top);
+			dc.MoveTo(rect.right - 1, rect.top);
+			dc.LineTo(rect.right - 1, rect.bottom);
+			dc.MoveTo(rect.right - 1, rect.bottom - 1);
+			dc.LineTo(rect.left, rect.bottom - 1);
+			dc.LineTo(rect.left, rect.top);
+			dc.SelectPen(hOldPen);
 		}
 	}
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////

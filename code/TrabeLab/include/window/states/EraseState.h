@@ -15,10 +15,10 @@ public:
 	{
 		if( uEvent == EVT_LEFT_MOUSE_UP ) {
 			std::array<INT, 4> rect;
-			rect[0] = m_pWindow->m_imageCtrl.GetSelectRect().left;    // x1
-			rect[1] = m_pWindow->m_imageCtrl.GetSelectRect().top;     // y1
-			rect[2] = m_pWindow->m_imageCtrl.GetSelectRect().right;   // x2
-			rect[3] = m_pWindow->m_imageCtrl.GetSelectRect().bottom;  // y2
+			rect[0] = m_pWindow->m_imageCtrlProcess.GetSelectRect().left;    // x1
+			rect[1] = m_pWindow->m_imageCtrlProcess.GetSelectRect().top;     // y1
+			rect[2] = m_pWindow->m_imageCtrlProcess.GetSelectRect().right;   // x2
+			rect[3] = m_pWindow->m_imageCtrlProcess.GetSelectRect().bottom;  // y2
 
 			if (abs(rect[0]-rect[2]) > 3 && abs(rect[1]-rect[3]) > 3) {
 				m_pWindow->m_cmdErase->SetParameter(std::any(rect));
@@ -29,7 +29,7 @@ public:
 			//
 		}
 		else if( uEvent == EVT_START ) {
-			m_pWindow->m_imageCtrl.SetSelectMode(false);
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
 			return STATE_START;
 		}
 		return STATE_ERASE;

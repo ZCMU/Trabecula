@@ -16,7 +16,8 @@ class TrabeViewModel : public Proxy_PropertyNotification<TrabeViewModel>,
 						public Proxy_CommandNotification<TrabeViewModel>
 {
 public:
-	TrabeViewModel() : m_spImage(std::make_shared<ATL::CImage>()),
+	TrabeViewModel() : m_spImageOriginal(std::make_shared<ATL::CImage>()),
+						m_spImageProcess(std::make_shared<ATL::CImage>()),
 						m_spLabel(std::make_shared<ATL::CString>()),
 						m_cmdLoad(std::make_shared<LoadCommand<TrabeViewModel>>(this)),
 						m_cmdShowPixel(std::make_shared<ShowPixelCommand<TrabeViewModel>>(this)),
@@ -37,9 +38,13 @@ public:
 	}
 
 	//properties
-	std::shared_ptr<ATL::CImage> get_Image() throw()
+	std::shared_ptr<ATL::CImage> get_ImageOriginal() throw()
 	{
-		return m_spImage;
+		return m_spImageOriginal;
+	}
+	std::shared_ptr<ATL::CImage> get_ImageProcess() throw()
+	{
+		return m_spImageProcess;
 	}
 	std::shared_ptr<ATL::CString> get_Label() throw()
 	{
@@ -81,15 +86,16 @@ public:
 	}
 	void ColorDataToImage()
 	{
-		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorData(), *m_spImage);
+		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorData(), *m_spImageOriginal);
+		ImageDataHelper::ColorDataToImage(m_spModel->get_ColorData(), *m_spImageProcess);
 	}
 	void ColorDataAndMaskToImage()
 	{
-		ImageDataHelper::ColorDataAndMaskToImage(m_spModel->get_ColorData(), m_spModel->get_MaskData(), *m_spImage);
+		ImageDataHelper::ColorDataAndMaskToImage(m_spModel->get_ColorData(), m_spModel->get_MaskData(), *m_spImageProcess);
 	}
 	void GrayDataToImage()
 	{
-		ImageDataHelper::GrayDataToImage(m_spModel->get_GrayData(), *m_spImage);
+		ImageDataHelper::GrayDataToImage(m_spModel->get_GrayData(), *m_spImageProcess);
 	}
 	bool ShowPickPixel(const std::array<UINT, 3>& pkPixel)
 	{
@@ -123,7 +129,8 @@ private:
 	std::shared_ptr<TrabeDataModel> m_spModel;
 
 	//properties
-	std::shared_ptr<ATL::CImage> m_spImage;
+	std::shared_ptr<ATL::CImage> m_spImageOriginal;
+	std::shared_ptr<ATL::CImage> m_spImageProcess;
 	std::shared_ptr<ATL::CString> m_spLabel;
 
 	//commands

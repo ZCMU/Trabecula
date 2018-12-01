@@ -26,13 +26,15 @@ public:
 			IDC_BTN_ERASE,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
-			IDC_PIC };
+			IDC_PIC_ORIGINAL,
+			IDC_PIC_PROCESS };
 
 	CButton		 m_btnLoad;
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
 	CButton		 m_btnErase;
-	TrabeImageCtrl  m_imageCtrl;
+	TrabeImageCtrl  m_imageCtrlOriginal;
+	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
 	TrabeLabelCtrl  m_labelCtrl;
 
@@ -104,8 +106,10 @@ public:
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
-		NOTIFY_HANDLER(IDC_PIC, ICN_PIXEL, OnImageCtrlPixel)
-		NOTIFY_HANDLER(IDC_PIC, ICN_LBTNUP, OnImageLButtonUp)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
+		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
+		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_SCROLL, OnImageProcessScroll)
 //------------------------------------------------------------------------------
 		REFLECT_NOTIFICATIONS()
 //------------------------------------------------------------------------------
@@ -132,11 +136,16 @@ public:
 		m_labelCtrl.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PICKPIXEL);
-		m_imageCtrl.Create(m_hWnd, rcDefault, NULL,
+		m_imageCtrlOriginal.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
-						IDC_PIC);
-		m_imageCtrl.UpdateScroll();
-		m_imageCtrl.SetSelectMode(false);
+						IDC_PIC_ORIGINAL);
+		m_imageCtrlOriginal.UpdateScroll();
+		m_imageCtrlOriginal.SetSelectMode(false);
+		m_imageCtrlProcess.Create(m_hWnd, rcDefault, NULL,
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_PIC_PROCESS);
+		m_imageCtrlProcess.UpdateScroll();
+		m_imageCtrlProcess.SetSelectMode(false);
 		//----------------------------------------------------------------------
 		return 0;
 	}
@@ -177,8 +186,10 @@ public:
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnErase.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
-			m_imageCtrl.SetWindowPos(NULL, x, y, w - x - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_imageCtrl.UpdateScroll();
+			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_imageCtrlOriginal.UpdateScroll();
+			m_imageCtrlProcess.SetWindowPos(NULL, x + (w - x)/2, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_imageCtrlProcess.UpdateScroll();
 		}
 		//----------------------------------------------------------------------
 		bHandled = FALSE;
@@ -232,6 +243,20 @@ public:
 	{
 		NMIMAGEPIXEL* pnm = (NMIMAGEPIXEL*)pNMHDR;
 		m_stateMgr.Process(EVT_LEFT_MOUSE_UP, std::any(pnm->rgb));
+		return 0;
+	}
+	//--------------------------------------------------------------------------
+	LRESULT OnImageOriginalScroll(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
+	{
+		NMIMAGESCROLL* pnm = (NMIMAGESCROLL*)pNMHDR;
+		m_imageCtrlProcess.SetScrollOffset(pnm->pt);
+		return 0;
+	}
+	//--------------------------------------------------------------------------
+	LRESULT OnImageProcessScroll(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
+	{
+		NMIMAGESCROLL* pnm = (NMIMAGESCROLL*)pNMHDR;
+		m_imageCtrlOriginal.SetScrollOffset(pnm->pt);
 		return 0;
 	}
 };

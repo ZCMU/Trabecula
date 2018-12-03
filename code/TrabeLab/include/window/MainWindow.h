@@ -11,6 +11,7 @@
 #include "states\StateDef.h"
 #include "states\StartState.h"
 #include "states\EraseState.h"
+#include "states\AddState.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +25,7 @@ public:
 			IDC_BTN_STARTSEGMENT,
 			IDC_BTN_CLEARSEGMENT,
 			IDC_BTN_ERASE,
+			IDC_BTN_ADD,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
 			IDC_PIC_ORIGINAL,
@@ -33,6 +35,7 @@ public:
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
 	CButton		 m_btnErase;
+	CButton		 m_btnAdd;
 	TrabeImageCtrl  m_imageCtrlOriginal;
 	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
@@ -43,6 +46,7 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdShowPixel;
 	std::shared_ptr<ICommandBase>  m_cmdStartSegment;
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
+	std::shared_ptr<ICommandBase>  m_cmdAdd;
 	std::shared_ptr<ICommandBase>  m_cmdErase;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
@@ -86,6 +90,7 @@ public:
 		//states
 		m_stateMgr.Add(STATE_START, std::static_pointer_cast<IStateBase>(std::make_shared<StartState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_ADD, std::static_pointer_cast<IStateBase>(std::make_shared<AddState<MainWindow>>(this)));
 		m_stateMgr.SetStartState(STATE_START);
 	}
 
@@ -106,6 +111,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
+		COMMAND_HANDLER(IDC_BTN_ADD, BN_CLICKED, OnBtnAddClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
 		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
@@ -130,6 +136,9 @@ public:
 		m_btnErase.Create(m_hWnd, rcDefault, _T("Erase"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_ERASE);
+		m_btnAdd.Create(m_hWnd, rcDefault, _T("Add"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_ADD);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PIXEL);
@@ -184,7 +193,8 @@ public:
 			m_labelCtrl.SetWindowPos(NULL, x + 310, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnErase.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnErase.SetWindowPos(NULL, x, y + 160, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_imageCtrlOriginal.UpdateScroll();
@@ -213,9 +223,16 @@ public:
 		m_stateMgr.Process(EVT_CLEAR, NULL);
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Erase
 	LRESULT OnBtnEraseClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_ERASE, NULL);
+		return 0;
+	}
+	//-------------------------------------------------------------------------- Erase
+	LRESULT OnBtnAddClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		m_stateMgr.Process(EVT_ADD, NULL);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

@@ -32,6 +32,15 @@ public:
 			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
 			return STATE_START;
 		}
+		else if( uEvent == EVT_CLEAR ) {
+			CWaitCursor wac;
+			m_pWindow->m_cmdClearSegment->SetParameter(NULL);
+			m_pWindow->m_cmdClearSegment->Exec();
+			return STATE_START;
+		}
+		else if( uEvent == EVT_ADD ) {
+			return STATE_ADD;
+		}
 		return STATE_ERASE;
 	}
 

@@ -159,29 +159,6 @@ public:
 		// 连通域标记
 		// 获取边框
 		// 标记边框
-		
-		// 加权相加
-		// HsvPixel hsvAdd;
-		// RgbPixel rgbAdd;
-		// float r,g,b;
-		// hsvAdd.h = hsv.h+120;
-		// if (hsvAdd.h > 360) {
-			// hsvAdd.h -= 360;
-		// }
-		// hsvAdd.s = hsv.s+(float)0.5;
-		// if (hsvAdd.s > 1) {
-			// hsvAdd.s -= 1;
-		// }
-		// hsvAdd.v = hsv.v+(float)0.5;
-		// if (hsvAdd.v > 1) {
-			// hsvAdd.v -= 1;
-		// }
-		// ImageDataHelper::Hsv2Rgb(hsvAdd.h, hsvAdd.s, hsvAdd.v, r, g, b);
-
-		// rgbAdd.r = (UINT)(r*255);
-		// rgbAdd.g = (UINT)(g*255);
-		// rgbAdd.b = (UINT)(b*255);
-		// ImageDataHelper::ColorDataAddGrayData(m_cData, m_gDataDilate, rgbAdd, m_cDataAdd);
 
 		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
 		return true;
@@ -190,6 +167,7 @@ public:
 	//clearsegment
 	bool ClearSegment()
 	{
+		m_gMask.Clear();
 		Fire_OnPropertyChanged(std::string("color_data"));  // -> ViewModel
 		return true;
 	}

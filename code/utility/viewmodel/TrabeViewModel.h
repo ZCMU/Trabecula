@@ -8,6 +8,7 @@
 #include "commands/StartSegmentCommand.h"
 #include "commands/ClearSegmentCommand.h"
 #include "commands/EraseCommand.h"
+#include "commands/RepairCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +25,7 @@ public:
 						m_cmdStartSegment(std::make_shared<StartSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdErase(std::make_shared<EraseCommand<TrabeViewModel>>(this)),
+						m_cmdRepair(std::make_shared<RepairCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
 	}
@@ -71,6 +73,10 @@ public:
 	std::shared_ptr<ICommandBase> get_EraseCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdErase);
+	}
+	std::shared_ptr<ICommandBase> get_RepairCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdRepair);
 	}
 
 	//sinks
@@ -123,6 +129,10 @@ public:
 	{
 		return m_spModel->Erase(rect);
 	}
+	bool RepairMask(const std::array<INT, 4>& rect)
+	{
+		return m_spModel->Repair(rect);
+	}
 
 private:
 	//models
@@ -139,6 +149,7 @@ private:
 	std::shared_ptr<StartSegmentCommand<TrabeViewModel>> m_cmdStartSegment;
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
 	std::shared_ptr<EraseCommand<TrabeViewModel>> m_cmdErase;
+	std::shared_ptr<RepairCommand<TrabeViewModel>> m_cmdRepair;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;
 };

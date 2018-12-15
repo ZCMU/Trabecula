@@ -58,6 +58,12 @@ public:
 		else if( uEvent == EVT_ADD ) {
 			return STATE_ADD;
 		}
+		else if( uEvent == EVT_REPAIR ) {
+			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
+				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
+				return STATE_REPAIR;
+			}
+		}
 		return STATE_START;
 	}
 

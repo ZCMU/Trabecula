@@ -180,6 +180,14 @@ public:
 		return true;
 	}
 
+	//repair
+	bool Repair(const std::array<INT, 4>& rect)
+	{
+		TrabeImageProcessHelper::GrayDataRepair(m_gMask, rect);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
+		return true;
+	}
+
 private:
 	ColorData m_cData;
 	GrayData m_gMask;  // HSV 分割后的 Mask Data

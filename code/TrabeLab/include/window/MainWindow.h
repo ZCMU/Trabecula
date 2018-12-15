@@ -28,6 +28,7 @@ public:
 			IDC_BTN_ERASE,
 			IDC_BTN_ADD,
 			IDC_BTN_REPAIR,
+			IDC_BTN_EDGE,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
 			IDC_PIC_ORIGINAL,
@@ -39,6 +40,7 @@ public:
 	CButton		 m_btnErase;
 	CButton		 m_btnAdd;
 	CButton		 m_btnRepair;
+	CButton		 m_btnEdge;
 	TrabeImageCtrl  m_imageCtrlOriginal;
 	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
@@ -151,6 +153,9 @@ public:
 		m_btnRepair.Create(m_hWnd, rcDefault, _T("Repair"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_REPAIR);
+		m_btnEdge.Create(m_hWnd, rcDefault, _T("Edge"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_CHECKBOX, 0,
+						IDC_BTN_EDGE);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PIXEL);
@@ -203,6 +208,7 @@ public:
 			m_btnStartSegment.SetWindowPos(NULL, x + 70, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnClearSegment.SetWindowPos(NULL, x + 190, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_labelCtrl.SetWindowPos(NULL, x + 310, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnEdge.SetWindowPos(NULL, x + 540, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);

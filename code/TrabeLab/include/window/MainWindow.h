@@ -123,6 +123,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
 		COMMAND_HANDLER(IDC_BTN_ADD, BN_CLICKED, OnBtnAddClicked)
 		COMMAND_HANDLER(IDC_BTN_REPAIR, BN_CLICKED, OnBtnRepairClicked)
+		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
 		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
@@ -257,6 +258,12 @@ public:
 	LRESULT OnBtnRepairClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_REPAIR, NULL);
+		return 0;
+	}
+	LRESULT OnBtnEdgeClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		int iCheck = m_btnEdge.GetCheck();
+		m_btnEdge.SetCheck(!iCheck);
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

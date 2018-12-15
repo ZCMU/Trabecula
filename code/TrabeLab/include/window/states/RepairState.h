@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <class TWindow>
-class EraseState : public IStateBase
+class RepairState : public IStateBase
 {
 public:
-	EraseState(TWindow* p) throw() : m_pWindow(p)
+	RepairState(TWindow* p) throw() : m_pWindow(p)
 	{
 	}
 
@@ -21,11 +21,11 @@ public:
 			rect[3] = m_pWindow->m_imageCtrlProcess.GetSelectRect().bottom;  // y2
 
 			if (abs(rect[0]-rect[2]) > 3 && abs(rect[1]-rect[3]) > 3) {
-				m_pWindow->m_cmdErase->SetParameter(std::any(rect));
-				m_pWindow->m_cmdErase->Exec();
+				m_pWindow->m_cmdRepair->SetParameter(std::any(rect));
+				m_pWindow->m_cmdRepair->Exec();
 			}
 		}
-		else if( uEvent == EVT_ERASE ) {
+		else if( uEvent == EVT_REPAIR ) {
 			//
 		}
 		else if( uEvent == EVT_START ) {
@@ -41,11 +41,10 @@ public:
 		else if( uEvent == EVT_ADD ) {
 			return STATE_ADD;
 		}
-		else if( uEvent == EVT_REPAIR ) {
-			return STATE_REPAIR;
+		else if( uEvent == EVT_ERASE ) {
+			return STATE_ERASE;
 		}
-		
-		return STATE_ERASE;
+		return STATE_REPAIR;
 	}
 
 private:

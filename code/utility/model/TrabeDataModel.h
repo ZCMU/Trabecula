@@ -36,7 +36,7 @@ struct PixelData
 class TrabeDataModel : public Proxy_PropertyNotification<TrabeDataModel>
 {
 public:
-	TrabeDataModel() throw()
+	TrabeDataModel() throw() : m_MaskNum(0)
 	{
 	}
 	~TrabeDataModel() throw()
@@ -59,6 +59,10 @@ public:
 	const PixelData& get_PixelData() const throw()
 	{
 		return m_pData;
+	}
+	const UINT get_MaskNum() const throw()
+	{
+		return m_MaskNum;
 	}
 
 	//load
@@ -188,14 +192,22 @@ public:
 		return true;
 	}
 
+	// measure
+	bool Measure()
+	{
+		TrabeImageProcessHelper::TargetDataCalc(m_gMask, m_MaskNum);
+		Fire_OnPropertyChanged(std::string("measure_data"));  // -> ViewModel
+		return true;
+	}
+
 private:
 	ColorData m_cData;
 	GrayData m_gMask;  // HSV 分割后的 Mask Data
-	// ColorData m_cDataAdd;
 	GrayData m_gData;
 	// GrayData m_gDataErode;
 	// GrayData m_gDataDilate;
 	PixelData m_pData;
+	UINT m_MaskNum;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

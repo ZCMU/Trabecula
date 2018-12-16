@@ -32,6 +32,10 @@ public:
 			m_pVM->PixelDataToString();
 			m_pVM->Fire_OnPropertyChanged(std::string("label"));
 		}
+		if( str == "measure_data" ) {
+			m_pVM->MeasureDataToString();
+			m_pVM->Fire_OnPropertyChanged(std::string("measure"));
+		}
 	}
 
 private:

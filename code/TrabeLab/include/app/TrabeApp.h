@@ -46,6 +46,7 @@ public:
 		m_wndMain.m_imageCtrlOriginal.set_Image(m_spViewModel->get_ImageOriginal());
 		m_wndMain.m_imageCtrlProcess.set_Image(m_spViewModel->get_ImageProcess());
 		m_wndMain.m_labelCtrl.set_Label(m_spViewModel->get_Label());
+		m_wndMain.m_labelCtrlMeasure.set_Label(m_spViewModel->get_Measure());
 		// commands
 		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());
 		m_wndMain.set_ShowPixelCommand(m_spViewModel->get_ShowPixelCommand());
@@ -53,6 +54,7 @@ public:
 		m_wndMain.set_ClearSegmentCommand(m_spViewModel->get_ClearSegmentCommand());
 		m_wndMain.set_EraseCommand(m_spViewModel->get_EraseCommand());
 		m_wndMain.set_RepairCommand(m_spViewModel->get_RepairCommand());
+		m_wndMain.set_MeasureCommand(m_spViewModel->get_MeasureCommand());
 		// notifications
 		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
 		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());

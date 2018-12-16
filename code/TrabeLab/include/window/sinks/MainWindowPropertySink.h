@@ -35,6 +35,9 @@ public:
 			m_pWindow->m_labelCtrl.SetColor(clrText, clr);
 			m_pWindow->m_labelCtrl.Update();
 		}
+		if( str == "measure" ) {
+			m_pWindow->m_labelCtrlMeasure.Update();
+		}
 	}
 
 private:

@@ -29,8 +29,10 @@ public:
 			IDC_BTN_ADD,
 			IDC_BTN_REPAIR,
 			IDC_BTN_EDGE,
+			IDC_BTN_MEASURE,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
+			IDC_TEXT_MEASURE,
 			IDC_PIC_ORIGINAL,
 			IDC_PIC_PROCESS };
 
@@ -41,10 +43,12 @@ public:
 	CButton		 m_btnAdd;
 	CButton		 m_btnRepair;
 	CButton		 m_btnEdge;
+	CButton		 m_btnMeasure;
 	TrabeImageCtrl  m_imageCtrlOriginal;
 	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
 	TrabeLabelCtrl  m_labelCtrl;
+	TrabeLabelCtrl  m_labelCtrlMeasure;
 
 	//for binding
 	std::shared_ptr<ICommandBase>  m_cmdLoad;
@@ -53,6 +57,7 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
 	std::shared_ptr<ICommandBase>  m_cmdErase;
 	std::shared_ptr<ICommandBase>  m_cmdRepair;
+	std::shared_ptr<ICommandBase>  m_cmdMeasure;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
 
@@ -79,6 +84,10 @@ public:
 	void set_RepairCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
 		m_cmdRepair = sp;
+	}
+	void set_MeasureCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdMeasure = sp;
 	}
 	std::shared_ptr<IPropertyNotification> get_sinkProperty() throw()
 	{
@@ -124,6 +133,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_ADD, BN_CLICKED, OnBtnAddClicked)
 		COMMAND_HANDLER(IDC_BTN_REPAIR, BN_CLICKED, OnBtnRepairClicked)
 		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
+		COMMAND_HANDLER(IDC_BTN_MEASURE, BN_CLICKED, OnBtnMeasureClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
 		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
@@ -157,12 +167,18 @@ public:
 		m_btnEdge.Create(m_hWnd, rcDefault, _T("Edge"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_CHECKBOX, 0,
 						IDC_BTN_EDGE);
+		m_btnMeasure.Create(m_hWnd, rcDefault, _T("Measure"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_MEASURE);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PIXEL);
 		m_labelCtrl.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PICKPIXEL);
+		m_labelCtrlMeasure.Create(m_hWnd, rcDefault, _T(""),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_TEXT_MEASURE);
 		m_imageCtrlOriginal.Create(m_hWnd, rcDefault, NULL,
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_PIC_ORIGINAL);
@@ -215,6 +231,8 @@ public:
 			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnErase.SetWindowPos(NULL, x, y + 160, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnRepair.SetWindowPos(NULL, x, y + 210, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 100, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnMeasure.SetWindowPos(NULL, x, h - 50, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_imageCtrlOriginal.UpdateScroll();
@@ -264,6 +282,13 @@ public:
 	{
 		int iCheck = m_btnEdge.GetCheck();
 		m_btnEdge.SetCheck(!iCheck);
+		return 0;
+	}
+	LRESULT OnBtnMeasureClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		CWaitCursor wac;
+		m_cmdMeasure->SetParameter(NULL);
+		m_cmdMeasure->Exec();
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

@@ -9,6 +9,7 @@
 #include "commands/ClearSegmentCommand.h"
 #include "commands/EraseCommand.h"
 #include "commands/RepairCommand.h"
+#include "commands/MeasureCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,12 +21,14 @@ public:
 	TrabeViewModel() : m_spImageOriginal(std::make_shared<ATL::CImage>()),
 						m_spImageProcess(std::make_shared<ATL::CImage>()),
 						m_spLabel(std::make_shared<ATL::CString>()),
+						m_spMeasure(std::make_shared<ATL::CString>()),
 						m_cmdLoad(std::make_shared<LoadCommand<TrabeViewModel>>(this)),
 						m_cmdShowPixel(std::make_shared<ShowPixelCommand<TrabeViewModel>>(this)),
 						m_cmdStartSegment(std::make_shared<StartSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdErase(std::make_shared<EraseCommand<TrabeViewModel>>(this)),
 						m_cmdRepair(std::make_shared<RepairCommand<TrabeViewModel>>(this)),
+						m_cmdMeasure(std::make_shared<MeasureCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
 	}
@@ -52,6 +55,10 @@ public:
 	{
 		return m_spLabel;
 	}
+	std::shared_ptr<ATL::CString> get_Measure() throw()
+	{
+		return m_spMeasure;
+	}
 
 	//commands
 	std::shared_ptr<ICommandBase> get_LoadCommand() throw()
@@ -77,6 +84,10 @@ public:
 	std::shared_ptr<ICommandBase> get_RepairCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdRepair);
+	}
+	std::shared_ptr<ICommandBase> get_MeasureCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdMeasure);
 	}
 
 	//sinks
@@ -133,6 +144,17 @@ public:
 	{
 		return m_spModel->Repair(rect);
 	}
+	bool MeasureMask()
+	{
+		return m_spModel->Measure();
+	}
+	// MeasureDataToString
+	void MeasureDataToString()
+	{
+		const UINT& data = m_spModel->get_MaskNum();
+		CString& str = *m_spMeasure;
+		str.Format(_T("Num:\r\n%d"), data);
+	}
 
 private:
 	//models
@@ -142,6 +164,7 @@ private:
 	std::shared_ptr<ATL::CImage> m_spImageOriginal;
 	std::shared_ptr<ATL::CImage> m_spImageProcess;
 	std::shared_ptr<ATL::CString> m_spLabel;
+	std::shared_ptr<ATL::CString> m_spMeasure;
 
 	//commands
 	std::shared_ptr<LoadCommand<TrabeViewModel>> m_cmdLoad;
@@ -150,6 +173,7 @@ private:
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
 	std::shared_ptr<EraseCommand<TrabeViewModel>> m_cmdErase;
 	std::shared_ptr<RepairCommand<TrabeViewModel>> m_cmdRepair;
+	std::shared_ptr<MeasureCommand<TrabeViewModel>> m_cmdMeasure;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;
 };

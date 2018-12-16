@@ -47,6 +47,29 @@ public:
 			}
 		}
 	}
+	static void TargetDataCalc(GrayData& data, UINT& num)
+	{
+		if( data.IsNull() )
+		{
+			num = 0;
+			return ;
+		}
+
+		int iW = data.GetWidth();
+		int iH = data.GetHeight();
+
+		uchar* pd = data.GetAddress();
+		num = 0;
+
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				if (pd[i*iW + j] == (uchar)MASK_TARGET)
+				{
+					num ++;
+				}
+			}
+		}
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////

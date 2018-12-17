@@ -13,6 +13,8 @@
 #include "states\EraseState.h"
 #include "states\AddState.h"
 #include "states\RepairState.h"
+#include "states\MeasureState.h"
+#include "states\NoPicState.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +38,7 @@ public:
 			IDC_PIC_ORIGINAL,
 			IDC_PIC_PROCESS };
 
+	bool m_iLoadOK;
 	CButton		 m_btnLoad;
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
@@ -110,7 +113,16 @@ public:
 		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ADD, std::static_pointer_cast<IStateBase>(std::make_shared<AddState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_REPAIR, std::static_pointer_cast<IStateBase>(std::make_shared<RepairState<MainWindow>>(this)));
-		m_stateMgr.SetStartState(STATE_START);
+		m_stateMgr.Add(STATE_MEASURE, std::static_pointer_cast<IStateBase>(std::make_shared<MeasureState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_NOPIC, std::static_pointer_cast<IStateBase>(std::make_shared<NoPicState<MainWindow>>(this)));
+		m_stateMgr.SetStartState(STATE_NOPIC);
+		m_btnStartSegment.EnableWindow(FALSE);
+		m_btnClearSegment.EnableWindow(FALSE);
+		m_btnEdge.EnableWindow(FALSE);
+		m_btnAdd.EnableWindow(FALSE);
+		m_btnErase.EnableWindow(FALSE);
+		m_btnRepair.EnableWindow(FALSE);
+		m_btnMeasure.EnableWindow(FALSE);
 	}
 
 private:

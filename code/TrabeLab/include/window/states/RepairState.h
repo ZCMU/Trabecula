@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -25,24 +25,44 @@ public:
 				m_pWindow->m_cmdRepair->Exec();
 			}
 		}
-		else if( uEvent == EVT_REPAIR ) {
-			//
+		else if( uEvent == EVT_LOAD ) {
+			CFileDialog dlg(TRUE);
+			if( dlg.DoModal() == IDOK ) {//弹出对话框
+				CWaitCursor wac;
+				USES_CONVERSION;
+				m_pWindow->m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
+				m_pWindow->m_cmdLoad->Exec();
+				if (m_pWindow->m_iLoadOK) {
+					return STATE_START;
+				} else {
+					return STATE_NOPIC;
+				}
+			}
 		}
 		else if( uEvent == EVT_START ) {
-			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
-			return STATE_START;
+			//
 		}
 		else if( uEvent == EVT_CLEAR ) {
 			CWaitCursor wac;
 			m_pWindow->m_cmdClearSegment->SetParameter(NULL);
 			m_pWindow->m_cmdClearSegment->Exec();
+			m_pWindow->m_btnStartSegment.EnableWindow(TRUE);
+			m_pWindow->m_btnClearSegment.EnableWindow(FALSE);
+			m_pWindow->m_btnAdd.EnableWindow(FALSE);
+			m_pWindow->m_btnErase.EnableWindow(FALSE);
+			m_pWindow->m_btnRepair.EnableWindow(FALSE);
+			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
 			return STATE_START;
 		}
 		else if( uEvent == EVT_ADD ) {
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
 			return STATE_ADD;
 		}
 		else if( uEvent == EVT_ERASE ) {
 			return STATE_ERASE;
+		}
+		else if( uEvent == EVT_REPAIR ) {
+			//
 		}
 		return STATE_REPAIR;
 	}

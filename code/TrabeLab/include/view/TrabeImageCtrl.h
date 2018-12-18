@@ -6,14 +6,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define ICN_LBTNUP  (0x101)
-#define ICN_SCROLL  (0x102)
-
-struct NMIMAGESCROLL
-{
-	NMHDR    nmh;  // Contains information about a notification message.
-	POINT    pt;
-};
+#define ICN_LBTNUP  (0x105)
 
 class TrabeImageCtrl : public ImageCtrlImpl<TrabeImageCtrl>
 {
@@ -199,16 +192,6 @@ public:
 
 //------------------------------------------------------------------------------
 // Overrideables
-	void DoScroll(int nType, int nScrollCode, int& cxyOffset, int cxySizeAll, int cxySizePage, int cxySizeLine)
-	{
-		baseClass::DoScroll(nType, nScrollCode, cxyOffset, cxySizeAll, cxySizePage, cxySizeLine);
-		NMIMAGESCROLL nm;
-		nm.nmh.code = ICN_SCROLL;
-		nm.nmh.idFrom = GetDlgCtrlID();
-		nm.nmh.hwndFrom = m_hWnd;
-		GetScrollOffset(nm.pt);
-		SendMessage(GetParent(), WM_NOTIFY, nm.nmh.idFrom, (LPARAM)&nm);
-	}
 	void DoImageCtrlPaint(CMemoryDC& mdc, const _WTYPES_NS::CRect& rcClient)
 	{
 		_WTYPES_NS::CRect rect;

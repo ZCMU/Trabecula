@@ -49,6 +49,7 @@ public:
 		m_wndMain.m_labelCtrlMeasure.set_Label(m_spViewModel->get_Measure());
 		// commands
 		m_wndMain.set_LoadCommand(m_spViewModel->get_LoadCommand());
+		m_wndMain.set_SaveCommand(m_spViewModel->get_SaveCommand());
 		m_wndMain.set_ShowPixelCommand(m_spViewModel->get_ShowPixelCommand());
 		m_wndMain.set_StartSegmentCommand(m_spViewModel->get_StartSegmentCommand());
 		m_wndMain.set_ClearSegmentCommand(m_spViewModel->get_ClearSegmentCommand());

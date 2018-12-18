@@ -18,5 +18,7 @@
 #define STATE_ERASE    11
 #define STATE_ADD      12
 #define STATE_REPAIR   13
+#define STATE_MEASURE  14
+#define STATE_NOPIC    15
 
 ////////////////////////////////////////////////////////////////////////////////

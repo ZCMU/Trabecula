@@ -1,9 +1,10 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../model/TrabeDataModel.h"
 #include "commands/LoadCommand.h"
+#include "commands/SaveCommand.h"
 #include "commands/ShowPixelCommand.h"
 #include "commands/StartSegmentCommand.h"
 #include "commands/ClearSegmentCommand.h"
@@ -23,6 +24,7 @@ public:
 						m_spLabel(std::make_shared<ATL::CString>()),
 						m_spMeasure(std::make_shared<ATL::CString>()),
 						m_cmdLoad(std::make_shared<LoadCommand<TrabeViewModel>>(this)),
+						m_cmdSave(std::make_shared<SaveCommand<TrabeViewModel>>(this)),
 						m_cmdShowPixel(std::make_shared<ShowPixelCommand<TrabeViewModel>>(this)),
 						m_cmdStartSegment(std::make_shared<StartSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
@@ -65,6 +67,10 @@ public:
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdLoad);
 	}
+	std::shared_ptr<ICommandBase> get_SaveCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdSave);
+	}
 	std::shared_ptr<ICommandBase> get_ShowPixelCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdShowPixel);
@@ -100,6 +106,15 @@ public:
 	bool LoadFile(const std::string& strFile)
 	{
 		return m_spModel->Load(strFile);
+	}
+	bool SaveFile(const std::string& strFile)
+	{
+		if (m_spImageProcess.get() == NULL || m_spImageProcess->IsNull())
+			return false;
+		USES_CONVERSION;
+		if (FAILED(m_spImageProcess->Save(A2T(strFile.c_str()), Gdiplus::ImageFormatBMP)))
+			return false;
+		return true;
 	}
 	void ColorDataToImage()
 	{
@@ -168,6 +183,7 @@ private:
 
 	//commands
 	std::shared_ptr<LoadCommand<TrabeViewModel>> m_cmdLoad;
+	std::shared_ptr<SaveCommand<TrabeViewModel>> m_cmdSave;
 	std::shared_ptr<ShowPixelCommand<TrabeViewModel>> m_cmdShowPixel;
 	std::shared_ptr<StartSegmentCommand<TrabeViewModel>> m_cmdStartSegment;
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;

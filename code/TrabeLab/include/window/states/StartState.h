@@ -31,6 +31,11 @@ public:
 				USES_CONVERSION;
 				m_pWindow->m_cmdLoad->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
 				m_pWindow->m_cmdLoad->Exec();
+				if (m_pWindow->m_iLoadOK) {
+					return STATE_START;
+				} else {
+					return STATE_NOPIC;
+				}
 			}
 		}
 		else if( uEvent == EVT_START ) {
@@ -42,27 +47,26 @@ public:
 				CWaitCursor wac;
 				m_pWindow->m_cmdStartSegment->SetParameter(std::any(rgb));
 				m_pWindow->m_cmdStartSegment->Exec();
+				m_pWindow->m_btnStartSegment.EnableWindow(FALSE);
+				m_pWindow->m_btnClearSegment.EnableWindow(TRUE);
+				m_pWindow->m_btnAdd.EnableWindow(TRUE);
+				m_pWindow->m_btnErase.EnableWindow(TRUE);
+				m_pWindow->m_btnRepair.EnableWindow(TRUE);
+				m_pWindow->m_btnMeasure.EnableWindow(TRUE);
+				return STATE_MEASURE;
 			}
 		}
 		else if( uEvent == EVT_CLEAR ) {
-			CWaitCursor wac;
-			m_pWindow->m_cmdClearSegment->SetParameter(NULL);
-			m_pWindow->m_cmdClearSegment->Exec();
-		}
-		else if( uEvent == EVT_ERASE ) {
-			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
-				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
-				return STATE_ERASE;
-			}
+			//
 		}
 		else if( uEvent == EVT_ADD ) {
-			return STATE_ADD;
+			//
+		}
+		else if( uEvent == EVT_ERASE ) {
+			//
 		}
 		else if( uEvent == EVT_REPAIR ) {
-			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
-				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
-				return STATE_REPAIR;
-			}
+			//
 		}
 		return STATE_START;
 	}

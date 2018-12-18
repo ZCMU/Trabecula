@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <class TWindow>
-class AddState : public IStateBase
+class MeasureState : public IStateBase
 {
 public:
-	AddState(TWindow* p) throw() : m_pWindow(p)
+	MeasureState(TWindow* p) throw() : m_pWindow(p)
 	{
 	}
 
@@ -14,19 +14,7 @@ public:
 	virtual int Process(unsigned int uEvent, const std::any& param)
 	{
 		if( uEvent == EVT_LEFT_MOUSE_UP ) {
-			COLORREF clr = std::any_cast<COLORREF>(param);
-			if( clr != CLR_INVALID ) {
-				std::array<UINT, 3> rgb;
-				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				m_pWindow->m_cmdShowPixel->SetParameter(std::any(rgb));
-				m_pWindow->m_cmdShowPixel->Exec();
-				// StartSegment
-				CWaitCursor wac;
-				m_pWindow->m_cmdStartSegment->SetParameter(std::any(rgb));
-				m_pWindow->m_cmdStartSegment->Exec();
-			}
+			//
 		}
 		else if( uEvent == EVT_LOAD ) {
 			CFileDialog dlg(TRUE);
@@ -58,7 +46,9 @@ public:
 			return STATE_START;
 		}
 		else if( uEvent == EVT_ADD ) {
-			//
+			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
+				return STATE_ADD;
+			}
 		}
 		else if( uEvent == EVT_ERASE ) {
 			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
@@ -72,7 +62,7 @@ public:
 				return STATE_REPAIR;
 			}
 		}
-		return STATE_ADD;
+		return STATE_MEASURE;
 	}
 
 private:

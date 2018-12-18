@@ -13,6 +13,8 @@
 #include "states\EraseState.h"
 #include "states\AddState.h"
 #include "states\RepairState.h"
+#include "states\MeasureState.h"
+#include "states\NoPicState.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +25,7 @@ public:
 
 	//--------------------------------------------------------------------------
 	enum { IDC_BTN_LOAD = 10, 
+			IDC_BTN_SAVE,
 			IDC_BTN_STARTSEGMENT,
 			IDC_BTN_CLEARSEGMENT,
 			IDC_BTN_ERASE,
@@ -36,7 +39,9 @@ public:
 			IDC_PIC_ORIGINAL,
 			IDC_PIC_PROCESS };
 
+	bool m_iLoadOK;
 	CButton		 m_btnLoad;
+	CButton		 m_btnSave;
 	CButton		 m_btnStartSegment;
 	CButton		 m_btnClearSegment;
 	CButton		 m_btnErase;
@@ -52,6 +57,7 @@ public:
 
 	//for binding
 	std::shared_ptr<ICommandBase>  m_cmdLoad;
+	std::shared_ptr<ICommandBase>  m_cmdSave;
 	std::shared_ptr<ICommandBase>  m_cmdShowPixel;
 	std::shared_ptr<ICommandBase>  m_cmdStartSegment;
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
@@ -64,6 +70,10 @@ public:
 	void set_LoadCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
 		m_cmdLoad = sp;
+	}
+	void set_SaveCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdSave = sp;
 	}
 	void set_ShowPixelCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
@@ -110,7 +120,17 @@ public:
 		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ADD, std::static_pointer_cast<IStateBase>(std::make_shared<AddState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_REPAIR, std::static_pointer_cast<IStateBase>(std::make_shared<RepairState<MainWindow>>(this)));
-		m_stateMgr.SetStartState(STATE_START);
+		m_stateMgr.Add(STATE_MEASURE, std::static_pointer_cast<IStateBase>(std::make_shared<MeasureState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_NOPIC, std::static_pointer_cast<IStateBase>(std::make_shared<NoPicState<MainWindow>>(this)));
+		m_stateMgr.SetStartState(STATE_NOPIC);
+		m_btnSave.EnableWindow(FALSE);
+		m_btnStartSegment.EnableWindow(FALSE);
+		m_btnClearSegment.EnableWindow(FALSE);
+		m_btnEdge.EnableWindow(FALSE);
+		m_btnAdd.EnableWindow(FALSE);
+		m_btnErase.EnableWindow(FALSE);
+		m_btnRepair.EnableWindow(FALSE);
+		m_btnMeasure.EnableWindow(FALSE);
 	}
 
 private:
@@ -127,6 +147,7 @@ public:
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
 //------------------------------------------------------------------------------
 		COMMAND_HANDLER(IDC_BTN_LOAD, BN_CLICKED, OnBtnLoadClicked)
+		COMMAND_HANDLER(IDC_BTN_SAVE, BN_CLICKED, OnBtnSaveClicked)
 		COMMAND_HANDLER(IDC_BTN_STARTSEGMENT, BN_CLICKED, OnBtnStartSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_CLEARSEGMENT, BN_CLICKED, OnBtnClearSegmentClicked)
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
@@ -149,6 +170,9 @@ public:
 		m_btnLoad.Create(m_hWnd, rcDefault, _T("Load"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_LOAD);
+		m_btnSave.Create(m_hWnd, rcDefault, _T("Save"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_SAVE);
 		m_btnStartSegment.Create(m_hWnd, rcDefault, _T("Start Segment"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_STARTSEGMENT);
@@ -222,10 +246,11 @@ public:
 			int x = 10;
 			int y = 10;
 			m_btnLoad.SetWindowPos(NULL, x, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnStartSegment.SetWindowPos(NULL, x + 70, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnClearSegment.SetWindowPos(NULL, x + 190, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_labelCtrl.SetWindowPos(NULL, x + 310, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnEdge.SetWindowPos(NULL, x + 540, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnSave.SetWindowPos(NULL, x + 70, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnStartSegment.SetWindowPos(NULL, x + 140, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnClearSegment.SetWindowPos(NULL, x + 260, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_labelCtrl.SetWindowPos(NULL, x + 380, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnEdge.SetWindowPos(NULL, x + 610, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -247,6 +272,22 @@ public:
 	LRESULT OnBtnLoadClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_LOAD, NULL);
+		return 0;
+	}
+	LRESULT OnBtnSaveClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		CString str_jpeg(_T("BMP"));
+		CString str_filename(_T("result.bmp"));
+		CFileDialog dlg(
+			FALSE, (LPCTSTR)(str_jpeg.AllocSysString()), (LPCTSTR)(str_filename.AllocSysString()),
+			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, NULL, NULL
+		);
+		if( dlg.DoModal() == IDOK ) {//弹出对话框
+			CWaitCursor wac;
+			USES_CONVERSION;
+			m_cmdSave->SetParameter(std::any(std::string(T2A(dlg.m_szFileName))));
+			m_cmdSave->Exec();
+		}
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Calc

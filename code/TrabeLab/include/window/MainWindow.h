@@ -31,6 +31,8 @@ public:
 			IDC_BTN_ERASE,
 			IDC_BTN_ADD,
 			IDC_BTN_REPAIR,
+			IDC_BTN_ERODE,
+			IDC_BTN_DILATE,
 			IDC_BTN_EDGE,
 			IDC_BTN_MEASURE,
 			IDC_TEXT_PIXEL,
@@ -47,6 +49,8 @@ public:
 	CButton		 m_btnErase;
 	CButton		 m_btnAdd;
 	CButton		 m_btnRepair;
+	CButton		 m_btnErode;
+	CButton		 m_btnDilate;
 	CButton		 m_btnEdge;
 	CButton		 m_btnMeasure;
 	TrabeImageCtrl  m_imageCtrlOriginal;
@@ -63,6 +67,8 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
 	std::shared_ptr<ICommandBase>  m_cmdErase;
 	std::shared_ptr<ICommandBase>  m_cmdRepair;
+	std::shared_ptr<ICommandBase>  m_cmdErode;
+	std::shared_ptr<ICommandBase>  m_cmdDilate;
 	std::shared_ptr<ICommandBase>  m_cmdMeasure;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
@@ -94,6 +100,14 @@ public:
 	void set_RepairCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
 		m_cmdRepair = sp;
+	}
+	void set_ErodeCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdErode = sp;
+	}
+	void set_DilateCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdDilate = sp;
 	}
 	void set_MeasureCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
@@ -130,6 +144,8 @@ public:
 		m_btnAdd.EnableWindow(FALSE);
 		m_btnErase.EnableWindow(FALSE);
 		m_btnRepair.EnableWindow(FALSE);
+		m_btnErode.EnableWindow(FALSE);
+		m_btnDilate.EnableWindow(FALSE);
 		m_btnMeasure.EnableWindow(FALSE);
 	}
 
@@ -153,6 +169,8 @@ public:
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
 		COMMAND_HANDLER(IDC_BTN_ADD, BN_CLICKED, OnBtnAddClicked)
 		COMMAND_HANDLER(IDC_BTN_REPAIR, BN_CLICKED, OnBtnRepairClicked)
+		COMMAND_HANDLER(IDC_BTN_ERODE, BN_CLICKED, OnBtnErodeClicked)
+		COMMAND_HANDLER(IDC_BTN_DILATE, BN_CLICKED, OnBtnDilateClicked)
 		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
 		COMMAND_HANDLER(IDC_BTN_MEASURE, BN_CLICKED, OnBtnMeasureClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
@@ -188,6 +206,12 @@ public:
 		m_btnRepair.Create(m_hWnd, rcDefault, _T("Repair"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_REPAIR);
+		m_btnErode.Create(m_hWnd, rcDefault, _T("Erode"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_ERODE);
+		m_btnDilate.Create(m_hWnd, rcDefault, _T("Dilate"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_DILATE);
 		m_btnEdge.Create(m_hWnd, rcDefault, _T("Edge"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_CHECKBOX, 0,
 						IDC_BTN_EDGE);
@@ -256,6 +280,8 @@ public:
 			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnErase.SetWindowPos(NULL, x, y + 160, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnRepair.SetWindowPos(NULL, x, y + 210, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnErode.SetWindowPos(NULL, x, y + 260, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnDilate.SetWindowPos(NULL, x, y + 310, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 100, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnMeasure.SetWindowPos(NULL, x, h - 50, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
@@ -317,6 +343,20 @@ public:
 	LRESULT OnBtnRepairClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_REPAIR, NULL);
+		return 0;
+	}
+	LRESULT OnBtnErodeClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		CWaitCursor wac;
+		m_cmdErode->SetParameter(NULL);
+		m_cmdErode->Exec();
+		return 0;
+	}
+	LRESULT OnBtnDilateClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		CWaitCursor wac;
+		m_cmdDilate->SetParameter(NULL);
+		m_cmdDilate->Exec();
 		return 0;
 	}
 	LRESULT OnBtnEdgeClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

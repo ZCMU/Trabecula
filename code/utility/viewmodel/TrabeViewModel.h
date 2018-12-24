@@ -10,6 +10,8 @@
 #include "commands/ClearSegmentCommand.h"
 #include "commands/EraseCommand.h"
 #include "commands/RepairCommand.h"
+#include "commands/ErodeCommand.h"
+#include "commands/DilateCommand.h"
 #include "commands/MeasureCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
@@ -30,6 +32,8 @@ public:
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdErase(std::make_shared<EraseCommand<TrabeViewModel>>(this)),
 						m_cmdRepair(std::make_shared<RepairCommand<TrabeViewModel>>(this)),
+						m_cmdErode(std::make_shared<ErodeCommand<TrabeViewModel>>(this)),
+						m_cmdDilate(std::make_shared<DilateCommand<TrabeViewModel>>(this)),
 						m_cmdMeasure(std::make_shared<MeasureCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
@@ -90,6 +94,14 @@ public:
 	std::shared_ptr<ICommandBase> get_RepairCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdRepair);
+	}
+	std::shared_ptr<ICommandBase> get_ErodeCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdErode);
+	}
+	std::shared_ptr<ICommandBase> get_DilateCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdDilate);
 	}
 	std::shared_ptr<ICommandBase> get_MeasureCommand() throw()
 	{
@@ -159,6 +171,14 @@ public:
 	{
 		return m_spModel->Repair(rect);
 	}
+	bool ErodeMask()
+	{
+		return m_spModel->Erode();
+	}
+	bool DilateMask()
+	{
+		return m_spModel->Dilate();
+	}
 	bool MeasureMask()
 	{
 		return m_spModel->Measure();
@@ -189,6 +209,8 @@ private:
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
 	std::shared_ptr<EraseCommand<TrabeViewModel>> m_cmdErase;
 	std::shared_ptr<RepairCommand<TrabeViewModel>> m_cmdRepair;
+	std::shared_ptr<ErodeCommand<TrabeViewModel>> m_cmdErode;
+	std::shared_ptr<DilateCommand<TrabeViewModel>> m_cmdDilate;
 	std::shared_ptr<MeasureCommand<TrabeViewModel>> m_cmdMeasure;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;

@@ -192,6 +192,26 @@ public:
 		return true;
 	}
 
+	//erode
+	bool Erode()
+	{
+		GrayData m_gTemp;
+		m_gMask.CopyTo(m_gTemp);
+		ImageProcessHelper::Erode(m_gTemp, m_gMask);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
+		return true;
+	}
+
+	//dilate
+	bool Dilate()
+	{
+		GrayData m_gTemp;
+		m_gMask.CopyTo(m_gTemp);
+		ImageProcessHelper::Dilate(m_gTemp, m_gMask);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
+		return true;
+	}
+
 	// measure
 	bool Measure()
 	{
@@ -204,8 +224,6 @@ private:
 	ColorData m_cData;
 	GrayData m_gMask;  // HSV 分割后的 Mask Data
 	GrayData m_gData;
-	// GrayData m_gDataErode;
-	// GrayData m_gDataDilate;
 	PixelData m_pData;
 	UINT m_MaskNum;
 };

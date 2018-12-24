@@ -52,6 +52,8 @@ public:
 				m_pWindow->m_btnAdd.EnableWindow(TRUE);
 				m_pWindow->m_btnErase.EnableWindow(TRUE);
 				m_pWindow->m_btnRepair.EnableWindow(TRUE);
+				m_pWindow->m_btnErode.EnableWindow(TRUE);
+				m_pWindow->m_btnDilate.EnableWindow(TRUE);
 				m_pWindow->m_btnMeasure.EnableWindow(TRUE);
 				return STATE_MEASURE;
 			}

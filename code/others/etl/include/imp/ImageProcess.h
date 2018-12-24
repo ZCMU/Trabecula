@@ -114,7 +114,7 @@ public:
 						*(pd+i*iW+j) = 0;
 						continue;
 					}
-					*(pd+i*iW+j) = 255;
+					*(pd+i*iW+j) = MASK_TARGET;
 				}
 			}
 		}
@@ -136,23 +136,23 @@ public:
 			for( int j = 0; j < iW; j ++ ) {
 				if (i > 0 && j > 0) {
 					// 左
-					if (*(ps+i*iW+j-1) == 255) {
-						*(pd+i*iW+j) = 255;
+					if (*(ps+i*iW+j-1) == MASK_TARGET) {
+						*(pd+i*iW+j) = MASK_TARGET;
 						continue;
 					}
 					// 右
-					if (*(ps+i*iW+j+1) == 255) {
-						*(pd+i*iW+j) = 255;
+					if (*(ps+i*iW+j+1) == MASK_TARGET) {
+						*(pd+i*iW+j) = MASK_TARGET;
 						continue;
 					}
 					// 上
-					if (*(ps+(i-1)*iW+j) == 255) {
-						*(pd+i*iW+j) = 255;
+					if (*(ps+(i-1)*iW+j) == MASK_TARGET) {
+						*(pd+i*iW+j) = MASK_TARGET;
 						continue;
 					}
 					// 下
-					if (*(ps+(i+1)*iW+j) == 255) {
-						*(pd+i*iW+j) = 255;
+					if (*(ps+(i+1)*iW+j) == MASK_TARGET) {
+						*(pd+i*iW+j) = MASK_TARGET;
 						continue;
 					}
 					*(pd+i*iW+j) = 0;

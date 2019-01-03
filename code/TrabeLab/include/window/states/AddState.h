@@ -57,6 +57,7 @@ public:
 			m_pWindow->m_btnErode.EnableWindow(FALSE);
 			m_pWindow->m_btnDilate.EnableWindow(FALSE);
 			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+			m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			return STATE_START;
 		}
 		else if( uEvent == EVT_ADD ) {

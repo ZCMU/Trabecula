@@ -29,6 +29,7 @@ public:
 				m_pWindow->m_btnErode.EnableWindow(FALSE);
 				m_pWindow->m_btnDilate.EnableWindow(FALSE);
 				m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+				m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			} else {
 				m_pWindow->m_iLoadOK = true;
 				m_pWindow->m_btnSave.EnableWindow(TRUE);
@@ -40,6 +41,7 @@ public:
 				m_pWindow->m_btnErode.EnableWindow(FALSE);
 				m_pWindow->m_btnDilate.EnableWindow(FALSE);
 				m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+				m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			}
 		}
 		if( str == "save" ) {

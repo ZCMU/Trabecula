@@ -58,6 +58,7 @@ public:
 		m_wndMain.set_ErodeCommand(m_spViewModel->get_ErodeCommand());
 		m_wndMain.set_DilateCommand(m_spViewModel->get_DilateCommand());
 		m_wndMain.set_MeasureCommand(m_spViewModel->get_MeasureCommand());
+		m_wndMain.set_FilterCommand(m_spViewModel->get_FilterCommand());
 		// notifications
 		m_spViewModel->AddPropertyNotification(m_wndMain.get_sinkProperty());
 		m_spViewModel->AddCommandNotification(m_wndMain.get_sinkCommand());

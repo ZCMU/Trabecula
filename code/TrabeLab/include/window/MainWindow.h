@@ -161,6 +161,8 @@ public:
 		m_btnDilate.EnableWindow(FALSE);
 		m_btnMeasure.EnableWindow(FALSE);
 		m_btnFilter.EnableWindow(FALSE);
+		m_btnUndo.EnableWindow(FALSE);
+		m_btnRedo.EnableWindow(FALSE);
 	}
 
 private:
@@ -242,7 +244,7 @@ public:
 		m_btnRedo.Create(m_hWnd, rcDefault, _T("Redo"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_REDO);
-		m_threshold.Create(m_hWnd, rcDefault, _T(""),
+		m_threshold.Create(m_hWnd, rcDefault, _T("20"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_EDIT_THRESHOLD);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
@@ -313,7 +315,7 @@ public:
 			m_btnDilate.SetWindowPos(NULL, x, y + 310, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_threshold.SetWindowPos(NULL, x, y + 360, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnFilter.SetWindowPos(NULL, x, y + 395, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 100, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 95, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnMeasure.SetWindowPos(NULL, x, h - 50, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -406,7 +408,11 @@ public:
 	LRESULT OnBtnFilterClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CWaitCursor wac;
-		m_cmdFilter->SetParameter(20);
+		CString str;
+		m_threshold.GetWindowText(str);
+		std::array<UINT, 1> quantity;
+		quantity[0] = (UINT)_ttoi(str);
+		m_cmdFilter->SetParameter(std::any(quantity));
 		m_cmdFilter->Exec();
 		return 0;
 	}

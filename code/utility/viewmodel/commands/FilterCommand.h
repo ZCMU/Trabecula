@@ -20,8 +20,8 @@ public:
 	}
 	virtual void Exec()
 	{
-		std::array<UINT, 1>& count = *(std::any_cast<std::array<UINT, 1>>(&m_param));
-		bool bRet = m_pVM->FilterMask(count);
+		std::array<UINT, 1>& quantity = *(std::any_cast<std::array<UINT, 1>>(&m_param));
+		bool bRet = m_pVM->FilterMask(quantity);
 	}
 
 private:

@@ -164,11 +164,12 @@ public:
 private:
 	//连通域标记算法,标记出连通域
 	//给出种子点的标记
-	static void label_one_growing(int iLabel, int x, int y, const GrayData& gData, std::vector<int>& matrix)
+	static int label_one_growing(int iLabel, int x, int y, const GrayData& gData, std::vector<int>& matrix)
 	{
 		const uchar* ps = gData.GetAddress();
 		int height = gData.GetHeight();
 		int width = gData.GetWidth();
+		int count = 0;
 
 		std::stack<std::pair<int, int>> coordinate_stack;
 		coordinate_stack.push(std::make_pair(y, x));
@@ -222,12 +223,16 @@ private:
 					coordinate_stack.push(std::make_pair(n_y, n_x));
 				}
 			}
+
+			count ++;
 		}
+
+		return count;
 	}
 
 public:
 	//所有都标记
-	static int Label(const GrayData& gData, std::vector<int>& matrix)
+	static int Label(const GrayData& gData, std::vector<int>& matrix,  std::map<int, int>& noise, UINT quantity )
 	{
 		const uchar* ps = gData.GetAddress();
 		int height = gData.GetHeight();
@@ -243,14 +248,18 @@ public:
 
 		int t_ps;
 		int label = 0;
-		//执行完成后，若matrix[i * width + j]的值为0，则表明这块区域是黑色，否则相同标号的为同一区域
+		int count = 0;
+		//执行完成后，若matrix[i * width + j]的值为0，则表明这块区域是背景，否则相同标号的为同一区域
 		for( int i = 0; i < height; i ++ ) {
 			for( int j = 0; j < width; j ++ ) {
 				t_ps = (int)(*(ps + i * width + j));
 				if( t_ps != 0 && matrix[i * width + j] == 0 ) {
 					label ++;
 					//获得一个种子点
-					label_one_growing(label, j, i, gData, matrix);
+					count = label_one_growing(label, j, i, gData, matrix);
+					if (count < (int)quantity) {
+						noise.insert(std::pair<int, int>(label, count));
+					}
 				}
 			}
 		}

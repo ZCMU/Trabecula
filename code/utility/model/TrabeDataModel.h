@@ -221,9 +221,9 @@ public:
 	}
 
 	// filter
-	bool Filter(const std::array<UINT, 1>& count)
+	bool Filter(const std::array<UINT, 1>& quantity)
 	{
-		// TrabeImageProcessHelper::TargetDataCalc(m_gMask, m_MaskNum);
+		TrabeImageProcessHelper::GrayDataFilter(m_gMask, quantity);
 		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
 		return true;
 	}

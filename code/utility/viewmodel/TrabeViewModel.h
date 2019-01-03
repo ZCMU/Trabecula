@@ -196,9 +196,9 @@ public:
 		CString& str = *m_spMeasure;
 		str.Format(_T("Num:\r\n%d"), data);
 	}
-	bool FilterMask(const std::array<UINT, 1>& count)
+	bool FilterMask(const std::array<UINT, 1>& quantity)
 	{
-		return m_spModel->Filter(count);
+		return m_spModel->Filter(quantity);
 	}
 
 private:

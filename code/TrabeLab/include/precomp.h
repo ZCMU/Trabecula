@@ -23,17 +23,6 @@ extern CAppModule _Module;
 
 #include <assert.h>
 //------------------------------------------------------------------------------
-void OutputDebugPrintf(const TCHAR *fmt, ...)
-{
-    TCHAR s[4096];
-    va_list args;
-    ZeroMemory(s, 4096 * sizeof(s[0]));
-    va_start(args, fmt);
-    wvsprintf(s, fmt, args);
-    va_end(args);
-    s[4095] = 0;
-    OutputDebugString(s);
-}
 
 #ifdef _EMBEDDED_MANIFEST
 #if defined _M_IX86

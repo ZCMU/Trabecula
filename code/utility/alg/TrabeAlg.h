@@ -70,6 +70,32 @@ public:
 			}
 		}
 	}
+	static void GrayDataFilter(GrayData& data, const std::array<UINT, 1>& quantity)
+	{
+		if( data.IsNull() )
+			return ;
+
+		int iW = data.GetWidth();
+		int iH = data.GetHeight();
+		uchar* pd = data.GetAddress();
+
+		std::vector<int> matrix;
+		std::map<int, int> noise;
+		ImageProcessHelper::Label(data, matrix, noise, quantity[0]);
+
+		// std::map<int,int>::iterator it;
+		// for( it = noise.begin(); it != noise.end(); it ++) {
+			// OutputDebugPrintf(_T("%d %d"), it->first, it->second);
+		// }
+
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				if (noise.count(matrix[i * iW + j]) == 1) {
+					pd[i*iW + j] = (uchar)0;
+				}
+			}
+		}
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////

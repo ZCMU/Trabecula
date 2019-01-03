@@ -13,6 +13,7 @@
 #include "commands/ErodeCommand.h"
 #include "commands/DilateCommand.h"
 #include "commands/MeasureCommand.h"
+#include "commands/FilterCommand.h"
 #include "sinks/TrabeViewModelSink.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ public:
 						m_cmdErode(std::make_shared<ErodeCommand<TrabeViewModel>>(this)),
 						m_cmdDilate(std::make_shared<DilateCommand<TrabeViewModel>>(this)),
 						m_cmdMeasure(std::make_shared<MeasureCommand<TrabeViewModel>>(this)),
+						m_cmdFilter(std::make_shared<FilterCommand<TrabeViewModel>>(this)),
 						m_sink(std::make_shared<TrabeViewModelSink<TrabeViewModel>>(this))
 	{
 	}
@@ -106,6 +108,10 @@ public:
 	std::shared_ptr<ICommandBase> get_MeasureCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdMeasure);
+	}
+	std::shared_ptr<ICommandBase> get_FilterCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdFilter);
 	}
 
 	//sinks
@@ -190,6 +196,10 @@ public:
 		CString& str = *m_spMeasure;
 		str.Format(_T("Num:\r\n%d"), data);
 	}
+	bool FilterMask(const std::array<UINT, 1>& quantity)
+	{
+		return m_spModel->Filter(quantity);
+	}
 
 private:
 	//models
@@ -212,6 +222,7 @@ private:
 	std::shared_ptr<ErodeCommand<TrabeViewModel>> m_cmdErode;
 	std::shared_ptr<DilateCommand<TrabeViewModel>> m_cmdDilate;
 	std::shared_ptr<MeasureCommand<TrabeViewModel>> m_cmdMeasure;
+	std::shared_ptr<FilterCommand<TrabeViewModel>> m_cmdFilter;
 	//sinks
 	std::shared_ptr<TrabeViewModelSink<TrabeViewModel>> m_sink;
 };

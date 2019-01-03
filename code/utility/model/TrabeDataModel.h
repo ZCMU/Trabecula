@@ -220,6 +220,14 @@ public:
 		return true;
 	}
 
+	// filter
+	bool Filter(const std::array<UINT, 1>& quantity)
+	{
+		TrabeImageProcessHelper::GrayDataFilter(m_gMask, quantity);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
+		return true;
+	}
+
 private:
 	ColorData m_cData;
 	GrayData m_gMask;  // HSV 分割后的 Mask Data

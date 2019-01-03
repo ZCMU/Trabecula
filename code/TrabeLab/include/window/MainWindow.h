@@ -35,11 +35,15 @@ public:
 			IDC_BTN_DILATE,
 			IDC_BTN_EDGE,
 			IDC_BTN_MEASURE,
+			IDC_BTN_FILTER,
+			IDC_BTN_UNDO,
+			IDC_BTN_REDO,
 			IDC_TEXT_PIXEL,
 			IDC_TEXT_PICKPIXEL,
 			IDC_TEXT_MEASURE,
 			IDC_PIC_ORIGINAL,
-			IDC_PIC_PROCESS };
+			IDC_PIC_PROCESS,
+			IDC_EDIT_THRESHOLD};
 
 	bool m_iLoadOK;
 	CButton		 m_btnLoad;
@@ -53,6 +57,10 @@ public:
 	CButton		 m_btnDilate;
 	CButton		 m_btnEdge;
 	CButton		 m_btnMeasure;
+	CEdit		 m_threshold;
+	CButton		 m_btnFilter;
+	CButton		 m_btnUndo;
+	CButton		 m_btnRedo;
 	TrabeImageCtrl  m_imageCtrlOriginal;
 	TrabeImageCtrl  m_imageCtrlProcess;
 	CStatic		 m_txtPixel;
@@ -70,6 +78,7 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdErode;
 	std::shared_ptr<ICommandBase>  m_cmdDilate;
 	std::shared_ptr<ICommandBase>  m_cmdMeasure;
+	std::shared_ptr<ICommandBase>  m_cmdFilter;
 	std::shared_ptr<MainWindowPropertySink<MainWindow>>  m_sinkProperty;
 	std::shared_ptr<MainWindowCommandSink<MainWindow>>  m_sinkCommand;
 
@@ -113,6 +122,10 @@ public:
 	{
 		m_cmdMeasure = sp;
 	}
+	void set_FilterCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdFilter = sp;
+	}
 	std::shared_ptr<IPropertyNotification> get_sinkProperty() throw()
 	{
 		// IPropertyNotification -> OnPropertyChanged
@@ -147,6 +160,9 @@ public:
 		m_btnErode.EnableWindow(FALSE);
 		m_btnDilate.EnableWindow(FALSE);
 		m_btnMeasure.EnableWindow(FALSE);
+		m_btnFilter.EnableWindow(FALSE);
+		m_btnUndo.EnableWindow(FALSE);
+		m_btnRedo.EnableWindow(FALSE);
 	}
 
 private:
@@ -173,6 +189,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_DILATE, BN_CLICKED, OnBtnDilateClicked)
 		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
 		COMMAND_HANDLER(IDC_BTN_MEASURE, BN_CLICKED, OnBtnMeasureClicked)
+		COMMAND_HANDLER(IDC_BTN_FILTER, BN_CLICKED, OnBtnFilterClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
 		NOTIFY_HANDLER(IDC_PIC_ORIGINAL, ICN_SCROLL, OnImageOriginalScroll)
@@ -218,6 +235,18 @@ public:
 		m_btnMeasure.Create(m_hWnd, rcDefault, _T("Measure"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_MEASURE);
+		m_btnFilter.Create(m_hWnd, rcDefault, _T("Filter"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_FILTER);
+		m_btnUndo.Create(m_hWnd, rcDefault, _T("Undo"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_UNDO);
+		m_btnRedo.Create(m_hWnd, rcDefault, _T("Redo"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_REDO);
+		m_threshold.Create(m_hWnd, rcDefault, _T("20"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_EDIT_THRESHOLD);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_TEXT_PIXEL);
@@ -274,7 +303,9 @@ public:
 			m_btnStartSegment.SetWindowPos(NULL, x + 140, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnClearSegment.SetWindowPos(NULL, x + 260, y, 110, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_labelCtrl.SetWindowPos(NULL, x + 380, y, 160, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnEdge.SetWindowPos(NULL, x + 610, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnUndo.SetWindowPos(NULL, x + 550, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnRedo.SetWindowPos(NULL, x + 620, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnEdge.SetWindowPos(NULL, x + 690, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -282,7 +313,9 @@ public:
 			m_btnRepair.SetWindowPos(NULL, x, y + 210, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnErode.SetWindowPos(NULL, x, y + 260, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnDilate.SetWindowPos(NULL, x, y + 310, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 100, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_threshold.SetWindowPos(NULL, x, y + 360, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_btnFilter.SetWindowPos(NULL, x, y + 395, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 95, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_btnMeasure.SetWindowPos(NULL, x, h - 50, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -370,6 +403,17 @@ public:
 		CWaitCursor wac;
 		m_cmdMeasure->SetParameter(NULL);
 		m_cmdMeasure->Exec();
+		return 0;
+	}
+	LRESULT OnBtnFilterClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		CWaitCursor wac;
+		CString str;
+		m_threshold.GetWindowText(str);
+		std::array<UINT, 1> quantity;
+		quantity[0] = (UINT)_ttoi(str);
+		m_cmdFilter->SetParameter(std::any(quantity));
+		m_cmdFilter->Exec();
 		return 0;
 	}
 	//-------------------------------------------------------------------------- Move

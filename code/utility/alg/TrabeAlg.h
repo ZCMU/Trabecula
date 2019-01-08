@@ -90,7 +90,7 @@ public:
 
 		for( int i = 0; i < iH; i ++ ) {
 			for( int j = 0; j < iW; j ++ ) {
-				if (vecArea[matrix[i * iW + j]] < quantity[0]) {
+				if (vecArea[matrix[i * iW + j]] < (int)quantity[0]) {
 					pd[i*iW + j] = (uchar)0;
 				}
 			}

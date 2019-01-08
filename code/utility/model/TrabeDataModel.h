@@ -151,7 +151,7 @@ public:
 			hsvMax.v = hsv.v+Threshold_V;
 		}
 		
-		ImageProcessHelper::SegmentByHSV(hsvMin.h, hsvMin.s, hsvMin.v,
+		TrabeImageDataHelper::SegmentByHSV(hsvMin.h, hsvMin.s, hsvMin.v,
 										hsvMax.h, hsvMax.s, hsvMax.v,
 										m_cData, m_gMask);
 		// ImageProcessHelper::ExtractBorder(m_gMask);
@@ -196,7 +196,7 @@ public:
 	{
 		GrayData m_gTemp;
 		m_gMask.CopyTo(m_gTemp);
-		ImageProcessHelper::Erode(m_gTemp, m_gMask);
+		ImageProcessHelper::ErodeBinary(m_gTemp, MASK_TARGET, m_gMask);
 		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
 		return true;
 	}
@@ -206,7 +206,7 @@ public:
 	{
 		GrayData m_gTemp;
 		m_gMask.CopyTo(m_gTemp);
-		ImageProcessHelper::Dilate(m_gTemp, m_gMask);
+		ImageProcessHelper::DilateBinary(m_gTemp, MASK_TARGET, m_gMask);
 		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
 		return true;
 	}

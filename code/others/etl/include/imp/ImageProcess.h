@@ -78,7 +78,7 @@ public:
 		return threshold;
 	}
 
-	static void Erode(GrayData& gDataSrc, GrayData& gDataDst)
+	static void ErodeBinary(GrayData& gDataSrc, uchar uFore, GrayData& gDataDst)
 	{
 		gDataDst.Clear();
 		if( gDataSrc.IsNull() )
@@ -114,12 +114,12 @@ public:
 						*(pd+i*iW+j) = 0;
 						continue;
 					}
-					*(pd+i*iW+j) = MASK_TARGET;
+					*(pd+i*iW+j) = uFore;
 				}
 			}
 		}
 	}
-	static void Dilate(GrayData& gDataSrc, GrayData& gDataDst)
+	static void DilateBinary(GrayData& gDataSrc, uchar uFore, GrayData& gDataDst)
 	{
 		gDataDst.Clear();
 		if( gDataSrc.IsNull() )
@@ -136,23 +136,23 @@ public:
 			for( int j = 0; j < iW; j ++ ) {
 				if (i > 0 && j > 0) {
 					// 左
-					if (*(ps+i*iW+j-1) == MASK_TARGET) {
-						*(pd+i*iW+j) = MASK_TARGET;
+					if (*(ps+i*iW+j-1) == uFore) {
+						*(pd+i*iW+j) = uFore;
 						continue;
 					}
 					// 右
-					if (*(ps+i*iW+j+1) == MASK_TARGET) {
-						*(pd+i*iW+j) = MASK_TARGET;
+					if (*(ps+i*iW+j+1) == uFore) {
+						*(pd+i*iW+j) = uFore;
 						continue;
 					}
 					// 上
-					if (*(ps+(i-1)*iW+j) == MASK_TARGET) {
-						*(pd+i*iW+j) = MASK_TARGET;
+					if (*(ps+(i-1)*iW+j) == uFore) {
+						*(pd+i*iW+j) = uFore;
 						continue;
 					}
 					// 下
-					if (*(ps+(i+1)*iW+j) == MASK_TARGET) {
-						*(pd+i*iW+j) = MASK_TARGET;
+					if (*(ps+(i+1)*iW+j) == uFore) {
+						*(pd+i*iW+j) = uFore;
 						continue;
 					}
 					*(pd+i*iW+j) = 0;
@@ -232,7 +232,7 @@ private:
 
 public:
 	//所有都标记
-	static int Label(const GrayData& gData, std::vector<int>& matrix,  std::map<int, int>& noise, UINT quantity )
+	static int Label(const GrayData& gData, std::vector<int>& matrix, std::vector<int>& vecArea)
 	{
 		const uchar* ps = gData.GetAddress();
 		int height = gData.GetHeight();
@@ -246,20 +246,22 @@ public:
 			}
 		}
 
+		//面积表初始化
+		vecArea.clear();
+		vecArea.push_back(0);
+
 		int t_ps;
 		int label = 0;
-		int count = 0;
-		//执行完成后，若matrix[i * width + j]的值为0，则表明这块区域是背景，否则相同标号的为同一区域
+		//执行完成后，若matrix[i * width + j]的值为0，则表明这块区域是黑色，否则相同标号的为同一区域
 		for( int i = 0; i < height; i ++ ) {
 			for( int j = 0; j < width; j ++ ) {
 				t_ps = (int)(*(ps + i * width + j));
 				if( t_ps != 0 && matrix[i * width + j] == 0 ) {
 					label ++;
 					//获得一个种子点
-					count = label_one_growing(label, j, i, gData, matrix);
-					if (count < (int)quantity) {
-						noise.insert(std::pair<int, int>(label, count));
-					}
+					int count = label_one_growing(label, j, i, gData, matrix);
+					//记录面积表
+					vecArea.push_back(count);
 				}
 			}
 		}
@@ -267,7 +269,7 @@ public:
 	}
 
 	//extract border
-	static void ExtractBorder(GrayData& gData) throw()
+	static void ExtractBorder(int iBorderValue, GrayData& gData) throw()
 	{
 		const int c_coord_x[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
 		const int c_coord_y[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
@@ -284,7 +286,7 @@ public:
 						int y = i + c_coord_y[m];
 						if( x < 0 || x >= iW || y < 0 || y >= iH
 							|| p0[y * iW + x] == 0 ) {
-							*pd = MASK_BORDER; // Border Mask
+							*pd = iBorderValue; // Border Mask
 							break;
 						}
 					}

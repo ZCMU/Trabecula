@@ -8,10 +8,10 @@
 
 #define ICN_LBTNUP  (0x105)
 
-class TrabeImageCtrl : public ImageCtrlImpl<TrabeImageCtrl>
+class TrabeImageCtrl : public NoFlickerImageCtrlImpl<TrabeImageCtrl>
 {
 private:
-	typedef ImageCtrlImpl<TrabeImageCtrl>  baseClass;
+	typedef NoFlickerImageCtrlImpl<TrabeImageCtrl>  baseClass;
 
 public:
 	TrabeImageCtrl() : m_bSelectMode(false), m_clrSelected(CLR_INVALID)

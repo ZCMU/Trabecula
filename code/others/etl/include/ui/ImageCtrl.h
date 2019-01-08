@@ -70,6 +70,11 @@ public:
 	LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
 		CDCHandle dc((HDC)wParam);
+		RECT rcClient;
+		GetClientRect(&rcClient);
+		CBrush bsh;
+		bsh.CreateSolidBrush(RGB(64, 64, 64));
+		dc.FillRect(&rcClient, bsh);
 		return 1;
 	}
 	LRESULT OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -137,6 +142,52 @@ public:
 
 	void DoPaint(CDCHandle dc)
 	{
+		if( !is_image_null() ) {
+			int nOldMode = dc.SetStretchBltMode(COLORONCOLOR);
+			m_spImage->Draw(dc, _WTYPES_NS::CRect(0, 0, m_spImage->GetWidth(), m_spImage->GetHeight()));
+			dc.SetStretchBltMode(nOldMode);
+		}
+	}
+};
+
+class ImageCtrl : public ImageCtrlImpl<ImageCtrl>
+{
+private:
+	typedef ImageCtrlImpl<ImageCtrl>  baseClass;
+
+public:
+//------------------------------------------------------------------------------
+//message handler
+	BEGIN_MSG_MAP(ImageCtrl)
+		CHAIN_MSG_MAP(baseClass)
+	END_MSG_MAP()
+};
+
+template <class T>
+class ATL_NO_VTABLE NoFlickerImageCtrlImpl : public ImageCtrlImpl<T>
+{
+private:
+	typedef ImageCtrlImpl<T>  baseClass;
+
+public:
+//------------------------------------------------------------------------------
+//message handler
+	BEGIN_MSG_MAP(NoFlickerImageCtrlImpl)
+		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
+		CHAIN_MSG_MAP(baseClass)
+	END_MSG_MAP()
+
+	LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	{
+		CDCHandle dc((HDC)wParam);
+		bHandled = TRUE;
+		return 1;
+	}
+
+//------------------------------------------------------------------------------
+//overriders
+	void DoPaint(CDCHandle dc)
+	{
 		POINT pt;
 		GetScrollOffset(pt);
 		_WTYPES_NS::CRect rcClient;
@@ -164,10 +215,23 @@ public:
 	}
 
 //------------------------------------------------------------------------------
-//overriders
+//overrideables
 	void DoImageCtrlPaint(CMemoryDC& mdc, const _WTYPES_NS::CRect& rcClient)
 	{
 	}
+};
+
+class NoFlickerImageCtrl : public NoFlickerImageCtrlImpl<NoFlickerImageCtrl>
+{
+private:
+	typedef NoFlickerImageCtrlImpl<NoFlickerImageCtrl>  baseClass;
+
+public:
+//------------------------------------------------------------------------------
+//message handler
+	BEGIN_MSG_MAP(NoFlickerImageCtrl)
+		CHAIN_MSG_MAP(baseClass)
+	END_MSG_MAP()
 };
 
 ////////////////////////////////////////////////////////////////////////////////

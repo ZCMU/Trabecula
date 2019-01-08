@@ -141,7 +141,7 @@ public:
 	}
 	void ColorDataAndMaskToImage()
 	{
-		ImageDataHelper::ColorDataAndMaskToImage(m_spModel->get_ColorData(), m_spModel->get_MaskData(), *m_spImageProcess);
+		TrabeImageDataHelper::ColorDataAndMaskToImage(m_spModel->get_ColorData(), m_spModel->get_MaskData(), *m_spImageProcess);
 	}
 	void GrayDataToImage()
 	{

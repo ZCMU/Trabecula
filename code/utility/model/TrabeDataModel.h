@@ -5,12 +5,11 @@
 #define Threshold_S  (float)0.2 // +-0.2
 #define Threshold_V  (float)0.1 // +-0.1
 
-#define MASK_TARGET  1
-#define MASK_BORDER  2
-
 #include <imp\ImageColor.h>
 #include <imp\ImageData.h>
 #include <imp\ImageProcess.h>
+
+#include <alg\TrabeImageData.h>
 #include <alg\TrabeAlg.h>
 
 ////////////////////////////////////////////////////////////////////////////////

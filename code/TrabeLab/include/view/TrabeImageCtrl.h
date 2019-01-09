@@ -119,7 +119,8 @@ private:
 		lpRect->bottom = lpRect->top + 1;
 		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
 		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient)
-			&& rcIntersect.Height() > (lpRect->bottom - lpRect->top) * 8 / 10 )
+			&& rcIntersect.Height() > (lpRect->bottom - lpRect->top) * 9 / 10
+			&& rcIntersect.Width() > (lpRect->right - lpRect->left) * 9 / 10 )
 			return ;
 		//left
 		lpRect->left = rcCenter.left - 70;
@@ -128,7 +129,7 @@ private:
 		lpRect->bottom = lpRect->top + 1;
 		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
 		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient)
-			&& rcIntersect.Width() > (lpRect->right - lpRect->left) * 8 / 10 )
+			&& rcIntersect.Width() > (lpRect->right - lpRect->left) * 9 / 10 )
 			return ;
 		//right
 		lpRect->left = rcCenter.right + 2;
@@ -137,7 +138,7 @@ private:
 		lpRect->bottom = lpRect->top + 1;
 		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
 		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient)
-			&& rcIntersect.Width() > (lpRect->right - lpRect->left) * 8 / 10 )
+			&& rcIntersect.Width() > (lpRect->right - lpRect->left) * 9 / 10 )
 			return ;
 		//bottom
 		lpRect->left = rcCenter.left + 2;

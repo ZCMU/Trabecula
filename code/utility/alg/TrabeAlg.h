@@ -80,8 +80,15 @@ public:
 		uchar* pd = data.GetAddress();
 
 		std::vector<int> matrix;
-		std::vector<int> vecArea;
-		ImageProcessHelper::Label(data, matrix, vecArea);
+		std::map<int, int> noise;
+		{
+			std::vector<int> vecArea;
+			ImageProcessHelper::Label(data, matrix, vecArea);
+			for( int i = 0; i < (int)vecArea.size(); i ++ ) {
+				if( vecArea[i] < (int)quantity[0] )
+					noise.insert(std::pair<int, int>(i, vecArea[i]));
+			}
+		} //end block
 
 		// std::map<int,int>::iterator it;
 		// for( it = noise.begin(); it != noise.end(); it ++) {
@@ -90,7 +97,7 @@ public:
 
 		for( int i = 0; i < iH; i ++ ) {
 			for( int j = 0; j < iW; j ++ ) {
-				if (vecArea[matrix[i * iW + j]] < (int)quantity[0]) {
+				if (noise.count(matrix[i * iW + j]) == 1) {
 					pd[i*iW + j] = (uchar)0;
 				}
 			}

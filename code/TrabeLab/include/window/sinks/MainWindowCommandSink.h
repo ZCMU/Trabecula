@@ -29,6 +29,7 @@ public:
 				m_pWindow->m_btnErode.EnableWindow(FALSE);
 				m_pWindow->m_btnDilate.EnableWindow(FALSE);
 				m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+				m_pWindow->m_btnRuler.EnableWindow(FALSE);
 				m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			} else {
 				m_pWindow->m_iLoadOK = true;
@@ -41,10 +42,14 @@ public:
 				m_pWindow->m_btnErode.EnableWindow(FALSE);
 				m_pWindow->m_btnDilate.EnableWindow(FALSE);
 				m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+				m_pWindow->m_btnRuler.EnableWindow(FALSE);
 				m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			}
+			//change modes!
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
+			m_pWindow->m_imageCtrlProcess.SetRulerMode(false);
 		}
-		if( str == "save" ) {
+		else if( str == "save" ) {
 			if( !bOK ) {
 				AtlMessageBox(NULL, _T("error save image"), _T("error"), MB_OK);
 			} else {

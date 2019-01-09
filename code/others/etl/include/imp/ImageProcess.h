@@ -269,11 +269,12 @@ public:
 	}
 
 	//extract border
-	static void ExtractBorder(int iBorderValue, GrayData& gData) throw()
+	static int ExtractBorder(uchar uBorderValue, GrayData& gData) throw()
 	{
 		const int c_coord_x[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
 		const int c_coord_y[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
 		const int c_num = 8;
+		int count = 0;
 		uchar* pd = gData.GetAddress();
 		uchar* p0 = pd;
 		int iW = gData.GetWidth();
@@ -286,11 +287,27 @@ public:
 						int y = i + c_coord_y[m];
 						if( x < 0 || x >= iW || y < 0 || y >= iH
 							|| p0[y * iW + x] == 0 ) {
-							*pd = iBorderValue; // Border Mask
+							*pd = uBorderValue; // Border Mask
+							count ++;
 							break;
 						}
 					}
 				}
+				pd ++;
+			}
+		}
+		return count;
+	}
+	//cancel border
+	static void CancelBorder(uchar uBorderValue, uchar uForeValue, GrayData& gData) throw()
+	{
+		uchar* pd = gData.GetAddress();
+		int iW = gData.GetWidth();
+		int iH = gData.GetHeight();
+		for( int i = 0; i < iH; i ++ ) {
+			for( int j = 0; j < iW; j ++ ) {
+				if( *pd == uBorderValue )
+					*pd = uForeValue;
 				pd ++;
 			}
 		}

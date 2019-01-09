@@ -192,9 +192,10 @@ public:
 	// MeasureDataToString
 	void MeasureDataToString()
 	{
-		const UINT& data = m_spModel->get_MaskNum();
 		CString& str = *m_spMeasure;
-		str.Format(_T("Num:\r\n%d"), data);
+		str.Format(_T("A:\r\n%d\r\nC:\r\n%d"),
+				(int)(m_spModel->get_MaskNum()),
+				m_spModel->get_CircNum());
 	}
 	bool FilterMask(const std::array<UINT, 1>& quantity)
 	{

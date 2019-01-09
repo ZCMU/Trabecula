@@ -9,12 +9,13 @@
 #include "sinks\MainWindowCommandSink.h"
 
 #include "states\StateDef.h"
+#include "states\NoPicState.h"
 #include "states\StartState.h"
 #include "states\EraseState.h"
 #include "states\AddState.h"
 #include "states\RepairState.h"
 #include "states\MeasureState.h"
-#include "states\NoPicState.h"
+#include "states\RulerState.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +36,7 @@ public:
 			IDC_BTN_DILATE,
 			IDC_BTN_EDGE,
 			IDC_BTN_MEASURE,
+			IDC_BTN_RULER,
 			IDC_BTN_FILTER,
 			IDC_BTN_UNDO,
 			IDC_BTN_REDO,
@@ -57,6 +59,7 @@ public:
 	CButton		 m_btnDilate;
 	CButton		 m_btnEdge;
 	CButton		 m_btnMeasure;
+	CButton		 m_btnRuler;
 	CEdit		 m_threshold;
 	CButton		 m_btnFilter;
 	CButton		 m_btnUndo;
@@ -143,12 +146,13 @@ public:
 		m_sinkCommand  = std::make_shared<MainWindowCommandSink<MainWindow>>(this);
 
 		//states
+		m_stateMgr.Add(STATE_NOPIC, std::static_pointer_cast<IStateBase>(std::make_shared<NoPicState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_START, std::static_pointer_cast<IStateBase>(std::make_shared<StartState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ADD, std::static_pointer_cast<IStateBase>(std::make_shared<AddState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_REPAIR, std::static_pointer_cast<IStateBase>(std::make_shared<RepairState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_MEASURE, std::static_pointer_cast<IStateBase>(std::make_shared<MeasureState<MainWindow>>(this)));
-		m_stateMgr.Add(STATE_NOPIC, std::static_pointer_cast<IStateBase>(std::make_shared<NoPicState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_RULER, std::static_pointer_cast<IStateBase>(std::make_shared<RulerState<MainWindow>>(this)));
 		m_stateMgr.SetStartState(STATE_NOPIC);
 		m_btnSave.EnableWindow(FALSE);
 		m_btnStartSegment.EnableWindow(FALSE);
@@ -160,6 +164,7 @@ public:
 		m_btnErode.EnableWindow(FALSE);
 		m_btnDilate.EnableWindow(FALSE);
 		m_btnMeasure.EnableWindow(FALSE);
+		m_btnRuler.EnableWindow(FALSE);
 		m_btnFilter.EnableWindow(FALSE);
 		m_btnUndo.EnableWindow(FALSE);
 		m_btnRedo.EnableWindow(FALSE);
@@ -189,6 +194,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_DILATE, BN_CLICKED, OnBtnDilateClicked)
 		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
 		COMMAND_HANDLER(IDC_BTN_MEASURE, BN_CLICKED, OnBtnMeasureClicked)
+		COMMAND_HANDLER(IDC_BTN_RULER, BN_CLICKED, OnBtnRulerClicked)
 		COMMAND_HANDLER(IDC_BTN_FILTER, BN_CLICKED, OnBtnFilterClicked)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_PIXEL, OnImageCtrlPixel)
 		NOTIFY_HANDLER(IDC_PIC_PROCESS, ICN_LBTNUP, OnImageLButtonUp)
@@ -235,6 +241,9 @@ public:
 		m_btnMeasure.Create(m_hWnd, rcDefault, _T("Measure"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_MEASURE);
+		m_btnRuler.Create(m_hWnd, rcDefault, _T("Ruler"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_RULER);
 		m_btnFilter.Create(m_hWnd, rcDefault, _T("Filter"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_FILTER);
@@ -245,7 +254,7 @@ public:
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_REDO);
 		m_threshold.Create(m_hWnd, rcDefault, _T("20"),
-						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | ES_NUMBER, 0,
 						IDC_EDIT_THRESHOLD);
 		m_txtPixel.Create(m_hWnd, rcDefault, _T(""),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
@@ -308,16 +317,28 @@ public:
 			m_btnEdge.SetWindowPos(NULL, x + 690, y, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (40 + 10);
 			m_txtPixel.SetWindowPos(NULL, x, y, 60, 90, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnAdd.SetWindowPos(NULL, x, y + 110, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnErase.SetWindowPos(NULL, x, y + 160, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnRepair.SetWindowPos(NULL, x, y + 210, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnErode.SetWindowPos(NULL, x, y + 260, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnDilate.SetWindowPos(NULL, x, y + 310, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_threshold.SetWindowPos(NULL, x, y + 360, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnFilter.SetWindowPos(NULL, x, y + 395, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_labelCtrlMeasure.SetWindowPos(NULL, x, h - 95, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
-			m_btnMeasure.SetWindowPos(NULL, x, h - 50, 60, 40, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (90 + 10 + 5);
+			m_btnAdd.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
+			m_btnErase.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
+			m_btnRepair.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
+			m_btnErode.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
+			m_btnDilate.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
+			m_threshold.SetWindowPos(NULL, x, y, 60, 20, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (20);
+			m_btnFilter.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y = h - 10;
+			m_btnMeasure.SetWindowPos(NULL, x, y - 30, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y -= (30 + 5);
+			m_labelCtrlMeasure.SetWindowPos(NULL, x, y - 65, 60, 65, SWP_NOACTIVATE | SWP_NOZORDER);
+			y -= (65 + 5);
+			m_btnRuler.SetWindowPos(NULL, x, y - 30, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
+			y = 10 + 40 + 10;
 			m_imageCtrlOriginal.SetWindowPos(NULL, x, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
 			m_imageCtrlOriginal.UpdateScroll();
 			m_imageCtrlProcess.SetWindowPos(NULL, x + (w - x)/2, y, (w - x)/2 - 10, h - y - 10, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -403,6 +424,11 @@ public:
 		CWaitCursor wac;
 		m_cmdMeasure->SetParameter(NULL);
 		m_cmdMeasure->Exec();
+		return 0;
+	}
+	LRESULT OnBtnRulerClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		m_stateMgr.Process(EVT_RULER, NULL);
 		return 0;
 	}
 	LRESULT OnBtnFilterClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

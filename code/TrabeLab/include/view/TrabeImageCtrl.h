@@ -14,13 +14,21 @@ private:
 	typedef NoFlickerImageCtrlImpl<TrabeImageCtrl>  baseClass;
 
 public:
-	TrabeImageCtrl() : m_bSelectMode(false), m_clrSelected(CLR_INVALID)
+	TrabeImageCtrl() : m_bSelectMode(false), m_clrSelected(CLR_INVALID),
+						m_bRulerMode(false)
 	{
+		m_rcSelect.SetRectEmpty();
+		m_rcRulerText.SetRectEmpty();
 	}
 
 	void SetSelectMode(bool bSelect) throw()
 	{
 		m_bSelectMode = bSelect;
+	}
+
+	void SetRulerMode(bool bRuler) throw()
+	{
+		m_bRulerMode = bRuler;
 	}
 
 	COLORREF GetSelectColor() const throw()
@@ -41,48 +49,103 @@ private:
 	POINT m_pt1;
 	POINT m_pt2;
 	POINT m_ptOld;
+	CRect m_rcSelect;
+
+	//ruler
+	bool m_bRulerMode;
+	CString m_strRulerText;
+	CRect m_rcRulerText;
 
 	COLORREF m_clrSelected;
 
 private:
-	void generate_rect(LPRECT lpRect) throw()
+	static void _pt_generate_rect(const POINT& pt1, const POINT& pt2, LPRECT lpRect) throw()
 	{
-		if( m_pt1.x < m_pt2.x ) {
-			lpRect->left  = m_pt1.x;
-			lpRect->right = m_pt2.x;
+		if( pt1.x < pt2.x ) {
+			lpRect->left  = pt1.x;
+			lpRect->right = pt2.x;
 		}
 		else {
-			lpRect->left  = m_pt2.x;
-			lpRect->right = m_pt1.x;
+			lpRect->left  = pt2.x;
+			lpRect->right = pt1.x;
 		}
-		if( m_pt1.y < m_pt2.y ) {
-			lpRect->top    = m_pt1.y;
-			lpRect->bottom = m_pt2.y;
+		if( pt1.y < pt2.y ) {
+			lpRect->top    = pt1.y;
+			lpRect->bottom = pt2.y;
 		}
 		else {
-			lpRect->top    = m_pt2.y;
-			lpRect->bottom = m_pt1.y;
+			lpRect->top    = pt2.y;
+			lpRect->bottom = pt1.y;
 		}
 	}
-
+	void generate_rect(LPRECT lpRect) throw()
+	{
+		_pt_generate_rect(m_pt1, m_pt2, lpRect);
+	}
 	void generate_rect_old(LPRECT lpRect) throw()
 	{
-		if( m_pt1.x < m_ptOld.x ) {
-			lpRect->left  = m_pt1.x;
-			lpRect->right = m_ptOld.x;
-		}
-		else {
-			lpRect->left  = m_ptOld.x;
-			lpRect->right = m_pt1.x;
-		}
-		if( m_pt1.y < m_ptOld.y ) {
-			lpRect->top    = m_pt1.y;
-			lpRect->bottom = m_ptOld.y;
-		}
-		else {
-			lpRect->top    = m_ptOld.y;
-			lpRect->bottom = m_pt1.y;
-		}
+		_pt_generate_rect(m_pt1, m_ptOld, lpRect);
+	}
+
+	//ruler's text
+	static void _pt_generate_ruler_text(const POINT& pt1, const POINT& pt2, CString& str)
+	{
+		str.Empty();
+		if( pt1.x == pt2.x && pt1.y == pt2.y )
+			return ;
+		double v = ::sqrt((double)(pt1.x - pt2.x) * (double)(pt1.x - pt2.x)
+						+ (double)(pt1.y - pt2.y) * (double)(pt1.y - pt2.y));
+		str.Format(_T("%lf"), v);
+	}
+	void generate_ruler_text()
+	{
+		_pt_generate_ruler_text(m_pt1, m_pt2, m_strRulerText);
+	}
+
+	static void _pt_generate_ruler_text_rect(const POINT& pt1, const POINT& pt2,
+											const CString& str,
+											const RECT& rcAbsClient, LPRECT lpRect) throw()
+	{
+		lpRect->left = lpRect->top = lpRect->right = lpRect->bottom = 0;
+		if( str.IsEmpty() )
+			return ;
+		CRect rcCenter, rcIntersect;
+		_pt_generate_rect(pt1, pt2, &rcCenter);
+		CClientDC dc(NULL);
+		//top
+		lpRect->left = rcCenter.left + 2;
+		lpRect->right = lpRect->left + 1;
+		lpRect->top = rcCenter.top - 15;
+		lpRect->bottom = lpRect->top + 1;
+		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
+		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient) )
+			return ;
+		//left
+		lpRect->left = rcCenter.left - 70;
+		lpRect->right = lpRect->left + 1;
+		lpRect->top = rcCenter.top + 2;
+		lpRect->bottom = lpRect->top + 1;
+		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
+		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient) )
+			return ;
+		//right
+		lpRect->left = rcCenter.right + 2;
+		lpRect->right = lpRect->left + 1;
+		lpRect->top = rcCenter.top + 2;
+		lpRect->bottom = lpRect->top + 1;
+		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
+		if( rcIntersect.IntersectRect(lpRect, &rcAbsClient) )
+			return ;
+		//bottom
+		lpRect->left = rcCenter.left + 2;
+		lpRect->right = lpRect->left + 1;
+		lpRect->top = rcCenter.bottom + 2;
+		lpRect->bottom = lpRect->top + 1;
+		dc.DrawText((LPCTSTR)str, -1, lpRect, DT_CALCRECT);
+	}
+	void generate_ruler_text_rect(const RECT& rcAbsClient) throw()
+	{
+		_pt_generate_ruler_text_rect(m_pt1, m_pt2, m_strRulerText, rcAbsClient, &m_rcRulerText);
 	}
 
 public:
@@ -129,19 +192,42 @@ public:
 			m_pt2.y = y + pt.y;
 
 			if( m_bSelectMode ) {
-				if (abs(m_pt2.x - m_pt1.x) >= abs(m_ptOld.x - m_pt1.x) &&
-					abs(m_pt2.y - m_pt1.y) >= abs(m_ptOld.y - m_pt1.y))
-				{
-					CRect rect;
-					generate_rect(&rect);
-					rect.OffsetRect(-pt.x, -pt.y);
-					InvalidateRect(&rect);
-				} else {
-					CRect rect;
-					generate_rect_old(&rect);
-					rect.OffsetRect(-pt.x, -pt.y);
-					InvalidateRect(&rect);
-				}
+				CRect rect;
+				generate_rect(&rect);
+				m_rcSelect = rect;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+				generate_rect_old(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+			}
+
+			//ruler
+			if( m_bRulerMode ) {
+				CRect rect;
+				generate_rect(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+				generate_rect_old(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+				//string
+				rect = m_rcRulerText;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+				generate_ruler_text();
+				GetClientRect(&rect);
+				rect.OffsetRect(pt.x, pt.y);
+				generate_ruler_text_rect(rect);
+				rect = m_rcRulerText;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
 			}
 
 			m_ptOld = m_pt2;
@@ -168,8 +254,31 @@ public:
 				CRect rect;
 				generate_rect_old(&rect);
 				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
 				InvalidateRect(&rect);
+
+				generate_rect(&m_rcSelect);
 			}
+
+			//ruler
+			if( m_bRulerMode ) {
+				CRect rect;
+				generate_rect_old(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+				//string
+				rect = m_rcRulerText;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+
+				generate_ruler_text();
+				GetClientRect(&rect);
+				rect.OffsetRect(pt.x, pt.y);
+				generate_ruler_text_rect(rect);
+			}
+
 			::ReleaseCapture();
 			m_bDown = false;
 		}
@@ -194,9 +303,8 @@ public:
 // Overrideables
 	void DoImageCtrlPaint(CMemoryDC& mdc, const _WTYPES_NS::CRect& rcClient)
 	{
-		_WTYPES_NS::CRect rect;
-		generate_rect(&rect);
 		if( m_bSelectMode ) {
+			_WTYPES_NS::CRect rect(m_rcSelect);
 			//rectangle
 			CPen pen;
 			pen.CreatePen(PS_SOLID, 1, RGB(255, 255, 0));
@@ -208,6 +316,22 @@ public:
 			mdc.MoveTo(rect.right - 1, rect.bottom - 1);
 			mdc.LineTo(rect.left, rect.bottom - 1);
 			mdc.LineTo(rect.left, rect.top);
+			mdc.SelectPen(hOldPen);
+		}
+
+		//ruler
+		if( m_bRulerMode ) {
+			//line
+			CPen pen;
+			pen.CreatePen(PS_SOLID, 1, RGB(255, 255, 0));
+			HPEN hOldPen = mdc.SelectPen(pen);
+			mdc.MoveTo(m_pt1.x, m_pt1.y);
+			mdc.LineTo(m_pt2.x, m_pt2.y);
+			int iOldMode = mdc.SetBkMode(TRANSPARENT);
+			COLORREF clrOld = mdc.SetTextColor(RGB(255, 255, 0));
+			mdc.DrawText((LPCTSTR)m_strRulerText, -1, &m_rcRulerText, DT_LEFT | DT_SINGLELINE | DT_VCENTER);
+			mdc.SetTextColor(clrOld);
+			mdc.SetBkMode(iOldMode);
 			mdc.SelectPen(hOldPen);
 		}
 	}

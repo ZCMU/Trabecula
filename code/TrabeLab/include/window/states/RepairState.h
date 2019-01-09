@@ -54,7 +54,10 @@ public:
 			m_pWindow->m_btnErode.EnableWindow(FALSE);
 			m_pWindow->m_btnDilate.EnableWindow(FALSE);
 			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+			m_pWindow->m_btnRuler.EnableWindow(FALSE);
 			m_pWindow->m_btnFilter.EnableWindow(FALSE);
+			//change modes!
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
 			return STATE_START;
 		}
 		else if( uEvent == EVT_ADD ) {
@@ -66,6 +69,11 @@ public:
 		}
 		else if( uEvent == EVT_REPAIR ) {
 			//
+		}
+		else if( uEvent == EVT_RULER ) {
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
+			m_pWindow->m_imageCtrlProcess.SetRulerMode(true);
+			return STATE_RULER;
 		}
 		return STATE_REPAIR;
 	}

@@ -45,6 +45,7 @@ public:
 			m_pWindow->m_btnErode.EnableWindow(FALSE);
 			m_pWindow->m_btnDilate.EnableWindow(FALSE);
 			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
+			m_pWindow->m_btnRuler.EnableWindow(FALSE);
 			m_pWindow->m_btnFilter.EnableWindow(FALSE);
 			return STATE_START;
 		}
@@ -63,6 +64,12 @@ public:
 			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
 				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 				return STATE_REPAIR;
+			}
+		}
+		else if( uEvent == EVT_RULER ) {
+			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
+				m_pWindow->m_imageCtrlProcess.SetRulerMode(true);
+				return STATE_RULER;
 			}
 		}
 		return STATE_MEASURE;

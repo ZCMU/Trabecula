@@ -11,14 +11,16 @@
 #define EVT_CLEAR           (105)
 #define EVT_ADD             (106)
 #define EVT_REPAIR          (107)
+#define EVT_RULER           (108)
 
 //states
 
+#define STATE_NOPIC    9
 #define STATE_START    10
 #define STATE_ERASE    11
 #define STATE_ADD      12
 #define STATE_REPAIR   13
 #define STATE_MEASURE  14
-#define STATE_NOPIC    15
+#define STATE_RULER    15
 
 ////////////////////////////////////////////////////////////////////////////////

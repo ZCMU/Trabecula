@@ -63,6 +63,10 @@ public:
 	{
 		return m_MaskNum;
 	}
+	int get_CircNum() const throw()
+	{
+		return m_CircNum;
+	}
 
 	//load
 	bool Load(const std::string& strFile)
@@ -154,7 +158,6 @@ public:
 		TrabeImageDataHelper::SegmentByHSV(hsvMin.h, hsvMin.s, hsvMin.v,
 										hsvMax.h, hsvMax.s, hsvMax.v,
 										m_cData, m_gMask);
-		// ImageProcessHelper::ExtractBorder(m_gMask);
 		// 腐蚀
 		// ImageProcessHelper::Erode(m_gData, m_gDataErode);
 		// 膨胀
@@ -215,6 +218,8 @@ public:
 	bool Measure()
 	{
 		TrabeImageProcessHelper::TargetDataCalc(m_gMask, m_MaskNum);
+		m_CircNum = ImageProcessHelper::ExtractBorder(MASK_BORDER, m_gMask);
+		ImageProcessHelper::CancelBorder(MASK_BORDER, MASK_TARGET, m_gMask);
 		Fire_OnPropertyChanged(std::string("measure_data"));  // -> ViewModel
 		return true;
 	}
@@ -233,6 +238,7 @@ private:
 	GrayData m_gData;
 	PixelData m_pData;
 	UINT m_MaskNum;
+	int  m_CircNum; //周长像素
 };
 
 ////////////////////////////////////////////////////////////////////////////////

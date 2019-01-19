@@ -70,6 +70,11 @@ public:
 		else if( uEvent == EVT_REPAIR ) {
 			//
 		}
+		else if( uEvent == EVT_RUBBER ) {
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(true);
+			return STATE_RUBBER;
+		}
 		else if( uEvent == EVT_RULER ) {
 			m_pWindow->m_imageCtrlProcess.SetSelectMode(false);
 			m_pWindow->m_imageCtrlProcess.SetRulerMode(true);

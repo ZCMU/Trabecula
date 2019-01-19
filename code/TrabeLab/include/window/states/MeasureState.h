@@ -42,6 +42,7 @@ public:
 			m_pWindow->m_btnAdd.EnableWindow(FALSE);
 			m_pWindow->m_btnErase.EnableWindow(FALSE);
 			m_pWindow->m_btnRepair.EnableWindow(FALSE);
+			m_pWindow->m_btnRubber.EnableWindow(FALSE);
 			m_pWindow->m_btnErode.EnableWindow(FALSE);
 			m_pWindow->m_btnDilate.EnableWindow(FALSE);
 			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
@@ -64,6 +65,12 @@ public:
 			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
 				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 				return STATE_REPAIR;
+			}
+		}
+		else if( uEvent == EVT_RUBBER ) {
+			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
+				m_pWindow->m_imageCtrlProcess.SetRubberMode(true);
+				return STATE_RUBBER;
 			}
 		}
 		else if( uEvent == EVT_RULER ) {

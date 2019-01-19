@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <class TWindow>
-class AddState : public IStateBase
+class RubberState : public IStateBase
 {
 public:
-	AddState(TWindow* p) throw() : m_pWindow(p)
+	RubberState(TWindow* p) throw() : m_pWindow(p)
 	{
 	}
 
@@ -14,18 +14,15 @@ public:
 	virtual int Process(unsigned int uEvent, const std::any& param)
 	{
 		if( uEvent == EVT_LEFT_MOUSE_UP ) {
-			COLORREF clr = std::any_cast<COLORREF>(param);
-			if( clr != CLR_INVALID ) {
-				std::array<UINT, 3> rgb;
-				rgb[0] = (UINT)(GetRValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				rgb[1] = (UINT)(GetGValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				rgb[2] = (UINT)(GetBValue(m_pWindow->m_imageCtrlProcess.GetSelectColor()));
-				m_pWindow->m_cmdShowPixel->SetParameter(std::any(rgb));
-				m_pWindow->m_cmdShowPixel->Exec();
-				// StartSegment
-				CWaitCursor wac;
-				m_pWindow->m_cmdStartSegment->SetParameter(std::any(rgb));
-				m_pWindow->m_cmdStartSegment->Exec();
+			std::array<INT, 4> rect;
+			rect[0] = m_pWindow->m_imageCtrlProcess.GetSelectRect().left;    // x1
+			rect[1] = m_pWindow->m_imageCtrlProcess.GetSelectRect().top;     // y1
+			rect[2] = m_pWindow->m_imageCtrlProcess.GetSelectRect().right;   // x2
+			rect[3] = m_pWindow->m_imageCtrlProcess.GetSelectRect().bottom;  // y2
+
+			if (abs(rect[0]-rect[2]) > 3 && abs(rect[1]-rect[3]) > 3) {
+				m_pWindow->m_cmdRubber->SetParameter(std::any(rect));
+				m_pWindow->m_cmdRubber->Exec();
 			}
 		}
 		else if( uEvent == EVT_LOAD ) {
@@ -60,35 +57,34 @@ public:
 			m_pWindow->m_btnMeasure.EnableWindow(FALSE);
 			m_pWindow->m_btnRuler.EnableWindow(FALSE);
 			m_pWindow->m_btnFilter.EnableWindow(FALSE);
+			//change modes!
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(false);
 			return STATE_START;
 		}
 		else if( uEvent == EVT_ADD ) {
-			//
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(false);
+			return STATE_ADD;
 		}
 		else if( uEvent == EVT_ERASE ) {
-			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
-				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
-				return STATE_ERASE;
-			}
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(false);
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
+			return STATE_ERASE;
 		}
 		else if( uEvent == EVT_REPAIR ) {
-			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
-				m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
-				return STATE_REPAIR;
-			}
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(false);
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
+			return STATE_REPAIR;
 		}
 		else if( uEvent == EVT_RUBBER ) {
-			if( m_pWindow->m_imageCtrlProcess.is_image_null() == false) {
-				m_pWindow->m_imageCtrlProcess.SetRubberMode(true);
-				return STATE_RUBBER;
-			}
+			//
 		}
 		else if( uEvent == EVT_RULER ) {
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(false);
 			m_pWindow->m_imageCtrlProcess.SetRulerMode(true);
 			return STATE_RULER;
 		}
-
-		return STATE_ADD;
+		
+		return STATE_RUBBER;
 	}
 
 private:

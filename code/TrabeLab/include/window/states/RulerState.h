@@ -57,18 +57,18 @@ public:
 			return STATE_ADD;
 		}
 		else if( uEvent == EVT_ERASE ) {
-			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 			m_pWindow->m_imageCtrlProcess.SetRulerMode(false);
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 			return STATE_ERASE;
 		}
 		else if( uEvent == EVT_REPAIR ) {
-			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 			m_pWindow->m_imageCtrlProcess.SetRulerMode(false);
+			m_pWindow->m_imageCtrlProcess.SetSelectMode(true);
 			return STATE_REPAIR;
 		}
 		else if( uEvent == EVT_RUBBER ) {
-			m_pWindow->m_imageCtrlProcess.SetRubberMode(true);
 			m_pWindow->m_imageCtrlProcess.SetRulerMode(false);
+			m_pWindow->m_imageCtrlProcess.SetRubberMode(true);
 			return STATE_RUBBER;
 		}
 		else if( uEvent == EVT_RULER ) {

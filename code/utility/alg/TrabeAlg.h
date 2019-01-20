@@ -59,8 +59,8 @@ public:
 		std::vector<PAIR> vec(track.begin(), track.end());
 		std::vector<PAIR>::iterator it;
 		for ( it = vec.begin(); it != vec.end(); it++ ) {
-			if ((it->first > 0 && it->first < iW) && 
-				(it->second > 0 && it->second < iH))
+			if ((it->first > 0 && it->first < iW - 1) && 
+				(it->second > 0 && it->second < iH - 1))
 			{
 				pd[(it->second-1)*iW + (it->first)] = 0;
 				pd[(it->second-1)*iW + (it->first-1)] = 0;

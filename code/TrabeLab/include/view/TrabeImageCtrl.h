@@ -43,9 +43,9 @@ public:
 		m_bSelectMode = bSelect;
 	}
 
-	void SetRubberMode(bool bSelect) throw()
+	void SetRubberMode(bool bRubber) throw()
 	{
-		m_bRubberMode = bSelect;
+		m_bRubberMode = bRubber;
 	}
 
 	void SetRulerMode(bool bRuler) throw()

@@ -36,6 +36,7 @@ public:
 	{
 		m_rcSelect.SetRectEmpty();
 		m_rcRulerText.SetRectEmpty();
+		m_rcRubber.SetRectEmpty();
 	}
 
 	void SetSelectMode(bool bSelect) throw()
@@ -81,6 +82,7 @@ private:
 	//rubber
 	bool m_bRubberMode;
 	std::vector<PAIR> m_track;
+	CRect m_rcRubber;
 
 	//ruler
 	bool m_bRulerMode;
@@ -213,6 +215,7 @@ public:
 		m_ptOld = m_pt1;
 
 		m_track.clear();
+		m_rcRubber.SetRectEmpty();
 
 		return 0;
 	}

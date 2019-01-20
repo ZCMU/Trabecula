@@ -194,6 +194,14 @@ public:
 		return true;
 	}
 
+	//rubber
+	bool Rubber(const std::vector<PAIR>& track)
+	{
+		TrabeImageProcessHelper::GrayDataRubber(m_gMask, track);
+		Fire_OnPropertyChanged(std::string("color_data_seg"));  // -> ViewModel
+		return true;
+	}
+
 	//erode
 	bool Erode()
 	{

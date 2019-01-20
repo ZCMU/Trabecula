@@ -10,6 +10,7 @@
 #include "commands/ClearSegmentCommand.h"
 #include "commands/EraseCommand.h"
 #include "commands/RepairCommand.h"
+#include "commands/RubberCommand.h"
 #include "commands/ErodeCommand.h"
 #include "commands/DilateCommand.h"
 #include "commands/MeasureCommand.h"
@@ -33,6 +34,7 @@ public:
 						m_cmdClearSegment(std::make_shared<ClearSegmentCommand<TrabeViewModel>>(this)),
 						m_cmdErase(std::make_shared<EraseCommand<TrabeViewModel>>(this)),
 						m_cmdRepair(std::make_shared<RepairCommand<TrabeViewModel>>(this)),
+						m_cmdRubber(std::make_shared<RubberCommand<TrabeViewModel>>(this)),
 						m_cmdErode(std::make_shared<ErodeCommand<TrabeViewModel>>(this)),
 						m_cmdDilate(std::make_shared<DilateCommand<TrabeViewModel>>(this)),
 						m_cmdMeasure(std::make_shared<MeasureCommand<TrabeViewModel>>(this)),
@@ -96,6 +98,10 @@ public:
 	std::shared_ptr<ICommandBase> get_RepairCommand() throw()
 	{
 		return std::static_pointer_cast<ICommandBase>(m_cmdRepair);
+	}
+	std::shared_ptr<ICommandBase> get_RubberCommand() throw()
+	{
+		return std::static_pointer_cast<ICommandBase>(m_cmdRubber);
 	}
 	std::shared_ptr<ICommandBase> get_ErodeCommand() throw()
 	{
@@ -177,6 +183,10 @@ public:
 	{
 		return m_spModel->Repair(rect);
 	}
+	bool RubberMask(const std::vector<PAIR>& track)
+	{
+		return m_spModel->Rubber(track);
+	}
 	bool ErodeMask()
 	{
 		return m_spModel->Erode();
@@ -220,6 +230,7 @@ private:
 	std::shared_ptr<ClearSegmentCommand<TrabeViewModel>> m_cmdClearSegment;
 	std::shared_ptr<EraseCommand<TrabeViewModel>> m_cmdErase;
 	std::shared_ptr<RepairCommand<TrabeViewModel>> m_cmdRepair;
+	std::shared_ptr<RubberCommand<TrabeViewModel>> m_cmdRubber;
 	std::shared_ptr<ErodeCommand<TrabeViewModel>> m_cmdErode;
 	std::shared_ptr<DilateCommand<TrabeViewModel>> m_cmdDilate;
 	std::shared_ptr<MeasureCommand<TrabeViewModel>> m_cmdMeasure;

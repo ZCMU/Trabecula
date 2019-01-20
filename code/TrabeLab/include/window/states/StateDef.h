@@ -12,6 +12,7 @@
 #define EVT_ADD             (106)
 #define EVT_REPAIR          (107)
 #define EVT_RULER           (108)
+#define EVT_RUBBER          (109)
 
 //states
 
@@ -22,5 +23,6 @@
 #define STATE_REPAIR   13
 #define STATE_MEASURE  14
 #define STATE_RULER    15
+#define STATE_RUBBER   16
 
 ////////////////////////////////////////////////////////////////////////////////

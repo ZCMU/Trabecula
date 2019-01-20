@@ -55,6 +55,7 @@ public:
 		m_wndMain.set_ClearSegmentCommand(m_spViewModel->get_ClearSegmentCommand());
 		m_wndMain.set_EraseCommand(m_spViewModel->get_EraseCommand());
 		m_wndMain.set_RepairCommand(m_spViewModel->get_RepairCommand());
+		m_wndMain.set_RubberCommand(m_spViewModel->get_RubberCommand());
 		m_wndMain.set_ErodeCommand(m_spViewModel->get_ErodeCommand());
 		m_wndMain.set_DilateCommand(m_spViewModel->get_DilateCommand());
 		m_wndMain.set_MeasureCommand(m_spViewModel->get_MeasureCommand());

@@ -14,6 +14,7 @@
 #include "states\EraseState.h"
 #include "states\AddState.h"
 #include "states\RepairState.h"
+#include "states\RubberState.h"
 #include "states\MeasureState.h"
 #include "states\RulerState.h"
 
@@ -32,6 +33,7 @@ public:
 			IDC_BTN_ERASE,
 			IDC_BTN_ADD,
 			IDC_BTN_REPAIR,
+			IDC_BTN_RUBBER,
 			IDC_BTN_ERODE,
 			IDC_BTN_DILATE,
 			IDC_BTN_EDGE,
@@ -55,6 +57,7 @@ public:
 	CButton		 m_btnErase;
 	CButton		 m_btnAdd;
 	CButton		 m_btnRepair;
+	CButton		 m_btnRubber;
 	CButton		 m_btnErode;
 	CButton		 m_btnDilate;
 	CButton		 m_btnEdge;
@@ -78,6 +81,7 @@ public:
 	std::shared_ptr<ICommandBase>  m_cmdClearSegment;
 	std::shared_ptr<ICommandBase>  m_cmdErase;
 	std::shared_ptr<ICommandBase>  m_cmdRepair;
+	std::shared_ptr<ICommandBase>  m_cmdRubber;
 	std::shared_ptr<ICommandBase>  m_cmdErode;
 	std::shared_ptr<ICommandBase>  m_cmdDilate;
 	std::shared_ptr<ICommandBase>  m_cmdMeasure;
@@ -112,6 +116,10 @@ public:
 	void set_RepairCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
 		m_cmdRepair = sp;
+	}
+	void set_RubberCommand(const std::shared_ptr<ICommandBase>& sp) throw()
+	{
+		m_cmdRubber = sp;
 	}
 	void set_ErodeCommand(const std::shared_ptr<ICommandBase>& sp) throw()
 	{
@@ -151,6 +159,7 @@ public:
 		m_stateMgr.Add(STATE_ERASE, std::static_pointer_cast<IStateBase>(std::make_shared<EraseState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_ADD, std::static_pointer_cast<IStateBase>(std::make_shared<AddState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_REPAIR, std::static_pointer_cast<IStateBase>(std::make_shared<RepairState<MainWindow>>(this)));
+		m_stateMgr.Add(STATE_RUBBER, std::static_pointer_cast<IStateBase>(std::make_shared<RubberState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_MEASURE, std::static_pointer_cast<IStateBase>(std::make_shared<MeasureState<MainWindow>>(this)));
 		m_stateMgr.Add(STATE_RULER, std::static_pointer_cast<IStateBase>(std::make_shared<RulerState<MainWindow>>(this)));
 		m_stateMgr.SetStartState(STATE_NOPIC);
@@ -161,6 +170,7 @@ public:
 		m_btnAdd.EnableWindow(FALSE);
 		m_btnErase.EnableWindow(FALSE);
 		m_btnRepair.EnableWindow(FALSE);
+		m_btnRubber.EnableWindow(FALSE);
 		m_btnErode.EnableWindow(FALSE);
 		m_btnDilate.EnableWindow(FALSE);
 		m_btnMeasure.EnableWindow(FALSE);
@@ -190,6 +200,7 @@ public:
 		COMMAND_HANDLER(IDC_BTN_ERASE, BN_CLICKED, OnBtnEraseClicked)
 		COMMAND_HANDLER(IDC_BTN_ADD, BN_CLICKED, OnBtnAddClicked)
 		COMMAND_HANDLER(IDC_BTN_REPAIR, BN_CLICKED, OnBtnRepairClicked)
+		COMMAND_HANDLER(IDC_BTN_RUBBER, BN_CLICKED, OnBtnRubberClicked)
 		COMMAND_HANDLER(IDC_BTN_ERODE, BN_CLICKED, OnBtnErodeClicked)
 		COMMAND_HANDLER(IDC_BTN_DILATE, BN_CLICKED, OnBtnDilateClicked)
 		COMMAND_HANDLER(IDC_BTN_EDGE, BN_CLICKED, OnBtnEdgeClicked)
@@ -229,6 +240,9 @@ public:
 		m_btnRepair.Create(m_hWnd, rcDefault, _T("Repair"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_REPAIR);
+		m_btnRubber.Create(m_hWnd, rcDefault, _T("Rubber"),
+						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
+						IDC_BTN_RUBBER);
 		m_btnErode.Create(m_hWnd, rcDefault, _T("Erode"),
 						WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0,
 						IDC_BTN_ERODE);
@@ -324,6 +338,8 @@ public:
 			y += (30 + 5);
 			m_btnRepair.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (30 + 5);
+			m_btnRubber.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+			y += (30 + 5);
 			m_btnErode.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			y += (30 + 5);
 			m_btnDilate.SetWindowPos(NULL, x, y, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -394,11 +410,19 @@ public:
 		m_stateMgr.Process(EVT_ADD, NULL);
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Repair
 	LRESULT OnBtnRepairClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_REPAIR, NULL);
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Rubber
+	LRESULT OnBtnRubberClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		m_stateMgr.Process(EVT_RUBBER, NULL);
+		return 0;
+	}
+	//-------------------------------------------------------------------------- Erode
 	LRESULT OnBtnErodeClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CWaitCursor wac;
@@ -406,6 +430,7 @@ public:
 		m_cmdErode->Exec();
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Dilate
 	LRESULT OnBtnDilateClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CWaitCursor wac;
@@ -413,12 +438,14 @@ public:
 		m_cmdDilate->Exec();
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Edge
 	LRESULT OnBtnEdgeClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		int iCheck = m_btnEdge.GetCheck();
 		m_btnEdge.SetCheck(!iCheck);
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Measure
 	LRESULT OnBtnMeasureClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CWaitCursor wac;
@@ -426,11 +453,13 @@ public:
 		m_cmdMeasure->Exec();
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Ruler
 	LRESULT OnBtnRulerClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		m_stateMgr.Process(EVT_RULER, NULL);
 		return 0;
 	}
+	//-------------------------------------------------------------------------- Filter
 	LRESULT OnBtnFilterClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		CWaitCursor wac;

@@ -52,6 +52,7 @@ public:
 				m_pWindow->m_btnAdd.EnableWindow(TRUE);
 				m_pWindow->m_btnErase.EnableWindow(TRUE);
 				m_pWindow->m_btnRepair.EnableWindow(TRUE);
+				m_pWindow->m_btnRubber.EnableWindow(TRUE);
 				m_pWindow->m_btnErode.EnableWindow(TRUE);
 				m_pWindow->m_btnDilate.EnableWindow(TRUE);
 				m_pWindow->m_btnMeasure.EnableWindow(TRUE);
@@ -70,6 +71,9 @@ public:
 			//
 		}
 		else if( uEvent == EVT_REPAIR ) {
+			//
+		}
+		else if( uEvent == EVT_RUBBER ) {
 			//
 		}
 		return STATE_START;

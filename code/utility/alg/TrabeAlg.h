@@ -47,6 +47,33 @@ public:
 			}
 		}
 	}
+	static void GrayDataRubber(GrayData& data, const std::vector<PAIR>& track)
+	{
+		if( data.IsNull() )
+			return ;
+		int iW = data.GetWidth();
+		int iH = data.GetHeight();
+
+		uchar* pd = data.GetAddress();
+
+		std::vector<PAIR> vec(track.begin(), track.end());
+		std::vector<PAIR>::iterator it;
+		for ( it = vec.begin(); it != vec.end(); it++ ) {
+			if ((it->first > 0 && it->first < iW) && 
+				(it->second > 0 && it->second < iH))
+			{
+				pd[(it->second-1)*iW + (it->first)] = 0;
+				pd[(it->second-1)*iW + (it->first-1)] = 0;
+				pd[(it->second)*iW   + (it->first-1)] = 0;
+				pd[it->second*iW + it->first] = 0;
+				pd[(it->second+1)*iW + (it->first)] = 0;
+				pd[(it->second+1)*iW + (it->first+1)] = 0;
+				pd[(it->second)*iW   + (it->first+1)] = 0;
+				pd[(it->second+1)*iW + (it->first-1)] = 0;
+				pd[(it->second-1)*iW + (it->first+1)] = 0;
+			}
+		}
+	}
 	static void TargetDataCalc(GrayData& data, UINT& num)
 	{
 		if( data.IsNull() )

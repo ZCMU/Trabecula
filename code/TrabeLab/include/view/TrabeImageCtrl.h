@@ -8,6 +8,22 @@
 
 #define ICN_LBTNUP  (0x105)
 
+typedef std::pair<int, int> PAIR;
+struct CmpByKey
+{
+	bool operator()(const PAIR& lhs, const PAIR& rhs)
+	{
+		return lhs.first < rhs.first;
+	}
+};
+struct CmpByValue
+{
+	bool operator()(const PAIR& lhs, const PAIR& rhs)
+	{
+		return lhs.second < rhs.second;
+	}
+};
+
 class TrabeImageCtrl : public NoFlickerImageCtrlImpl<TrabeImageCtrl>
 {
 private:
@@ -15,6 +31,7 @@ private:
 
 public:
 	TrabeImageCtrl() : m_bSelectMode(false), m_clrSelected(CLR_INVALID),
+						m_bRubberMode(false),
 						m_bRulerMode(false)
 	{
 		m_rcSelect.SetRectEmpty();
@@ -24,6 +41,11 @@ public:
 	void SetSelectMode(bool bSelect) throw()
 	{
 		m_bSelectMode = bSelect;
+	}
+
+	void SetRubberMode(bool bSelect) throw()
+	{
+		m_bRubberMode = bSelect;
 	}
 
 	void SetRulerMode(bool bRuler) throw()
@@ -43,6 +65,11 @@ public:
 		return rect;
 	}
 
+	std::vector<PAIR> GetRubberTrack() throw()
+	{
+		return m_track;
+	}
+
 private:
 	bool  m_bSelectMode;
 	bool  m_bDown;
@@ -50,6 +77,10 @@ private:
 	POINT m_pt2;
 	POINT m_ptOld;
 	CRect m_rcSelect;
+
+	//rubber
+	bool m_bRubberMode;
+	std::vector<PAIR> m_track;
 
 	//ruler
 	bool m_bRulerMode;
@@ -181,6 +212,8 @@ public:
 		m_pt2 = m_pt1;
 		m_ptOld = m_pt1;
 
+		m_track.clear();
+
 		return 0;
 	}
 	LRESULT OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -190,6 +223,7 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
+		POINT pt1, pt2;
 
 		if( m_bDown ) {
 			m_pt2.x = x + pt.x;
@@ -203,6 +237,22 @@ public:
 				rect.InflateRect(1, 1);
 				InvalidateRect(&rect);
 				generate_rect_old(&rect);
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(1, 1);
+				InvalidateRect(&rect);
+			}
+
+			//rubber
+			if( m_bRubberMode ) {
+				m_track.insert(m_track.end(), PAIR(m_pt2.x, m_pt2.y));
+				std::vector<PAIR> vec(m_track.begin(), m_track.end());
+				sort(vec.begin(), vec.end(), CmpByKey());
+				pt1.x = vec[0].first; pt2.x = vec[vec.size()-1].first;
+				sort(vec.begin(), vec.end(), CmpByValue());
+				pt1.y = vec[0].second; pt2.y = vec[vec.size()-1].second;
+
+				CRect rect;
+				_pt_generate_rect(pt1, pt2, rect);
 				rect.OffsetRect(-pt.x, -pt.y);
 				rect.InflateRect(1, 1);
 				InvalidateRect(&rect);
@@ -250,6 +300,7 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
+		POINT pt1, pt2;
 
 		if( m_bDown ) {
 			m_pt2.x = m_pt1.x;
@@ -262,6 +313,23 @@ public:
 				InvalidateRect(&rect);
 
 				generate_rect(&m_rcSelect);
+			}
+
+			//rubber
+			if( m_bRubberMode ) {
+				if (m_track.size() > 1) {
+					std::vector<PAIR> vec(m_track.begin(), m_track.end());
+					sort(vec.begin(), vec.end(), CmpByKey());
+					pt1.x = vec[0].first; pt2.x = vec[vec.size()-1].first;
+					sort(vec.begin(), vec.end(), CmpByValue());
+					pt1.y = vec[0].second; pt2.y = vec[vec.size()-1].second;
+
+					CRect rect;
+					_pt_generate_rect(pt1, pt2, rect);
+					rect.OffsetRect(-pt.x, -pt.y);
+					rect.InflateRect(1, 1);
+					InvalidateRect(&rect);
+				}
 			}
 
 			//ruler
@@ -321,6 +389,24 @@ public:
 			mdc.LineTo(rect.left, rect.bottom - 1);
 			mdc.LineTo(rect.left, rect.top);
 			mdc.SelectPen(hOldPen);
+		}
+
+		//rubber
+		if( m_bRubberMode ) {
+			if (m_track.size() > 1 && m_bDown) {
+				CPen pen;
+				pen.CreatePen(PS_SOLID, 3, RGB(255, 255, 0));
+				HPEN hOldPen = mdc.SelectPen(pen);
+				std::vector<PAIR>::iterator it, it2;
+				for ( it = m_track.begin(); it != m_track.end(); it++ ) {
+					mdc.MoveTo(it->first, it->second);
+					it2 = it; it2 ++;
+					if (it2 != m_track.end()) {
+						mdc.LineTo(it2->first, it2->second);
+					}
+				}
+				mdc.SelectPen(hOldPen);
+			}
 		}
 
 		//ruler

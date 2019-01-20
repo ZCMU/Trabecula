@@ -45,6 +45,9 @@ public:
 		else if( uEvent == EVT_REPAIR ) {
 			//
 		}
+		else if( uEvent == EVT_RUBBER ) {
+			//
+		}
 		return STATE_NOPIC;
 	}
 

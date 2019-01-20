@@ -183,6 +183,10 @@ public:
 	{
 		return m_spModel->Repair(rect);
 	}
+	bool RubberMask(const std::vector<PAIR>& track)
+	{
+		return m_spModel->Rubber(track);
+	}
 	bool ErodeMask()
 	{
 		return m_spModel->Erode();

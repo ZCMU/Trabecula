@@ -20,8 +20,8 @@ public:
 	}
 	virtual void Exec()
 	{
-		// std::array<INT, 4>& rect = *(std::any_cast<std::array<INT, 4>>(&m_param));
-		// bool bRet = m_pVM->RubberMask(rect);
+		std::vector<PAIR>& track = *(std::any_cast<std::vector<PAIR>>(&m_param));
+		bool bRet = m_pVM->RubberMask(track);
 	}
 
 private:

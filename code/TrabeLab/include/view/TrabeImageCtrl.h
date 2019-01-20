@@ -80,7 +80,6 @@ private:
 
 	//rubber
 	bool m_bRubberMode;
-	// std::map<int, int> m_track;
 	std::vector<PAIR> m_track;
 
 	//ruler
@@ -331,7 +330,6 @@ public:
 					rect.InflateRect(1, 1);
 					InvalidateRect(&rect);
 				}
-				m_track.clear();
 			}
 
 			//ruler
@@ -395,7 +393,7 @@ public:
 
 		//rubber
 		if( m_bRubberMode ) {
-			if (m_track.size() > 1) {
+			if (m_track.size() > 1 && m_bDown) {
 				CPen pen;
 				pen.CreatePen(PS_SOLID, 3, RGB(255, 255, 0));
 				HPEN hOldPen = mdc.SelectPen(pen);

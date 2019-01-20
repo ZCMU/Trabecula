@@ -81,6 +81,7 @@ private:
 	//rubber
 	bool m_bRubberMode;
 	std::vector<PAIR> m_track;
+	CRect m_rcRubber;
 
 	//ruler
 	bool m_bRulerMode;
@@ -245,17 +246,36 @@ public:
 			//rubber
 			if( m_bRubberMode ) {
 				m_track.insert(m_track.end(), PAIR(m_pt2.x, m_pt2.y));
-				std::vector<PAIR> vec(m_track.begin(), m_track.end());
-				sort(vec.begin(), vec.end(), CmpByKey());
-				pt1.x = vec[0].first; pt2.x = vec[vec.size()-1].first;
-				sort(vec.begin(), vec.end(), CmpByValue());
-				pt1.y = vec[0].second; pt2.y = vec[vec.size()-1].second;
+				if( m_track.size() > 1 )
+				{
+					pt1.x = m_rcRubber.left;
+					if( m_pt2.x < pt1.x ) {
+						pt1.x = m_pt2.x;
+					}
+					pt2.x = m_rcRubber.right;
+					if( m_pt2.x > pt2.x ) {
+						pt2.x = m_pt2.x;
+					}
+					pt1.y = m_rcRubber.top;
+					if( m_pt2.y < pt1.y ) {
+						pt1.y = m_pt2.y;
+					}
+					pt2.y = m_rcRubber.bottom;
+					if( m_pt2.y > pt2.y ) {
+						pt2.y = m_pt2.y;
+					}
 
-				CRect rect;
-				_pt_generate_rect(pt1, pt2, rect);
-				rect.OffsetRect(-pt.x, -pt.y);
-				rect.InflateRect(1, 1);
-				InvalidateRect(&rect);
+					CRect rect;
+					_pt_generate_rect(pt1, pt2, rect);
+					m_rcRubber = rect;
+					rect.OffsetRect(-pt.x, -pt.y);
+					rect.InflateRect(1, 1);
+					InvalidateRect(&rect);
+				} else {
+					CRect rect;
+					_pt_generate_rect(m_ptOld, m_pt2, rect);
+					m_rcRubber = rect;
+				}
 			}
 
 			//ruler
@@ -300,7 +320,6 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
-		POINT pt1, pt2;
 
 		if( m_bDown ) {
 			m_pt2.x = m_pt1.x;
@@ -318,14 +337,8 @@ public:
 			//rubber
 			if( m_bRubberMode ) {
 				if (m_track.size() > 1) {
-					std::vector<PAIR> vec(m_track.begin(), m_track.end());
-					sort(vec.begin(), vec.end(), CmpByKey());
-					pt1.x = vec[0].first; pt2.x = vec[vec.size()-1].first;
-					sort(vec.begin(), vec.end(), CmpByValue());
-					pt1.y = vec[0].second; pt2.y = vec[vec.size()-1].second;
-
 					CRect rect;
-					_pt_generate_rect(pt1, pt2, rect);
+					rect = m_rcRubber;
 					rect.OffsetRect(-pt.x, -pt.y);
 					rect.InflateRect(1, 1);
 					InvalidateRect(&rect);

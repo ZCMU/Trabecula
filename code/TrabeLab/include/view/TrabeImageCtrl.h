@@ -9,20 +9,6 @@
 #define ICN_LBTNUP  (0x105)
 
 typedef std::pair<int, int> PAIR;
-struct CmpByKey
-{
-	bool operator()(const PAIR& lhs, const PAIR& rhs)
-	{
-		return lhs.first < rhs.first;
-	}
-};
-struct CmpByValue
-{
-	bool operator()(const PAIR& lhs, const PAIR& rhs)
-	{
-		return lhs.second < rhs.second;
-	}
-};
 
 class TrabeImageCtrl : public NoFlickerImageCtrlImpl<TrabeImageCtrl>
 {
@@ -226,7 +212,6 @@ public:
 		int y = GET_Y_LPARAM(lParam);
 		POINT pt;
 		GetScrollOffset(pt);
-		POINT pt1, pt2;
 
 		if( m_bDown ) {
 			m_pt2.x = x + pt.x;
@@ -250,34 +235,26 @@ public:
 				m_track.insert(m_track.end(), PAIR(m_pt2.x, m_pt2.y));
 				if( m_track.size() > 1 )
 				{
-					pt1.x = m_rcRubber.left;
-					if( m_pt2.x < pt1.x ) {
-						pt1.x = m_pt2.x;
+					if( m_pt2.x < m_rcRubber.left ) {
+						m_rcRubber.left = m_pt2.x;
 					}
-					pt2.x = m_rcRubber.right;
-					if( m_pt2.x > pt2.x ) {
-						pt2.x = m_pt2.x;
+					if( m_pt2.x > m_rcRubber.right ) {
+						m_rcRubber.right = m_pt2.x;
 					}
-					pt1.y = m_rcRubber.top;
-					if( m_pt2.y < pt1.y ) {
-						pt1.y = m_pt2.y;
+					if( m_pt2.y < m_rcRubber.top ) {
+						m_rcRubber.top = m_pt2.y;
 					}
-					pt2.y = m_rcRubber.bottom;
-					if( m_pt2.y > pt2.y ) {
-						pt2.y = m_pt2.y;
+					if( m_pt2.y > m_rcRubber.bottom ) {
+						m_rcRubber.bottom = m_pt2.y;
 					}
-
-					CRect rect;
-					_pt_generate_rect(pt1, pt2, rect);
-					m_rcRubber = rect;
-					rect.OffsetRect(-pt.x, -pt.y);
-					rect.InflateRect(1, 1);
-					InvalidateRect(&rect);
 				} else {
-					CRect rect;
-					_pt_generate_rect(m_ptOld, m_pt2, rect);
-					m_rcRubber = rect;
+					_pt_generate_rect(m_ptOld, m_pt2, m_rcRubber);
 				}
+				CRect rect;
+				rect = m_rcRubber;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(3, 3);
+				InvalidateRect(&rect);
 			}
 
 			//ruler
@@ -338,13 +315,11 @@ public:
 
 			//rubber
 			if( m_bRubberMode ) {
-				if (m_track.size() > 1) {
-					CRect rect;
-					rect = m_rcRubber;
-					rect.OffsetRect(-pt.x, -pt.y);
-					rect.InflateRect(1, 1);
-					InvalidateRect(&rect);
-				}
+				CRect rect;
+				rect = m_rcRubber;
+				rect.OffsetRect(-pt.x, -pt.y);
+				rect.InflateRect(3, 3);
+				InvalidateRect(&rect);
 			}
 
 			//ruler

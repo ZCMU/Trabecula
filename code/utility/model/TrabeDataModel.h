@@ -35,7 +35,7 @@ struct PixelData
 class TrabeDataModel : public Proxy_PropertyNotification<TrabeDataModel>
 {
 public:
-	TrabeDataModel() throw() : m_MaskNum(0)
+	TrabeDataModel() throw() : m_MaskNum(0), m_CircNum(0), m_dRatio(0.0)
 	{
 	}
 	~TrabeDataModel() throw()
@@ -66,6 +66,10 @@ public:
 	int get_CircNum() const throw()
 	{
 		return m_CircNum;
+	}
+	double get_Ratio() const throw()
+	{
+		return m_dRatio;
 	}
 
 	//load
@@ -228,6 +232,7 @@ public:
 		TrabeImageProcessHelper::TargetDataCalc(m_gMask, m_MaskNum);
 		m_CircNum = ImageProcessHelper::ExtractBorder(MASK_BORDER, m_gMask);
 		ImageProcessHelper::CancelBorder(MASK_BORDER, MASK_TARGET, m_gMask);
+		m_dRatio = (double)m_MaskNum / ((double)m_gMask.GetWidth() * (double)m_gMask.GetHeight());
 		Fire_OnPropertyChanged(std::string("measure_data"));  // -> ViewModel
 		return true;
 	}
@@ -247,6 +252,7 @@ private:
 	PixelData m_pData;
 	UINT m_MaskNum;
 	int  m_CircNum; //周长像素
+	double m_dRatio; //骨小梁像素数和图像总像素之比
 };
 
 ////////////////////////////////////////////////////////////////////////////////

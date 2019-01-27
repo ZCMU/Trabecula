@@ -203,9 +203,10 @@ public:
 	void MeasureDataToString()
 	{
 		CString& str = *m_spMeasure;
-		str.Format(_T("A:\r\n%d\r\nC:\r\n%d"),
+		str.Format(_T("A:\r\n%d\r\nC:\r\n%d\r\nR:\r\n%.4lf"),
 				(int)(m_spModel->get_MaskNum()),
-				m_spModel->get_CircNum());
+				m_spModel->get_CircNum(),
+				m_spModel->get_Ratio());
 	}
 	bool FilterMask(const std::array<UINT, 1>& quantity)
 	{

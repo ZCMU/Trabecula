@@ -350,8 +350,8 @@ public:
 			y = h - 10;
 			m_btnMeasure.SetWindowPos(NULL, x, y - 30, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			y -= (30 + 5);
-			m_labelCtrlMeasure.SetWindowPos(NULL, x, y - 65, 60, 65, SWP_NOACTIVATE | SWP_NOZORDER);
-			y -= (65 + 5);
+			m_labelCtrlMeasure.SetWindowPos(NULL, x, y - 95, 60, 95, SWP_NOACTIVATE | SWP_NOZORDER);
+			y -= (95 + 5);
 			m_btnRuler.SetWindowPos(NULL, x, y - 30, 60, 30, SWP_NOACTIVATE | SWP_NOZORDER);
 			x += (60 + 10);
 			y = 10 + 40 + 10;

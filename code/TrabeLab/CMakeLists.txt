@@ -3,8 +3,12 @@ INCLUDE_DIRECTORIES(
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 	"${PROJECT_SOURCE_DIR}/code/TrabeLab/include"
 	"${PROJECT_SOURCE_DIR}/code/utility"
+	"${PROJECT_SOURCE_DIR}/code/others/atl/include"
 	"${PROJECT_SOURCE_DIR}/code/others/wtl/include"
 	"${PROJECT_SOURCE_DIR}/code/others/etl/include"
+	)
+LINK_DIRECTORIES(
+	"${PROJECT_SOURCE_DIR}/code/others/atl/lib/x64"
 	)
 SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 SET(SRC_LIST "src/main.cpp")

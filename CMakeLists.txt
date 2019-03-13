@@ -1,7 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-INCLUDE("code/others/etl/include/msvc.cmk")
+INCLUDE("code/others/ETL/include/msvc.cmk")
 
 PROJECT(Trabecula)
+
+SET_ETL_PATH("${PROJECT_SOURCE_DIR}/code/others/ETL")
+
 ADD_SUBDIRECTORY(code code)
 
 #pack

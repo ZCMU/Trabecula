@@ -9,7 +9,7 @@ Bone Trabecula
 
 ## 编译工具
 
-1. 安装Visual Studio 2019 Community。
+1. 安装Visual Studio 2019 Community或生成工具，不必带有ATL和MFC。
 1. 下载解压或安装最新cmake版本。
 
 ## 生成

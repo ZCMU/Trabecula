@@ -2,6 +2,8 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "..\..\rc\resource.h"
+
 #include <view\TrabeImageCtrl.h>
 #include <view\TrabeLabelCtrl.h>
 
@@ -289,6 +291,12 @@ public:
 						IDC_PIC_PROCESS);
 		m_imageCtrlProcess.UpdateScroll();
 		m_imageCtrlProcess.SetSelectMode(false);
+
+		// set icons
+		HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON));
+		SetIcon(hIcon, TRUE);
+		HICON hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
+		SetIcon(hIconSmall, FALSE);
 		//----------------------------------------------------------------------
 		return 0;
 	}
